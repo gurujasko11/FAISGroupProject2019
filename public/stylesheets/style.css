@@ -1,0 +1,329 @@
+:root { 
+     --BcgColor: #ffffff;
+     --ButtonBcgColor: #242624;
+     --TextColor: #222222;
+     --AccentColor: #15c118;
+     --HoverColor: #1adb1d;
+}
+body {
+    padding-top: 130px;
+    padding-left: 50px;
+    padding-right: 50px;
+    background: var(--BcgColor);
+    font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
+    color: var(--TextColor)
+}
+
+.header{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    padding-top: 60px;
+    background: var(--BcgColor);;
+}
+
+.page {
+    opacity:0;
+    transform-origin: 0px -100px;
+    transform: scaleY(0.9);
+    -webkit-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+    -webkit-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+    -webkit-animation-duration:0.3s;
+    animation-duration:0.3s;
+    padding-bottom: 80px;
+}
+::selection {
+    color: var(--TextColor);
+    background: var(--AccentColor);
+}
+
+/*      DIV       ///////////////////////////////////////////////////////*/
+.topLeft {                      /* Lewy górny róg - logo strony*/
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+.topRight {                     /* Prawy górny róg - guziki logowania*/
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.topBar {                       /* Pasek menu*/
+    position: absolute;
+    top: 60px;              /*odległość od góry strony*/
+    padding-left: 50px;     /*margines od lewej*/
+    padding-right: 50px;    /*margines od prawej*/
+    left: 0px;
+    right: 0px;
+    background: var(--ButtonBcgColor);
+}
+.footer {
+    position: fixed;
+    bottom: 0px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+    background: var(--BcgColor);
+}
+
+/*      A       /////////////////////////////////////////////////////////*/
+a.link {
+    text-decoration: none;
+    color: var(--AccentColor);
+    border-bottom: 1px solid var(--AccentColor);
+    
+    -webkit-transition: border-bottom 0.5s;
+    transition: border-bottom 0.5s;
+}
+a.link:hover {
+    border-bottom: 1px solid var(--ButtonBcgColor);
+}
+a.link:focus {
+    outline: none;
+    background: var(--ButtonBcgColor);
+}
+
+a.menu {
+    font-size: 17px;
+    text-decoration: none;
+    color: var(--AccentColor);
+    background: var(--ButtonBcgColor);
+    border-bottom: 5px solid var(--ButtonBcgColor);
+    display: inline-block;
+    padding: 10px;
+    padding-bottom: 5px;
+    -webkit-transition: border-bottom 0.5s;
+    transition: border-bottom 0.5s;
+    
+}
+a.menu:hover {
+    /*color: var(--AccentColor);
+    background: var(--AccentColor);*/
+    border-bottom: 5px solid var(--AccentColor);
+    
+    -webkit-transition: color 0.5s, border-bottom 0.5s;
+    transition: color 0.5s, border-bottom 0.5s;
+}
+a.menu:focus {
+    outline: none;
+    border-bottom: 5px solid var(--AccentColor);
+}
+a.menu_s {
+    text-decoration: none;
+    font-size: 17px;
+    color: var(--ButtonBcgColor);
+    background: var(--AccentColor);
+    border-bottom: 5px solid var(--AccentColor);
+    display: inline-block;
+    padding: 10px;
+    padding-bottom: 5px;
+}
+a.menu_s:focus {
+    outline: none;
+    border-bottom: 5px solid #fff;
+}
+/*      Inputs       /////////////////////////////////////////////////////*/
+input[type=button],input[type=submit], a.button {
+    display: inline-block;
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    min-width: 140px;
+    font-size: 17px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--AccentColor);
+    background: var(--ButtonBcgColor);
+    outline: none;
+    border: 0px;
+    
+    -webkit-transition: background 0.5s;
+    transition: background 0.5s;
+    
+}
+input[type=button]:hover,input[type=submit]:hover, a.button:hover,input[type=button]:focus,input[type=submit]:focus, a.button:focus {
+    color: var(--ButtonBcgColor);
+    background: var(--AccentColor);
+    cursor: -webkit-grabbing; cursor: grabbing;
+    
+    -webkit-transition: background 0.5s;
+    transition: background 0.5s;
+    -webkit-transition: color 0.5s;
+    transition: color 0.5s;
+}
+a.button {
+    min-width: 100px;
+}
+input[type=text], select, textarea {
+    background-color: var(--BcgColor);
+    min-width: 200px;
+    height: 30px;
+    padding-left: 10px;
+    
+    font-family: var(--FontFamily);
+    font-size: 20px;
+    
+    border: none;
+    display: inline-block;
+    box-sizing: border-box;
+    outline: none;
+    background: #eee;
+    border-bottom: 2px solid #333333;
+    
+    -webkit-transition: border-bottom 0.5s;
+    transition: border 0.5s;
+}
+input[type=text]:hover, select:hover, textarea:hover {
+    border: none;
+    display: inline-block;
+    box-sizing: border-box;
+    border-bottom: 2px solid #777777;
+}
+input[type=text]:focus, select:focus, textarea:focus {
+    border: none;
+    display: inline-block;
+    box-sizing: border-box;
+    border-bottom: 2px solid var(--AccentColor);
+}
+textarea {
+    min-width: 200px;
+    min-height: 300px;
+}
+input[type="radio"] {
+    /*display:none;*/
+    position: absolute;
+    left: -9999px;
+}
+input[type="radio"] + label span {
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+    border-radius: 50%;
+    border: 2px solid var(--ButtonBcgColor);
+    display: inline-block;
+    cursor:pointer;
+    margin-right: 10px;
+    margin-left: 3px;
+    margin-top: 10px;
+    margin-bottom: -2px;
+    
+    -webkit-transition: border 0.5s, background-color 0.5s;
+    transition: border 0.5s, background-color 0.5s;
+}
+input[type="radio"]:checked + label span {
+    background-color: var(--ButtonBcgColor);
+}
+input[type="radio"]:hover + label span , input[type="radio"]:focus + label span {
+    border: 2px solid var(--AccentColor);
+}
+input[type="checkbox"] {
+    /*display:none;*/
+    position: absolute;
+    left: -9999px;
+}
+input[type="checkbox"] + label span {
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+    border-radius: 10%;
+    border: 2px solid var(--ButtonBcgColor);
+    display: inline-block;
+    cursor:pointer;
+    margin-right: 10px;
+    margin-left: 3px;
+    margin-top: 10px;
+    margin-bottom: -2px;
+    
+    -webkit-transition: border 0.5s, background-color 0.5s;
+    transition: border 0.5s, background-color 0.5s;
+}
+input[type="checkbox"]:checked + label span {
+    background-color: var(--ButtonBcgColor);
+}
+input[type="checkbox"]:hover + label span, input[type="checkbox"]:focus + label span {
+    border: 2px solid var(--AccentColor);
+}
+label {
+    font-size: 20px;
+    cursor: -webkit-grabbing; cursor: grabbing;
+}
+/*      Tables         ////////////////////////////////////////////////*/
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th {
+    background-color: var(--ButtonBcgColor);
+    color: var(--AccentColor);
+}
+td, th {
+    text-align: left;
+    padding: 8px;
+}
+td {
+    border: 1px solid #dddddd;
+}
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+/*      Alerts         ////////////////////////////////////////////////*/
+.alert {
+    /*position: absolute;*/
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    padding: 20px;
+    background-color: var(--ButtonBcgColor);
+    color: #fff;
+  
+    opacity:0;
+    transform-origin: 0px -100px;
+    transform: scaleY(0.9);
+    -webkit-animation:fadeIn ease-in 1;
+    animation:fadeIn ease-in 1;
+    -webkit-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+    -webkit-animation-duration:0.3s;
+    animation-duration:0.3s;
+    transition: opacity 0.6s;
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: #fff;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn:hover {
+    color: #ccc;
+}
+/*      Animation templates       ////////////////////////////////////////*/
+@keyframes fadeIn {
+    from {
+        opacity:0;
+        transform: scaleY(0.9);
+    } to {
+        opacity:1;
+        transform: scaleY(1);
+    } 
+}
+
+@keyframes fadeOut {
+    from {
+        opacity:1;
+        transform: scaleY(1);
+    } to {
+        opacity:0;
+        transform: scaleY(0.9);
+    } 
+}

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+<div class=page>
+    <h1><%= message %></h1>
+    <h2><%= error.status %></h2>
+    <pre><%= error.stack %></pre>
+</div>
+<div class=topLeft>
+    logo strony
+</div>
+<div class=topBar>
+    <a class=menu_s>Wystąpił błąd</a><a class=menu href="javascript:history.back()" tabindex="1">Powrót</a><a class=menu href="mailto:zabiera@tlen.pl?Subject=Kontakt" tabindex="2">Kontakt</a>
+</div>
+<% include footer.ejs %>
