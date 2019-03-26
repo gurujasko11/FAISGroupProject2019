@@ -164,8 +164,7 @@ input[type=text], select, textarea {
     min-width: 200px;
     height: 30px;
     padding-left: 10px;
-    
-    font-family: var(--FontFamily);
+
     font-size: 20px;
     
     border: none;
@@ -253,22 +252,22 @@ label {
     cursor: -webkit-grabbing; cursor: grabbing;
 }
 /*      Tables         ////////////////////////////////////////////////*/
-table {
+table.table{
     border-collapse: collapse;
     width: 100%;
 }
-th {
+table.table th {
     background-color: var(--ButtonBcgColor);
     color: var(--AccentColor);
 }
-td, th {
+table.table td, table.table th {
     text-align: left;
     padding: 8px;
 }
-td {
+table.table td {
     border: 1px solid #dddddd;
 }
-tr:nth-child(even) {
+table.table tr:nth-child(even) {
     background-color: #dddddd;
 }
 /*      Alerts         ////////////////////////////////////////////////*/

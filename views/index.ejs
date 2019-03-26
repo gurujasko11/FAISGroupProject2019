@@ -2,7 +2,7 @@
 <html>
     <% include head.ejs %>      <!--Include head section (same for all pages)-->
     <!--Javascripts includes-->
-    <script src='/javascripts/alert.js' type='text/javascript' /></script>
+    <script src='/javascripts/alert.js' type='text/javascript' ></script>
     
     <!--Inline Javascript-->
     <script>
@@ -39,7 +39,6 @@
                 <label for="opt4"><span></span>Checkbox</label>
                 <br>
                 <input type="submit" tabindex="100" value="Submit">
-                <!--input type="submit" tabindex="100" value="Submit" onclick="AlertSuccess('Formularz','Dane zostały przesłane')"-->
                 <input type="button" tabindex="100" value="=" onclick="AlertWarning('tytuł','tekst alertu')"><br>
             </form>
             <br>
@@ -47,7 +46,7 @@
             <a class=button href="javascript:AlertError('tytuł','tekst alertu')" tabindex="100">test link</a>
             <br>
             <br>
-            <table>
+            <table class=table>
                 <tr>
                     <th>kol1</th>
                     <th>kol2</th>
@@ -78,6 +77,5 @@
         </div>
         <% include header.ejs %>      <!--Include header (top menu logo etc)-->
         <% include footer.ejs %>      <!--Include footer-->
-        <!-- foof oi wek -->
     </body>
 </html>
