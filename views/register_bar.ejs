@@ -9,31 +9,61 @@
         function validateForm() 
         {
             var err = "";
+            if(document.getElementsByName("bar_name")[0].value === "")
+                err += "Podaj nazwę baru. ";
+            else if(document.getElementsByName("bar_name")[0].value.length > 255)
+                err += "Nazwa baru jest za długa. "
+            
             if(document.getElementsByName("email")[0].value === "")
-                err += "Podaj e-mail\n";
-            
-            if(document.getElementsByName("password")[0].value === "")
-                err += "Podaj hasło\n";
-            
-            //TODO: check repeated password
-            
-            if(document.getElementsByName("first_name")[0].value === "")
-                err += "Podaj imię\n";    
+                err += "Podaj email. ";
 
-            if(document.getElementsByName("last_name")[0].value === "")
-                err += "Podaj nazwisko\n";    
+            if(document.getElementsByName("password")[0].value === "")
+                err += "Podaj hasło. ";
+            if(document.getElementById("repeated_password").value === "")
+                err += "Powtórz hasło. ";
+            else{
+                if(document.getElementById("repeated_password") != undefined &&
+                    document.getElementsByName("password")[0].value != document.getElementById("repeated_password").value)
+                    err += "Wprowadzone hasła nie są identyczne. ";
+            }
+
+            if(document.getElementsByName("telephone")[0].value === "")
+                err += "Podaj numer telefonu. ";
+            else if(document.getElementsByName("telephone")[0].value.length > 11)
+                err += "Numer telefonu jest za długi. "
+
+            if(document.getElementsByName("city")[0].value === "")
+                err += "Podaj miasto. ";
+            else if(document.getElementsByName("city")[0].value.length > 80)
+                err += "Nazwa miasta jest za długa. "
+                
+            if(document.getElementsByName("street")[0].value === "")
+                err += "Podaj ulicę. ";
+            else if(document.getElementsByName("street")[0].value.length > 80)
+                err += "Nazwa ulicy jest za długa. "
+
+            if(document.getElementsByName("building_number")[0].value === "")
+                err += "Podaj numer budynku. ";
+            else if(document.getElementsByName("building_number")[0].value.length > 4)
+                err += "Numer budynku jest za duży. ";
+            
+            if(document.getElementsByName("local_number")[0].value.length > 4)
+                err += "Numer lokalu jest za duży. ";
+
 
             if(err == "") return true;
             else 
             {
-                document.getElementById("error").innerHTML = err;
+                AlertError('Błąd!',err);
+                //document.getElementById("error").innerHTML = err;
 
                 return false;
             }
         }
     </script>
     
-    <body">
+    <body>
+    <div id="alerts"></div>
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             

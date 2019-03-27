@@ -3,16 +3,16 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { page: 'index', title: 'Express' });
+  res.render('index', { page: 'main', title: 'Express' });
 });
 
 router.get('/exp1', function(req, res, next) {
-  res.render('index', { page: 'index', title: 'Express1' });
+  res.render('index', { page: 'main', title: 'Express1' });
 });
 
 router.get('/register_bar', function(req, res, next)
 {
-  res.render('register_bar', { page: 'register_bar', title: 'Rejestracja baru' });
+  res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
 });
 
 router.post('/register_bar', function(req, res, next)
@@ -27,13 +27,13 @@ router.post('/register_bar', function(req, res, next)
   var password = req.body.password;
   var email = req.body.email;
   var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-              "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + ", " + email + "');";
+              "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + "', '" + email + "');";
 
   console.log("Wyslano insert do bazy danych: " + query);
-  dbconn.query(query, function(rows, err)
+  dbconn.query(query, function(err, rows)
   {
-    if(err) res.render('register_bar', { page: 'register_bar', title: "Dodanie baru się nie powiodło" });
-    else res.render('register_bar', { page: 'register_bar', title: "Wykonano probe wpisania danych do bazy dancyh" });
+    if(err) res.render('register_bar', { page: 'main', title: err, desc: err.msg });
+    else res.render('register_bar', { page: 'main', title: "Pomyślnie utworzono konto" });
   });
   
 })
