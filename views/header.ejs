@@ -7,7 +7,7 @@
         guziki logowanie/wylogowanie/ustawienia konta
     </div>
     <div class=topBar>      <!--This should configure itself dependent of options and views-->
-        <% if(page=="index"){ %>
+        <% if(page=="index" || page=="register_bar"){ %>
             <a class=
                 <% if(title=="Express"){ %>
                     menu_s
@@ -18,7 +18,7 @@
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/exp1" tabindex="2">test link</a><a class=
+                <% } %> href="/register_bar" tabindex="2">Rejestracja baru</a><a class=
                 <% if(title=="!Express"){ %>
                     menu_s
                 <% } else{ %>
