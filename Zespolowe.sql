@@ -24,17 +24,17 @@ DROP TABLE IF EXISTS `Bary`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Bary` (
   `id_baru` int(11) NOT NULL AUTO_INCREMENT,
-  `nazwa_baru` varchar(255) NOT NULL,
-  `telefon` varchar(11) DEFAULT NULL,
-  `miasto` varchar(80) DEFAULT NULL,
-  `ulica` varchar(80) DEFAULT NULL,
-  `numer_budynku` varchar(4) DEFAULT NULL,
-  `numer_lokalu` varchar(4) DEFAULT NULL,
-  `haslo` varchar(256) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `nazwa_baru` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
+  `miasto` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ulica` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `numer_budynku` varchar(4) CHARACTER SET latin1 DEFAULT NULL,
+  `numer_lokalu` varchar(4) CHARACTER SET latin1 DEFAULT NULL,
+  `haslo` varchar(256) CHARACTER SET latin1 NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id_baru`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `Bary` (
 
 LOCK TABLES `Bary` WRITE;
 /*!40000 ALTER TABLE `Bary` DISABLE KEYS */;
+INSERT INTO `Bary` VALUES (1,'Pueblo','111222333','Kraków','Norymberska','1','','12345','pueblo@pueblo.com'),(6,'Night One','123456789','Krakow','Grodzka','3','1','12345','night@night.pl'),(7,'Blue Lagoon','182739877','Krakow','Lubicz','2','','12345','blue@blue.com'),(111,'ala','111111111','Krakow','Nowa','1','1','111','aa@aaa.com'),(1111,'alą','111111111','Krakow','Nowa','1','1','111','aa1@aaa.com');
 /*!40000 ALTER TABLE `Bary` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,9 +85,9 @@ DROP TABLE IF EXISTS `Druzyny`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Druzyny` (
   `id_druzyny` int(11) NOT NULL AUTO_INCREMENT,
-  `nazwa_druzyny` varchar(255) NOT NULL,
+  `nazwa_druzyny` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id_druzyny`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,14 +137,14 @@ DROP TABLE IF EXISTS `Uzytkownicy`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Uzytkownicy` (
   `id_uzytkownika` int(11) NOT NULL AUTO_INCREMENT,
-  `imie` varchar(255) NOT NULL,
-  `nazwisko` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `telefon` varchar(11) DEFAULT NULL,
-  `haslo` varchar(256) NOT NULL,
+  `imie` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nazwisko` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
+  `haslo` varchar(256) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id_uzytkownika`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,4 +191,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-27 15:06:18
+-- Dump completed on 2019-03-27 20:06:11
