@@ -128,6 +128,11 @@ a.menu_s:focus {
     border-bottom: 5px solid #fff;
 }
 /*      Inputs       /////////////////////////////////////////////////////*/
+
+form {
+    text-align: center;
+}
+
 input[type=button],input[type=submit], a.button {
     display: inline-block;
     padding: 5px;
@@ -249,9 +254,16 @@ input[type="checkbox"]:hover + label span, input[type="checkbox"]:focus + label 
 }
 label {
     font-size: 20px;
-    cursor: -webkit-grabbing; cursor: grabbing;
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+    width: 400px;
+    display:inline-block;
+    text-align: left;
 }
 /*      Tables         ////////////////////////////////////////////////*/
+table {
+    margin: 0 auto;
+}
 table.table{
     border-collapse: collapse;
     width: 100%;
