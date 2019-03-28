@@ -7,8 +7,25 @@ Wymagany jest pakiet mysql dla npm, można zainstalować komendą npm install my
 Nazwę użytkownika, hasło i nazwę bazy danych zmienić tak, aby paswowała do waszej stworzonej bazy mysql.
 
 W celu korzystania z sesji - instalacja modułu express-session
+  
+# Dodawanie stron:
+Dodając nową stronę trzeba zedytować pliki views/eader.ejs oraz routs/index.js. W routs/index.js dodajemy połączenie linku z adresem:  
 
-
+router.get('[ADRES]', function(req, res, next) {  
+	res.render('[PLIK]', { page: '[STRONA]', title: '[TYTUŁ/PODSTRONA]' });  
+});  
+  
+W pliku views/header.ejs dodajemy wpisy do menu. Tam mamy zagnieżdżone if-y. Pierwszy poziom to wybór menu w zależności od zmiennej page oznaczającej zestaw stron (np. niezalogowany użytkownik = main) oraz wpis menu:  
+  
+<a class=  
+<% if(title=="[TYTUŁ/PODSTRONA]"){ %>  
+	menu_s  
+<% } else{ %>  
+	menu  
+<% } %> href="[ADRES]" tabindex="[NUMER LINKU]">[NAPIS PRZYCISKU]</a>  
+  
+Numer linku służy do ustalenia kolejności przechodzenia pomiędzy elementami przy użyciu tabulacji. Na stronie tabindex wszystkich elementów ustawiamy na 100, wtedy przechodzenie będzie w kolejności: pasek menu => strona w kolejności wpisów html => stopka  
+  
 # Pełna instrukcja:
 
 Wymagania:
@@ -18,7 +35,12 @@ Wymagania:
 # 1. Instalujemy node.js
 # 2. Instalujemy mysql
 Uwaga:
-node.js nie wspiera nowego uwierzytelenienia wprowadzonego w mysql 8.X, więc jeżeli instalujesz wersję 8.X upewnij się, że hasło konta użytkownika używa starej wersji uwierzytelnienia: mysql_native_password. Więcej informacji i zmiana mechanizmu uwierzytelenienia:   https://stackoverflow.com/questions/50373427/node-js-cant-authenticate-to-mysql-8-0
+node.js nie wspiera nowego uwierzytelenienia wprowadzonego w mysql 8.X, więc jeżeli instalujesz wersję 8.X upewnij się, że hasło konta użytkownika używa starej wersji uwierzytelnienia: mysql_native_password. Więcej informacji i zmiana mechanizmu uwierzytelenienia:  
+https://stackoverflow.com/questions/50373427/node-js-cant-authenticate-to-mysql-8-0  
+  
+SET GLOBAL validate_password_policy=LOW;  
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';  
+  
 # 3. Klonujemy repo
 # 4. Logujemy się na mysql i tworzymy bazę
 Domyślnie konto root'a jest bez hasła - chyba, że zostało ustawione przy instalacji. Komenda logowania (użytkownicy linuxa powinni wykonać ją za pomocą sudo):  
