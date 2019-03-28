@@ -1,14 +1,21 @@
 var express = require('express');
 var router = express.Router();
-const session = require('express-session');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { page: 'main', title: 'Express' });
+  res.render('index', { page: 'main', title: 'MatchBar' });
 });
 
-router.get('/exp1', function(req, res, next) {
-  res.render('index', { page: 'main', title: 'Express1' });
+router.get('/dev', function(req, res, next) {
+  res.render('template', { page: 'main', title: 'CSS Test' });
+});
+
+
+router.get('/rozgrywki', function(req, res, next) {
+  res.render('wip', { page: 'main', title: 'Rozgrywki' });
+});
+router.get('/about', function(req, res, next) {
+  res.render('about', { page: 'main', title: 'O stronie' });
 });
 
 router.get('/register_bar', function(req, res, next)
@@ -38,14 +45,5 @@ router.post('/register_bar', function(req, res, next)
   });
   
 })
-
-router.get('/bar_login', function(req, res, next)
-{
-
-  app.use(session(
-      'secret': '343ji43j4n3jn4jk3n'
-   ))
-  res.redirect('/');
-});
 
 module.exports = router;

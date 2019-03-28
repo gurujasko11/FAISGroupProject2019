@@ -4,26 +4,34 @@
         logo strony
     </div>
     <div class=topRight>
-        guziki logowanie/wylogowanie/ustawienia konta
+        <% if(page=="main"){ %>
+            <a class=link href="/login" tabindex="50">Logowanie</a>
+        <% } %>
+        <!--guziki logowanie/wylogowanie/ustawienia konta-->
     </div>
     <div class=topBar>      <!--This should configure itself dependent of options and views-->
         <% if(page=="main"){ %>
             <a class=
-                <% if(title=="Express"){ %>
+                <% if(title=="MatchBar"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/" tabindex="1">test link</a><a class=
+                <% } %> href="/" tabindex="1">Wyszukiwanie</a><a class=
+                <% if(title=="Rozgrywki"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki</a><a class=
+                <% if(title=="O stronie"){ %>
+                   menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/about" tabindex="3">O stronie</a><a class=
                 <% if(title=="Rejestracja baru"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_bar" tabindex="2">Rejestracja baru</a><a class=
-                <% if(title=="!Express"){ %>
-                    menu_s
-                <% } else{ %>
-                    menu
-                <% } %> href="/" tabindex="3">test link</a>
+                <% } %> href="/register_bar" tabindex="4">Rejestracja baru</a>
         <% } %>
     </div>
 </div>
