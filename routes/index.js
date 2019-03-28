@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const session = require('express-session');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -45,5 +46,14 @@ router.post('/register_bar', function(req, res, next)
   });
   
 })
+
+router.get('/bar_login', function(req, res, next)
+{
+
+  app.use(session(
+      'secret': '343ji43j4n3jn4jk3n'
+   ))
+  res.redirect('/');
+});
 
 module.exports = router;
