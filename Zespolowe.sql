@@ -32,6 +32,8 @@ CREATE TABLE `Bary` (
   `numer_lokalu` varchar(4) CHARACTER SET latin1 DEFAULT NULL,
   `haslo` varchar(256) CHARACTER SET latin1 NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `longitude` float(10,6) DEFAULT NULL,
+  `latitude` float(10,6) DEFAULT NULL,
   PRIMARY KEY (`id_baru`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -43,7 +45,7 @@ CREATE TABLE `Bary` (
 
 LOCK TABLES `Bary` WRITE;
 /*!40000 ALTER TABLE `Bary` DISABLE KEYS */;
-INSERT INTO `Bary` VALUES (1,'Pueblo','111222333','Kraków','Norymberska','1','','12345','pueblo@pueblo.com'),(6,'Night One','123456789','Krakow','Grodzka','3','1','12345','night@night.pl'),(7,'Blue Lagoon','182739877','Krakow','Lubicz','2','','12345','blue@blue.com'),(111,'ala','111111111','Krakow','Nowa','1','1','111','aa@aaa.com'),(1111,'alą','111111111','Krakow','Nowa','1','1','111','aa1@aaa.com');
+INSERT INTO `Bary` VALUES (1,'Pueblo','111222333','Kraków','Norymberska','1','','12345','pueblo@pueblo.com',NULL,NULL),(6,'Night One','123456789','Krakow','Grodzka','3','1','12345','night@night.pl',NULL,NULL),(7,'Blue Lagoon','182739877','Krakow','Lubicz','2','','12345','blue@blue.com',NULL,NULL),(111,'ala','111111111','Krakow','Nowa','1','1','111','aa@aaa.com',NULL,NULL),(1111,'alą','111111111','Krakow','Nowa','1','1','111','aa1@aaa.com',NULL,NULL);
 /*!40000 ALTER TABLE `Bary` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,4 +193,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-27 20:06:11
+-- Dump completed on 2019-03-29 18:08:25
