@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+<script src='/javascripts/alert.js' type='text/javascript' ></script>
+
+<script>
+    function validateForm()
+    {
+        return true;
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<div id="page" class=page style="overflow: hidden;">
+    <h1><%= title %></h1>
+
+    <form method="POST" action="/edit_match" onsubmit="return validateForm();">
+        <table class="table">
+            <th>Bieżące rozgrywki</th>
+            <tr>
+                <td>
+                    AS Monaco - Atletico Madryt
+                    <input type="submit" tabindex="100" value="Edytuj">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Club Brugge - Borussia Dortmund
+                    <input type="submit" tabindex="100" value="Edytuj">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+
+    <form method="POST" action="/add_match" onsubmit="return validateForm();">
+        <br></br>
+        <br></br>
+                    <input type="submit" tabindex="100" value="Dodaj mecz">
+    </form>
+</div>
+<% include header.ejs %>
+<% include footer.ejs %>
+</body>
+</html>

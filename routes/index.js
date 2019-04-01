@@ -12,9 +12,11 @@ router.get('/dev', function(req, res, next) {
 });
 
 
-router.get('/rozgrywki', function(req, res, next) {
-  res.render('wip', { page: 'main', title: 'Rozgrywki' });
+router.get('/match', function(req, res, next) {
+  res.render('match', { page: 'main', title: 'Rozgrywki' });
 });
+
+
 router.get('/about', function(req, res, next) {
   res.render('about', { page: 'main', title: 'O stronie' });
 });
@@ -47,13 +49,6 @@ router.post('/register_bar', function(req, res, next)
   
 })
 
-router.get('/bar_login', function(req, res, next)
-{
 
-  app.use(session(
-      'secret': '343ji43j4n3jn4jk3n'
-   ))
-  res.redirect('/');
-});
 
 module.exports = router;
