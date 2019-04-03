@@ -50,9 +50,9 @@ router.post('/register_bar', function(req, res, next)
 router.get('/bar_login', function(req, res, next)
 {
 
-  app.use(session(
-      'secret': '343ji43j4n3jn4jk3n'
-   ))
+  app.use(session({
+    secret: '343ji43j4n3jn4jk3n'
+  }));
   res.redirect('/');
 });
 
