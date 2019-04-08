@@ -24,6 +24,8 @@ router.get('/register_bar', function(req, res, next)
   res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
 });
 
+
+
 router.post('/register_bar', function(req, res, next)
 {
   //TODO: escape '
@@ -47,13 +49,51 @@ router.post('/register_bar', function(req, res, next)
   
 })
 
-router.get('/bar_login', function(req, res, next)
+router.get('/login_bar', function(req, res, next)
 {
-
-  app.use(session(
-      'secret': '343ji43j4n3jn4jk3n'
-   ))
-  res.redirect('/');
+  res.render('login_bar', { page: 'main', title: 'Logowanie baru' });
 });
+
+router.get('/login_user', function(req, res, next)
+{
+  res.render('login_user', { page: 'main', title: 'Logowanie użytkownika' });
+});
+
+router.post('/login_bar', function(req, res, next)
+{
+  //TODO: escape '
+
+  var password = req.body.password;
+  var email = req.body.email;
+  var query = "select * from Bary where  email = " + " '" + password + "' and email= '" + email + "';";
+
+  console.log("Wyslano zapytani do bazy danych: " + query);
+
+  dbconn.query(query, function(err, rows)
+  {
+    if(err) res.render('login_bar', { page: 'main', title: err, desc: err.msg });
+    else res.render('login_bar', { page: 'main', title: "Pomyślnie zalogowany bar" });
+  });
+  
+})
+
+
+router.post('/login_user', function(req, res, next)
+{
+  //TODO: escape '
+
+  var password = req.body.password;
+  var email = req.body.email;
+  var query = "select * from Uzytkownicy where  email = " + " '" + password + "' and email= '" + email + "';";
+
+  console.log("Wyslano zapytani do bazy danych: " + query);
+
+  dbconn.query(query, function(err, rows)
+  {
+    if(err) res.render('login_user', { page: 'main', title: err, desc: err.msg });
+    else res.render('login_user', { page: 'main', title: "Pomyślnie zalogowany uzytkownik" });
+  });
+  
+})
 
 module.exports = router;
