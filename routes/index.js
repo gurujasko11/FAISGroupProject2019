@@ -45,14 +45,14 @@ router.post('/register_bar', function(req, res, next)
     else res.render('register_bar', { page: 'main', title: "Pomyślnie utworzono konto" });
   });
   
-})
+});
 
 router.get('/bar_login', function(req, res, next)
 {
 
-  app.use(session(
-      'secret': '343ji43j4n3jn4jk3n'
-   ))
+  app.use(session({
+      'secret': '343ji43j4n3jn4jk3n'}
+   ));
   res.redirect('/');
 });
 
