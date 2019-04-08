@@ -24,6 +24,21 @@ router.get('/register_bar', function(req, res, next)
   res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
 });
 
+router.get('/bar_home', function(req, res, next)
+{
+  res.render('bar_home', { page: 'main', title: 'Moje mecze' });
+});
+
+router.get('/add_match', function(req, res, next)
+{
+  res.render('add_match', { page: 'main', title: 'Dodaj mecz' });
+});
+
+router.get('/account', function(req, res, next)
+{
+  res.render('account', { page: 'main', title: 'Konto' });
+});
+
 router.post('/register_bar', function(req, res, next)
 {
   //TODO: escape '
