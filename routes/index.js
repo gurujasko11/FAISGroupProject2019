@@ -26,6 +26,9 @@ router.get('/register_bar', function(req, res, next)
   res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
 });
 
+
+
+
 router.post('/register_bar', function(req, res, next)
 {
   //TODO: escape '

@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var addMatchRouter = require('./routes/add_match');
+var editMatchRouter = require('./routes/edit_match');
 
 var app = express();
 const session = require('express-session');
@@ -22,6 +24,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/add_match', addMatchRouter);
+app.use('/edit_match', editMatchRouter);
 
 //require mysql
 var mysql = require('mysql');

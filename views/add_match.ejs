@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+<script src='/javascripts/alert.js' type='text/javascript' ></script>
+
+<!--Inline Javascript-->
+<script>
+    function validateForm()
+    {
+        return true;
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+    <h1><%= title %></h1>
+
+    <form method="POST" action="/add_match" onsubmit="return validateForm();">
+        <table>
+            <tr>
+                <td>
+                    Nazwa rozgrywki:
+                </td>
+                <td>
+                    <input tabindex="100" type="text" name="bar_name">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lokal:
+                </td>
+                <td>
+                    <input tabindex="100" type="local" name="local">
+                </td>
+            </tr>
+        </table>
+        <p>* - opcjonalne</p>
+        <br>
+        <pre id="error" style="color:red"></pre>
+        <input type="submit" tabindex="100" value="Wyślij">
+    </form>
+
+</div>
+<% include header.ejs %>      <!--Include header (top menu logo etc)-->
+<% include footer.ejs %>      <!--Include footer-->
+</body>
+</html>
