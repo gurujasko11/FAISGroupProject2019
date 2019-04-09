@@ -1,6 +1,20 @@
 var express = require('express');
 var router = express.Router();
 const session = require('express-session');
+/*
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      return done(null, user);
+    });
+  }
+));*/
+
+
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -54,10 +68,10 @@ router.get('/login_bar', function(req, res, next)
   res.render('login_bar', { page: 'main', title: 'Logowanie baru' });
 });
 
-router.get('/login_user', function(req, res, next)
-{
-  res.render('login_user', { page: 'main', title: 'Logowanie użytkownika' });
-});
+//router.get('/login_user', function(req, res, next)
+//{
+//  res.render('login_user', { page: 'main', title: 'Logowanie użytkownika' });
+//});
 
 router.post('/login_bar', function(req, res, next)
 {
@@ -65,26 +79,29 @@ router.post('/login_bar', function(req, res, next)
 
   var password = req.body.password;
   var email = req.body.email;
-  var query = "select * from Bary where  email = " + " '" + password + "' and email= '" + email + "';";
+  var query = "select * from Bary where  email = " + " '" + email + "' and haslo= '" + password + "';";
 
   console.log("Wyslano zapytani do bazy danych: " + query);
 
   dbconn.query(query, function(err, rows)
   {
     if(err) res.render('login_bar', { page: 'main', title: err, desc: err.msg });
-    else res.render('login_bar', { page: 'main', title: "Pomyślnie zalogowany bar" });
+    else {
+		req.session.uid = rows[0].id_baru;
+		res.render('login_bar', { page: 'main', title: "Pomyślnie zalogowany bar" });  		
+	 }
   });
   
 })
 
 
-router.post('/login_user', function(req, res, next)
+/*router.post('/login_user', function(req, res, next)
 {
   //TODO: escape '
 
   var password = req.body.password;
   var email = req.body.email;
-  var query = "select * from Uzytkownicy where  email = " + " '" + password + "' and email= '" + email + "';";
+  var query = "select * from Uzytkownicy where  email = " + " '" + email + "' and haslo= '" + password + "';";
 
   console.log("Wyslano zapytani do bazy danych: " + query);
 
@@ -94,6 +111,6 @@ router.post('/login_user', function(req, res, next)
     else res.render('login_user', { page: 'main', title: "Pomyślnie zalogowany uzytkownik" });
   });
   
-})
+})*/
 
 module.exports = router;

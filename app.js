@@ -8,7 +8,78 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const session = require('express-session');
+
+//var passport = require('passport');
+//var session = require('express-session');
+
+var flash             = require('connect-flash');
+var crypto            = require('crypto');
+var passport          = require('passport');
+var LocalStrategy     = require('passport-local').Strategy;
+var connection        = require('./lib/dbconn');
+var sess              = require('express-session');
+var Store             = require('express-session').Store;
+     
+var BetterMemoryStore = require('session-memory-store')(sess);
+
+
+     var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
+     app.use(sess({
+        name: 'JSESSION',
+        secret: 'MYSECRETISVERYSECRET',
+        store:  store,
+        resave: true,
+        saveUninitialized: true
+    }));
+
+    app.use(flash());
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    passport.use('local', new LocalStrategy({
+      usernameField: 'email',
+      passwordField: 'haslo',
+      passReqToCallback: true 
+    } , function (req, email, haslo, done){
+          if(!username || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
+	
+	
+          connection.query("select * from Uzytkownicy where email = '"+ email+"'", function(err, rows){
+              console.log(err); console.log(rows);
+            if (err) return done(req.flash('message',err));
+            if(!rows.length){ return done(null, false, req.flash('message','Invalid username or password.')); }
+
+	    var encPassword = haslo;
+            var dbPassword  = rows[0].haslo;
+            if(!(dbPassword == encPassword)){
+                return done(null, false, req.flash('message','Invalid username or password.'));
+             }
+            return done(null, rows[0]);
+          });
+        }
+    ));
+
+    passport.serializeUser(function(user, done){
+        done(null, user.id_uzytkownika);
+    });
+    passport.deserializeUser(function(id_uzytkownika, done){
+        connection.query("select * from Uzytkownicy where id_uzytkownika = "+ id_uzytkownika, function (err, rows){
+            done(err, rows[0]);
+        });
+    });
+
+    app.get('/login_user', function(req, res){
+      res.render('login_user',{page: 'main', title: 'Logowanie użytkownika','message' :req.flash('message')});
+    });
+
+
+    app.post("/login_user", passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/rozgrywki',
+        failureFlash: true
+    }), function(req, res, info){
+        res.render('/login_user',{'message' :req.flash('message')});
+    });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
