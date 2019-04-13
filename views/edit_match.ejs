@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+<script src='/javascripts/alert.js' type='text/javascript' ></script>
+
+<!--Inline Javascript-->
+<script>
+    function validateForm()
+    {
+        return true;
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+    <h1><%= title %></h1>
+
+    <form method="POST" action="/edit_match" onsubmit="return validateForm();">
+        <table>
+            <tr>
+                <td>
+                    I Drużyna:
+                </td>
+                <td>
+                    <input tabindex="100" type="text" name="team_1" value="AS Monaco ">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    II Drużyna:
+                </td>
+                <td>
+                    <input tabindex="100" type="text" name="team_2" value="Atletico Madryt ">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Liga:
+                </td>
+                <td>
+                    <input tabindex="100" type="text" name="league" value="champions league">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Data:
+                </td>
+                <td>
+                    <input type="date" name="match_date" value="01/01/2019">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Godzina:
+                </td>
+                <td>
+                    <input type="time" name="match_time" value="20:00">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lokal:
+                </td>
+                <td>
+                    <input tabindex="100" type="text" name="place" value="lokal 1">
+                </td>
+            </tr>
+
+        </table>
+        <p>* - opcjonalne</p>
+        <br>
+        <pre id="error" style="color:red"></pre>
+        <input type="submit" tabindex="100" value="Wyślij">
+    </form>
+
+</div>
+<% include header.ejs %>      <!--Include header (top menu logo etc)-->
+<% include footer.ejs %>      <!--Include footer-->
+</body>
+</html>
