@@ -31,7 +31,13 @@
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_bar" tabindex="4">Rejestracja baru</a>
+                <% } %> href="/register_bar" tabindex="4">Rejestracja baru</a><a class=
+                <% if(title=="Rejestracja użytkownika"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/register_user" tabindex="5">Rejestracja użytkownika</a>
+                
         <% } %>
     </div>
 </div>

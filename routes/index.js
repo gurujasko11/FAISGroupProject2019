@@ -15,8 +15,6 @@ router.get('/dev', function(req, res, next) {
 router.get('/match', function(req, res, next) {
   res.render('match', { page: 'main', title: 'Rozgrywki' });
 });
-
-
 router.get('/about', function(req, res, next) {
   res.render('about', { page: 'main', title: 'O stronie' });
 });
@@ -25,9 +23,6 @@ router.get('/register_bar', function(req, res, next)
 {
   res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
 });
-
-
-
 
 router.post('/register_bar', function(req, res, next)
 {
@@ -46,16 +41,43 @@ router.post('/register_bar', function(req, res, next)
   console.log("Wyslano insert do bazy danych: " + query);
   dbconn.query(query, function(err, rows)
   {
-    if(err) res.render('register_bar', { page: 'main', title: err, desc: err.msg });
-    else res.render('register_bar', { page: 'main', title: "Pomyślnie utworzono konto" });
+    if(err) res.render('register_bar', { page: 'main', title: "Rejestracja baru!", type: 'ERROR', msg: err.message });
+    else res.render('register_bar', { page: 'main', title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
   });
-  
+});
 
+router.get('/register_user', function(req, res, next)
+{
+  res.render('register_user', { page: 'main', title: 'Rejestracja użytkownika' });
+});
 
-  app.use(session({
-      'secret': '343ji43j4n3jn4jk3n'}
-   ));
-  res.redirect('/');
+router.post('/register_user', function(req, res, next)
+{
+    //TODO: escape '
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var telephone = req.body.telephone;
+    var password = req.body.password;
+    var email = req.body.email;
+    if(telephone == '') telephone = 'NULL';
+    var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo) values " +
+        "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + password + "');";
+
+    console.log("Wyslano insert do bazy danych: " + query);
+    dbconn.query(query, function(err, rows)
+    {
+        if(err) res.render('register_user', { page: 'main', title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message });
+        else res.render('register_user', { page: 'main', title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.' });
+    });
+});
+
+router.get('/bar_login', function(req, res, next)
+{
+
+    app.use(session({
+        'secret': '343ji43j4n3jn4jk3n'}
+    ));
+    res.redirect('/');
 });
 
 module.exports = router;

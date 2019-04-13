@@ -9,10 +9,15 @@
         function validateForm() 
         {
             var err = "";
-            if(document.getElementsByName("bar_name")[0].value === "")
-                err += "Podaj nazwę baru. ";
-            else if(document.getElementsByName("bar_name")[0].value.length > 255)
-                err += "Nazwa baru jest za długa. "
+            if(document.getElementsByName("first_name")[0].value === "")
+                err += "Podaj imię. ";
+            else if(document.getElementsByName("first_name")[0].value.length > 30)
+                err += "Imię jest za długie. "
+            
+            if(document.getElementsByName("last_name")[0].value === "")
+                err += "Podaj nazwisko. ";
+            else if(document.getElementsByName("last_name")[0].value.length > 30)
+                err += "Nazwisko jest za długie. "
             
             if(document.getElementsByName("email")[0].value === "")
                 err += "Podaj email. ";
@@ -27,34 +32,13 @@
                     err += "Wprowadzone hasła nie są identyczne. ";
             }
 
-            if(document.getElementsByName("telephone")[0].value === "")
-                err += "Podaj numer telefonu. ";
-            else if(document.getElementsByName("telephone")[0].value.length > 11)
+            if(document.getElementsByName("telephone")[0].value.length > 11)
                 err += "Numer telefonu jest za długi. "
-
-            if(document.getElementsByName("city")[0].value === "")
-                err += "Podaj miasto. ";
-            else if(document.getElementsByName("city")[0].value.length > 80)
-                err += "Nazwa miasta jest za długa. "
-                
-            if(document.getElementsByName("street")[0].value === "")
-                err += "Podaj ulicę. ";
-            else if(document.getElementsByName("street")[0].value.length > 80)
-                err += "Nazwa ulicy jest za długa. "
-
-            if(document.getElementsByName("building_number")[0].value === "")
-                err += "Podaj numer budynku. ";
-            else if(document.getElementsByName("building_number")[0].value.length > 4)
-                err += "Numer budynku jest za duży. ";
-            
-            if(document.getElementsByName("local_number")[0].value.length > 4)
-                err += "Numer lokalu jest za duży. ";
-
 
             if(err == "") return true;
             else 
             {
-                AlertError('Błąd!',err);
+                AlertError('Błąd!', err);
                 return false;
             }
         }
@@ -70,19 +54,27 @@
         }
     </script>
     
-    <body onLoad='getMessages()'>
+    <body onload='getMessages()'>
     <div id="alerts"></div>
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
-            <form method="POST" action="/register_bar" onsubmit="return validateForm();">
+            <form method="POST" action="/register_user" onsubmit="return validateForm();">
                 <table>
                     <tr>
                         <td>
-                            Nazwa baru: 
+                            Imię: 
                         </td>
                         <td>
-                            <input tabindex="100" type="text" name="bar_name">
+                            <input tabindex="100" type="text" name="first_name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nazwisko: 
+                        </td>
+                        <td>
+                            <input tabindex="100" type="text" name="last_name">
                         </td>
                     </tr>
                     <tr>
@@ -111,42 +103,10 @@
                     </tr>
                     <tr>
                         <td>
-                            Telefon: 
+                            Telefon*: 
                         </td>
                         <td>
                             <input tabindex="100" type="text" name="telephone">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Miasto: 
-                        </td>
-                        <td>
-                            <input tabindex="100" type="text" name="city">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Ulica: 
-                        </td>
-                        <td>
-                            <input tabindex="100" type="text" name="street">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Numer budynku: 
-                        </td>
-                        <td>
-                            <input tabindex="100" type="text" name="building_number">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Numer lokalu*: 
-                        </td>
-                        <td>
-                            <input tabindex="100" type="text" name="local_number">
                         </td>
                     </tr>
                 </table>
