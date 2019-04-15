@@ -2,6 +2,10 @@
 <html>
 <% include head.ejs %>      <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
+<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!--Import materialize.css-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+
 <script src='/javascripts/alert.js' type='text/javascript' ></script>
 
 <!--Inline Javascript-->
@@ -18,66 +22,75 @@
     <h1><%= title %></h1>
 
     <form method="POST" action="/add_match" onsubmit="return validateForm();">
-        <table>
-            <tr>
-                <td>
-                    I Drużyna:
-                </td>
-                <td>
-                    <input tabindex="100" type="text" name="team_1">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    II Drużyna:
-                </td>
-                <td>
-                    <input tabindex="100" type="text" name="team_2">
-                </td>
-            </tr>
 
-            <tr>
-                <td>
-                    Liga:
-                </td>
-                <td>
-                    <input tabindex="100" type="text" name="league">
-                </td>
-            </tr>
+        <div class="row">
+            <form class="col s12">
 
-            <tr>
-                <td>
-                    Data:
-                </td>
-                <td>
-                    <input type="date" name="match_date">
-                </td>
-            </tr>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input placeholder="Event title" id="title" type="text" class="validate">
+                        <label for="title">Drużyna I</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input placeholder="Event title" id="title" type="text" class="validate">
+                        <label for="title">Drużyna II</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <select>
+                            <option value="" disabled selected>Choose event type</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                        <label>Event type</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <select multiple>
+                            <option value="" disabled selected>Choose style(s)</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                        <label>Styles</label>
+                    </div>
+                </div>
 
-            <tr>
-                <td>
-                    Godzina:
-                </td>
-                <td>
-                    <input type="time" name="match_time">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Lokal:
-                </td>
-                <td>
-                    <input tabindex="100" type="text" name="place">
-                </td>
-            </tr>
 
-        </table>
-        <p>* - opcjonalne</p>
-        <br>
-        <pre id="error" style="color:red"></pre>
-        <input type="submit" tabindex="100" value="Wyślij">
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <label>Data</label>
+                        <input id="beginDate" type="date" class="datepicker">
+
+                    </div>
+                    <div class="input-field col s6">
+                        <label>TODO Godzina</label>
+                        <input id="match_time" type="date" class="datepicker">
+
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input placeholder="Jaka liga?" id="league" type="text" class="validate">
+                        <label for="league">Liga</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input placeholder="Jaki lokal?" id="place" type="text" class="validate">
+                        <label for="place">Lokal</label>
+                    </div>
+                </div>
+                <a href="/match" method="POST" class="primary-content"><p class="material-icons">send</p></a>
+            </form>
+        </div>
     </form>
-
 </div>
 <% include header.ejs %>      <!--Include header (top menu logo etc)-->
 <% include footer.ejs %>      <!--Include footer-->
