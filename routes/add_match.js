@@ -3,8 +3,8 @@ var router = express.Router();
 
 router.get('/', function(req, res, next)
 {
-    res.send('Got a GET request')
-    // res.render('add_match');
+    res.render('add_match', { page: 'main', title: 'Dodaj rozgrywkę' });
+
 });
 
 router.post('/', function(req, res, next)
