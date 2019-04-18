@@ -39,6 +39,15 @@ router.get('/account', function(req, res, next)
   res.render('account', { page: 'main', title: 'Konto' });
 });
 
+router.post('/search_match', function(req, res, next)
+{
+  dbconn.query("SELECT * FROM Zespolowe.Mecze;", function(err, rows)
+  {
+    if(err)  res.render('register_bar', { page: 'main', title: err, desc: err.msg });
+    else res.render('search_match_result', { page: 'main', title: 'Wyniki wyszukiwania', args : rows});
+  });
+})
+
 router.post('/register_bar', function(req, res, next)
 {
   //TODO: escape '
