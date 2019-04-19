@@ -1,6 +1,45 @@
 var express = require('express');
 var router = express.Router();
 const session = require('express-session');
+var passport = require('passport');
+const LocalStrategy = require('passport-local');
+
+router.use(passport.initialize());
+router.use(passport.session());
+
+passport.use(new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+},
+function(username, password, done) {
+  console.log(username);
+  console.log(password);
+  if(!username || !password ) { console.log("username/password not given: "); console.log(username); console.log(password); return done(null, false); }
+  dbconn.query("select * from Uzytkownicy where email = '"+ username+"'", function(err, rows){
+      console.log(err); console.log(rows);
+      if (err) return done(req.flash('message',err));
+      if(!rows.length){ return done(null, false); }
+
+      var encPassword = password;
+      var dbPassword  = rows[0].haslo;
+      if(!(dbPassword == encPassword)){
+          return done(null, false);
+        }
+      return done(null, rows[0]);
+    });
+  }
+));
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -71,13 +110,15 @@ router.post('/register_user', function(req, res, next)
   });
 });
 
-router.get('/bar_login', function(req, res, next)
-{
 
-  app.use(session({
-      'secret': '343ji43j4n3jn4jk3n'}
-   ));
-  res.redirect('/');
+router.get('/login', function(req, res, next) {
+  res.render('login', { page: 'main', title: 'Logowanie' });
 });
+
+router.post('/login', 
+  passport.authenticate('local', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
 
 module.exports = router;
