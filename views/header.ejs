@@ -6,6 +6,8 @@
     <div class=topRight>
         <% if(page=="main"){ %>
             <a class=link href="/login" tabindex="50">Logowanie</a>
+        <% } else if(page=="authenticated"){ %>
+            <a class=link href="/logout" tabindex="50">Wyloguj</a>
         <% } %>
         <!--guziki logowanie/wylogowanie/ustawienia konta-->
     </div>
@@ -16,28 +18,60 @@
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/" tabindex="1">Wyszukiwanie</a><a class=
+                <% } %> href="/" tabindex="1">Wyszukiwanie
+            </a>
+            <a class=
                 <% if(title=="Rozgrywki"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki</a><a class=
+                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki
+            </a>
+            <a class=
                 <% if(title=="O stronie"){ %>
                    menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/about" tabindex="3">O stronie</a><a class=
+                <% } %> href="/about" tabindex="3">O stronie
+            </a>
+            <a class=
                 <% if(title=="Rejestracja baru"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_bar" tabindex="4">Rejestracja baru</a><a class=
+                <% } %> href="/register_bar" tabindex="4">Rejestracja baru
+            </a>
+            <a class=
                 <% if(title=="Rejestracja użytkownika"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_user" tabindex="5">Rejestracja użytkownika</a>
-                
+                <% } %> href="/register_user" tabindex="5">Rejestracja użytkownika
+            </a>
+            
+            <!-- Uzytkownik zalogowany:   -->
+        <% } else if(page=="authenticated"){ %>
+            <a class=
+                <% if(title=="MatchBar"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/" tabindex="1">Wyszukiwanie
+            </a>
+            <a class=
+                <% if(title=="Rozgrywki"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki
+            </a>
+            <a class=
+                <% if(title=="O stronie"){ %>
+                   menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/about" tabindex="3">O stronie
+            </a>
         <% } %>
     </div>
 </div>

@@ -5,8 +5,6 @@ var passport = require('passport');
 const LocalStrategy = require('passport-local');
 var flash = require('connect-flash');
 
-router.use(passport.initialize());
-router.use(passport.session());
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -29,7 +27,7 @@ passport.use(new LocalStrategy({
       if(!(dbPassword == encPassword)){
         return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
       }
-      return done(null, rows[0]);
+      return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email });
     });
   }
 ));
@@ -42,24 +40,29 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-
-
+function getPageVariable(req)
+{
+  if(req.isAuthenticated())
+    return "authenticated";
+  else
+    return "main";
+}
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { page: 'main', title: 'MatchBar', flash_messages: req.flash('FLASH_MSG') });
+  res.render('index', { page: getPageVariable(req), title: 'MatchBar', flash_messages: req.flash('FLASH_MSG') });
 });
 
 router.get('/dev', function(req, res, next) {
-  res.render('template', { page: 'main', title: 'CSS Test' });
+  res.render('template', { page: getPageVariable(req), title: 'CSS Test' });
 });
 
 
 router.get('/rozgrywki', function(req, res, next) {
-  res.render('wip', { page: 'main', title: 'Rozgrywki' });
+  res.render('wip', { page: getPageVariable(req), title: 'Rozgrywki' });
 });
 router.get('/about', function(req, res, next) {
-  res.render('about', { page: 'main', title: 'O stronie' });
+  res.render('about', { page: getPageVariable(req), title: 'O stronie' });
 });
 
 router.get('/register_bar', function(req, res, next)
@@ -70,12 +73,11 @@ router.get('/register_bar', function(req, res, next)
     res.redirect('/');
   }
   else
-    res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
+    res.render('register_bar', { page: getPageVariable(req), title: 'Rejestracja baru' });
 });
 
 router.post('/register_bar', function(req, res, next)
 {
-  //TODO: escape '
   var bar_name = req.body.bar_name.replace("'", "''");
   var telephone = req.body.telephone.replace("'", "''");
   var city = req.body.city.replace("'", "''");
@@ -90,8 +92,8 @@ router.post('/register_bar', function(req, res, next)
   console.log("Wyslano insert do bazy danych: " + query);
   dbconn.query(query, function(err, rows)
   {
-    if(err) res.render('register_bar', { page: 'main', title: "Rejestracja baru", type: 'ERROR', msg: err.message });
-    else res.render('register_bar', { page: 'main', title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
+    if(err) res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: err.message });
+    else res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
   });
 });
 
@@ -103,7 +105,7 @@ router.get('/register_user', function(req, res, next)
     res.redirect('/');
   }
   else
-    res.render('register_user', { page: 'main', title: 'Rejestracja użytkownika' });
+    res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika' });
 });
 
 router.post('/register_user', function(req, res, next)
@@ -120,8 +122,8 @@ router.post('/register_user', function(req, res, next)
   console.log("Wyslano insert do bazy danych: " + query);
   dbconn.query(query, function(err, rows)
   {
-    if(err) res.render('register_user', { page: 'main', title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message });
-    else res.render('register_user', { page: 'main', title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.' });
+    if(err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message });
+    else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.' });
   });
 });
 
@@ -133,7 +135,7 @@ router.get('/login', function(req, res, next) {
     res.redirect('/');
   }
   else
-    res.render('login', { page: 'main', title: 'Logowanie', flash_messages: req.flash('FLASH_MSG') });
+    res.render('login', { page: getPageVariable(req), title: 'Logowanie', flash_messages: req.flash('FLASH_MSG') });
 });
 
 router.post('/login', 
@@ -142,5 +144,18 @@ router.post('/login',
     req.flash('FLASH_MSG', ['SUCCESS', 'Zalogowano pomyślnie']);
     res.redirect('/');
   });
+
+router.get('/logout', function(req, res)
+{
+  req.logout();
+  req.flash('FLASH_MSG', ['INFO', 'Wylogowano pomyślnie']);
+  res.redirect('/');
+});
+
+router.get('/test', function(req, res)
+{
+  console.log(req.isAuthenticated());
+  res.redirect('/');
+});
 
 module.exports = router;
