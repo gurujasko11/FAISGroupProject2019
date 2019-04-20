@@ -3,6 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var flash = require('connect-flash');
+var flash             = require('connect-flash');
+var crypto            = require('crypto');
+var passport          = require('passport');
+var LocalStrategy     = require('passport-local').Strategy;
+var sess              = require('express-session');
+var Store             = require('express-session').Store;
+var BetterMemoryStore = require('session-memory-store')(sess);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -16,12 +24,26 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
+var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
+app.use(sess({
+  name: 'JSESSION',
+  secret: 'MYSECRETISVERYSECRET',
+  store:  store,
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
 
 //require mysql
 var mysql = require('mysql');

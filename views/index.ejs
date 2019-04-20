@@ -4,8 +4,31 @@
     <!--Javascripts includes-->
     <script src='/javascripts/alert.js' type='text/javascript' ></script>
 
-    <body>
+    <script>
+    function getMessages()
+    {
+        var msg = "<%= (!!locals.msg)?msg:'' %>";
+        var type = "<%= (!!locals.type)?type:'' %>";
+        var flash_messages = "";
+        
+        
+        if(msg != '')
+        {
+            if(type == 'ERROR') AlertError("Błąd!", msg);
+            else if(type == 'SUCCESS') AlertSuccess("Sukces", msg);
+        }
+        if(flash_messages != '') {
+            AlertSuccess("Sukces", flash_messages);
+        }
+    }
+    </script>
+
+
+    <body onLoad='getMessages()'>
         <div id="alerts"></div><br>
+        <% if (flash_messages) { %>
+            <p><%= flash_messages %></p>
+            <% } %>
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <form>
                 Wyszukaj: <input type="text" id="search" tabindex="100" style="width: 70%">

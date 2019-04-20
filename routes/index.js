@@ -3,13 +3,14 @@ var router = express.Router();
 const session = require('express-session');
 var passport = require('passport');
 const LocalStrategy = require('passport-local');
+var flash = require('connect-flash');
 
 router.use(passport.initialize());
 router.use(passport.session());
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
-  passwordField: 'password',
+  passwordField: 'password'
 },
 function(username, password, done) {
   console.log(username);
@@ -18,14 +19,14 @@ function(username, password, done) {
   dbconn.query("select * from Uzytkownicy where email = '"+ username+"'", function(err, rows){
       console.log(err); console.log(rows);
       if (err) return done(req.flash('message',err));
-      if(!rows.length){ return done(null, false); }
+      if(!rows.length){ return done(null, false, { type: 'ERROR', msg: 'Błąd' }); }
 
       var encPassword = password;
       var dbPassword  = rows[0].haslo;
       if(!(dbPassword == encPassword)){
-          return done(null, false);
+          return done(null, false, { type: 'ERROR', msg: 'Błąd' });
         }
-      return done(null, rows[0]);
+      return done(null, rows[0], { type: 'SUCCESS', msg: 'Zalogowano pomyślnie' });
     });
   }
 ));
@@ -43,7 +44,7 @@ passport.deserializeUser(function(user, done) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { page: 'main', title: 'MatchBar' });
+  res.render('index', { page: 'main', title: 'MatchBar', flash_messages: req.flash('FLASH_MSG') });
 });
 
 router.get('/dev', function(req, res, next) {
@@ -116,8 +117,9 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function(req, res) {
+  passport.authenticate('local', { failureRedirect: '/login', failureFlash : true}),
+  function(req, res, next) {
+    req.flash('FLASH_MSG', ['SUCCESS', 'Zalogowano pomyślnie']);
     res.redirect('/');
   });
 

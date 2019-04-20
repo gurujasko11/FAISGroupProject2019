@@ -44,8 +44,8 @@
         }
         function getMessages()
         {
-            var msg = '<%= (!!locals.msg)?msg:'' %>';
-            var type = '<%= (!!locals.type)?type:'' %>';
+            var msg = "<%= (!!locals.msg)?msg:'' %>";
+            var type = "<%= (!!locals.type)?type:'' %>";
             if(msg != '')
             {
                 if(type == 'ERROR') AlertError("Błąd!", msg);

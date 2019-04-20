@@ -3,53 +3,18 @@
     <% include head.ejs %>      <!--Include head section (same for all pages)-->
     <!--Javascripts includes-->
     <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    <script src='/javascripts/error_messages.js' type='text/javascript' ></script>
     
     <!--Inline Javascript-->
     <script>
         function validateForm() 
         {
             var err = "";
-            if(document.getElementsByName("bar_name")[0].value === "")
-                err += "Podaj nazwę baru. ";
-            else if(document.getElementsByName("bar_name")[0].value.length > 255)
-                err += "Nazwa baru jest za długa. "
-            
             if(document.getElementsByName("email")[0].value === "")
                 err += "Podaj email. ";
 
             if(document.getElementsByName("password")[0].value === "")
                 err += "Podaj hasło. ";
-            if(document.getElementById("repeated_password").value === "")
-                err += "Powtórz hasło. ";
-            else{
-                if(document.getElementById("repeated_password") != undefined &&
-                    document.getElementsByName("password")[0].value != document.getElementById("repeated_password").value)
-                    err += "Wprowadzone hasła nie są identyczne. ";
-            }
-
-            if(document.getElementsByName("telephone")[0].value === "")
-                err += "Podaj numer telefonu. ";
-            else if(document.getElementsByName("telephone")[0].value.length > 11)
-                err += "Numer telefonu jest za długi. "
-
-            if(document.getElementsByName("city")[0].value === "")
-                err += "Podaj miasto. ";
-            else if(document.getElementsByName("city")[0].value.length > 80)
-                err += "Nazwa miasta jest za długa. "
-                
-            if(document.getElementsByName("street")[0].value === "")
-                err += "Podaj ulicę. ";
-            else if(document.getElementsByName("street")[0].value.length > 80)
-                err += "Nazwa ulicy jest za długa. "
-
-            if(document.getElementsByName("building_number")[0].value === "")
-                err += "Podaj numer budynku. ";
-            else if(document.getElementsByName("building_number")[0].value.length > 4)
-                err += "Numer budynku jest za duży. ";
-            
-            if(document.getElementsByName("local_number")[0].value.length > 4)
-                err += "Numer lokalu jest za duży. ";
-
 
             if(err == "") return true;
             else 
@@ -60,8 +25,8 @@
         }
         function getMessages()
         {
-            var msg = '<%= (!!locals.msg)?msg:'' %>';
-            var type = '<%= (!!locals.type)?type:'' %>';
+            var msg = "<%= (!!locals.msg)?msg:'' %>";
+            var type = "<%= (!!locals.type)?type:'' %>";
             if(msg != '')
             {
                 if(type == 'ERROR') AlertError("Błąd!", msg);
