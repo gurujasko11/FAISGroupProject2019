@@ -64,7 +64,13 @@ router.get('/about', function(req, res, next) {
 
 router.get('/register_bar', function(req, res, next)
 {
-  res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
+  if(req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['INFO', 'Jesteś już zalogowany']);
+    res.redirect('/');
+  }
+  else
+    res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
 });
 
 router.post('/register_bar', function(req, res, next)
@@ -84,14 +90,20 @@ router.post('/register_bar', function(req, res, next)
   console.log("Wyslano insert do bazy danych: " + query);
   dbconn.query(query, function(err, rows)
   {
-    if(err) res.render('register_bar', { page: 'main', title: "Rejestracja baru!", type: 'ERROR', msg: err.message });
+    if(err) res.render('register_bar', { page: 'main', title: "Rejestracja baru", type: 'ERROR', msg: err.message });
     else res.render('register_bar', { page: 'main', title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
   });
 });
 
 router.get('/register_user', function(req, res, next)
 {
-  res.render('register_user', { page: 'main', title: 'Rejestracja użytkownika' });
+  if(req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['INFO', 'Jesteś już zalogowany']);
+    res.redirect('/');
+  }
+  else
+    res.render('register_user', { page: 'main', title: 'Rejestracja użytkownika' });
 });
 
 router.post('/register_user', function(req, res, next)
@@ -115,7 +127,13 @@ router.post('/register_user', function(req, res, next)
 
 
 router.get('/login', function(req, res, next) {
-  res.render('login', { page: 'main', title: 'Logowanie', flash_messages: req.flash('FLASH_MSG') });
+  if(req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['INFO', 'Jesteś już zalogowany']);
+    res.redirect('/');
+  }
+  else
+    res.render('login', { page: 'main', title: 'Logowanie', flash_messages: req.flash('FLASH_MSG') });
 });
 
 router.post('/login', 

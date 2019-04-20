@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var flash = require('connect-flash');
-var flash             = require('connect-flash');
 var crypto            = require('crypto');
 var passport          = require('passport');
 var LocalStrategy     = require('passport-local').Strategy;

@@ -40,6 +40,7 @@
         {
             if(msg_type == 'ERROR') AlertError("Błąd!", msg);
             else if(msg_type == 'SUCCESS') AlertSuccess("Sukces", msg);
+            else if(msg_type == 'INFO') AlertWarning("Informacja", msg);
             else if(msg_type != '') console.log("[FAILED ALERT] " + msg_type + ": " + msg);
         }
     </script>

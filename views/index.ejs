@@ -23,6 +23,8 @@
         {
             if(msg_type == 'ERROR') AlertError("Błąd!", msg);
             else if(msg_type == 'SUCCESS') AlertSuccess("Sukces", msg);
+            else if(msg_type == 'INFO') AlertWarning("Informacja", msg);
+            else if(msg_type != '') console.log("[FAILED ALERT] " + msg_type + ": " + msg);
         }
     </script>
 
@@ -32,6 +34,7 @@
         <% if (flash_messages) { %>
             <div id='flash_msg' style="display: none;"><%= flash_messages %></div>
         <% } %>
+
 
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <form>
