@@ -22,12 +22,12 @@ passport.use(new LocalStrategy({
     username = req.body.email.replace("'", "''");
     password = req.body.password.replace("'", "''");
     tableName = getTableNameFrom(req.body.user.replace("'", "''"));
-    console.log(username);
+    /*console.log(username);
     console.log(password);
-    console.log(tableName);
+    console.log(tableName);*/
     if(!username || !password ) { console.log("username/password not given: "); console.log(username); console.log(password); return done(null, false); }
       dbconn.query("select * from " + tableName + " where email = '"+ username+"'", function(err, rows){
-      console.log(err); console.log(rows);
+      //console.log(err); console.log(rows);
       if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
       if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
 
@@ -37,7 +37,13 @@ passport.use(new LocalStrategy({
       {
         return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
       }
-      return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: 'uzytkownik' });
+      if(tableName == 'Uzytkownicy')
+        return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: req.body.user });
+      else if(tableName == 'Bary')
+        return done(null, { barID: rows[0].id_baru, bar_name: rows[0].nazwa_baru, telephone: rows[0].telefon, town: rows[0].miasto, 
+                            street: rows[0].ulica, building_number: rows[0].numer_budynku, local_number: rows[0].numer_lokalu, type: req.body.user });
+      else
+        return done(null, rows[0]);
     });
   }
 ));
@@ -156,14 +162,23 @@ router.post('/login',
 
 router.get('/logout', function(req, res)
 {
-  req.logout();
-  req.flash('FLASH_MSG', ['INFO', 'Wylogowano pomyślnie']);
-  res.redirect('/');
+  if(!req.isAuthenticated())
+  {
+    req.flash("FLASH_MSG", ['INFO', 'Nie można wylogować osoby, która nie jest zalogowana']);
+    res.redirect('/login');
+  }
+  else
+  {
+    req.logout();
+    req.flash('FLASH_MSG', ['INFO', 'Wylogowano pomyślnie']);
+    res.redirect('/');
+  }
 });
 
 router.get('/test', function(req, res)
 {
-  console.log(req.isAuthenticated());
+  console.log("[/TEST] Zalogowany? " + req.isAuthenticated());
+  if(req.isAuthenticated()) console.log("[/TEST] req.user = " + JSON.stringify(req.user, null, 3));
   res.redirect('/');
 });
 
