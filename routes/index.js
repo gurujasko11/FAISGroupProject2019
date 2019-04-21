@@ -10,7 +10,7 @@ function getTableNameFrom(user) //returns table name
   if(user == 'user')
     return 'Uzytkownicy';
   else
-  return 'Bary';
+    return 'Bary';
 }
 
 passport.use(new LocalStrategy({
@@ -107,7 +107,7 @@ router.post('/register_bar', function(req, res, next)
   console.log("Wyslano insert do bazy danych: " + query);
   dbconn.query(query, function(err, rows)
   {
-    if(err) res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: err.message });
+    if(err) res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
     else res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
   });
 });

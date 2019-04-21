@@ -46,11 +46,14 @@
         {
             var msg = "<%= (!!locals.msg)?msg:'' %>";
             var type = "<%= (!!locals.type)?type:'' %>";
-            if(msg != '')
-            {
-                if(type == 'ERROR') AlertError("Błąd!", msg);
-                else if(type == 'SUCCESS') AlertSuccess("Sukces", msg);
-            }
+            showAlert(type, msg);
+        }
+        function showAlert(msg_type, msg)
+        {
+            if(msg_type == 'ERROR') AlertError("Błąd!", msg);
+            else if(msg_type == 'SUCCESS') AlertSuccess("Sukces", msg);
+            else if(msg_type == 'INFO') AlertWarning("Informacja", msg);
+            else if(msg_type != '') console.log("[FAILED ALERT] " + msg_type + ": " + msg);
         }
     </script>
     
