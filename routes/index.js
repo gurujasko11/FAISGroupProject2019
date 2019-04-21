@@ -5,6 +5,13 @@ var passport = require('passport');
 const LocalStrategy = require('passport-local');
 var flash = require('connect-flash');
 
+function getTableNameFrom(user) //returns table name
+{
+  if(user == 'user')
+    return 'Uzytkownicy';
+  else
+  return 'Bary';
+}
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -12,22 +19,25 @@ passport.use(new LocalStrategy({
   passReqToCallback : true
 },
   function(req, username, password, done) {
-    username = username.replace("'", "''");
-    password = password.replace("'", "''");
+    username = req.body.email.replace("'", "''");
+    password = req.body.password.replace("'", "''");
+    tableName = getTableNameFrom(req.body.user.replace("'", "''"));
     console.log(username);
     console.log(password);
+    console.log(tableName);
     if(!username || !password ) { console.log("username/password not given: "); console.log(username); console.log(password); return done(null, false); }
-      dbconn.query("select * from Uzytkownicy where email = '"+ username+"'", function(err, rows){
+      dbconn.query("select * from " + tableName + " where email = '"+ username+"'", function(err, rows){
       console.log(err); console.log(rows);
       if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
       if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
 
       var encPassword = password;
       var dbPassword  = rows[0].haslo;
-      if(!(dbPassword == encPassword)){
+      if(dbPassword != encPassword)
+      {
         return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
       }
-      return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email });
+      return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: 'uzytkownik' });
     });
   }
 ));
@@ -56,7 +66,6 @@ router.get('/', function(req, res, next) {
 router.get('/dev', function(req, res, next) {
   res.render('template', { page: getPageVariable(req), title: 'CSS Test' });
 });
-
 
 router.get('/rozgrywki', function(req, res, next) {
   res.render('wip', { page: getPageVariable(req), title: 'Rozgrywki' });

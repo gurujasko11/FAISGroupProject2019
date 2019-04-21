@@ -56,13 +56,25 @@
             <h1><%= title %></h1>
             
             <form method="POST" action="/login" onsubmit="return validateForm();">
+                <label>Zaloguj jako</label>
                 <table>
+                    <tr>
+                        <td>
+                            <input type="radio" tabindex="60" name="user" id="user_radio" value="user" checked>
+                            <label for="user_radio" style="width: 75%; font-size: small;"><span></span>Użytkownik</label>
+                        </td>
+                        <td>
+                            <input type="radio" tabindex="61" name="user" id="bar_radio" value="bar">
+                            <label for="bar_radio" style="width: 75%; font-size: small"><span></span>Bar</label>
+                        </td>
+                    </tr>
+                    <tr><td><br></td></tr>
                     <tr>
                         <td>
                             Nazwa użytkownika: 
                         </td>
                         <td>
-                            <input tabindex="100" type="email" name="email">
+                            <input tabindex="62" type="email" name="email">
                         </td>
                     </tr>
                     <tr>
@@ -70,12 +82,12 @@
                             Hasło: 
                         </td>
                         <td>
-                            <input tabindex="100" type="password" name="password">
+                            <input tabindex="63" type="password" name="password">
                         </td>
                     </tr>
                 </table>
                 <br>
-                <input type="submit" tabindex="100" value="Wyślij">
+                <input type="submit" tabindex="64" value="Wyślij">
             </form>
 
         </div>
