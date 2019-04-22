@@ -4,6 +4,8 @@ const session = require('express-session');
 var passport = require('passport');
 const LocalStrategy = require('passport-local');
 var flash = require('connect-flash');
+const bcrypt = require('bcrypt');
+
 
 function getTableNameFrom(user) //returns table name
 {
@@ -31,19 +33,28 @@ passport.use(new LocalStrategy({
       if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
       if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
 
+
       var encPassword = password;
       var dbPassword  = rows[0].haslo;
-      if(dbPassword != encPassword)
-      {
-        return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
-      }
-      if(tableName == 'Uzytkownicy')
-        return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: req.body.user });
-      else if(tableName == 'Bary')
-        return done(null, { barID: rows[0].id_baru, bar_name: rows[0].nazwa_baru, telephone: rows[0].telefon, town: rows[0].miasto, 
+      bcrypt.compare(encPassword, dbPassword, function(err, res) {
+      if(res) {
+        if(tableName == 'Uzytkownicy')
+          return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: req.body.user });
+        else if(tableName == 'Bary')
+            return done(null, { barID: rows[0].id_baru, bar_name: rows[0].nazwa_baru, telephone: rows[0].telefon, town: rows[0].miasto, 
                             street: rows[0].ulica, building_number: rows[0].numer_budynku, local_number: rows[0].numer_lokalu, type: req.body.user });
       else
         return done(null, rows[0]);
+      } else {;
+        return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
+      } 
+      });
+
+      //if(dbPassword != encPassword)
+      //{
+      //  return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
+     // }
+     
     });
   }
 ));
@@ -101,14 +112,21 @@ router.post('/register_bar', function(req, res, next)
   var local_number = req.body.local_number.replace("'", "''");
   var password = req.body.password.replace("'", "''");
   var email = req.body.email.replace("'", "''");
-  var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-              "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + "', '" + email + "');";
 
-  console.log("Wyslano insert do bazy danych: " + query);
-  dbconn.query(query, function(err, rows)
-  {
-    if(err) res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
-    else res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
+  const saltRounds = 10;
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    bcrypt.hash(password, salt, function(err, hash) {
+
+      var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
+              "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "');";
+
+      console.log("Wyslano insert do bazy danych: " + query);
+      dbconn.query(query, function(err, rows)
+      {
+        if(err) res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
+        else res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'SUCCESS', msg: "Pomyślnie utworzono konto." });
+      });
+    });
   });
 });
 
@@ -131,15 +149,24 @@ router.post('/register_user', function(req, res, next)
   var password = req.body.password.replace("'", "''");
   var email = req.body.email.replace("'", "''");
   if(telephone == '') telephone = 'NULL';
-  var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo) values " +
-              "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + password + "');";
+  const saltRounds = 10;
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    bcrypt.hash(password, salt, function(err, hash) {
 
-  console.log("Wyslano insert do bazy danych: " + query);
-  dbconn.query(query, function(err, rows)
-  {
-    if(err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message });
-    else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.' });
+                var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo) values " +
+              "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "');";
+
+  		console.log("Wyslano insert do bazy danych: " + query);
+  		dbconn.query(query, function(err, rows)
+  		{
+    			if(err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message });
+    			else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 				'Pomyślnie utworzono konto.' });
+  		});
+
+    });
   });
+  console.log("pas:", password);
+  
 });
 
 

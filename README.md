@@ -99,3 +99,11 @@ $ npm start
 Problemy przy odpalaniu:  
 - Authentication error (handshake): Patrz punkt 2
 - Authentication failed (permission denied): Niepoprawny login/hasło (logowania do mysql/ustawione w app.js - punkt 6)
+
+
+### Jak działa logowanie
+1. Zainstaluj wymagane pakiety: npm install
+2. Zmodyfikuj w połączeniu z bazą hasło (jakie masz u siebie do mysqla)
+3. Sprawdzenie czy ktoś jest zalogowany odbywa się po stronie serwera poprzez funkcję req.isAuthenticated()
+4. Aby wywietlić w konsoli informacje o zalogowanym użytkowniku/barze wystarczy wpisać mozna uzyc url localhost:3000/test
+5. zmienna page: zalogowany uzytkownik ma zmienna page jako 'authenticated', niezalogowany 'main' -> ustawione w funkcji getPageVariable(req) w index.js

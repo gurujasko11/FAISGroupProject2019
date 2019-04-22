@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `Bary`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Bary` (
   `id_baru` int(11) NOT NULL AUTO_INCREMENT,
-  `nazwa_baru` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nazwa_baru` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
   `miasto` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ulica` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -35,7 +35,9 @@ CREATE TABLE `Bary` (
   `longitude` float(10,6) DEFAULT NULL,
   `latitude` float(10,6) DEFAULT NULL,
   PRIMARY KEY (`id_baru`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  KEY `miasto` (`miasto`),
+  CONSTRAINT `Bary_ibfk_1` FOREIGN KEY (`miasto`) REFERENCES `Miasta` (`miasto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -45,7 +47,6 @@ CREATE TABLE `Bary` (
 
 LOCK TABLES `Bary` WRITE;
 /*!40000 ALTER TABLE `Bary` DISABLE KEYS */;
-INSERT INTO `Bary` VALUES (1,'Pueblo','111222333','Kraków','Norymberska','1','','12345','pueblo@pueblo.com',NULL,NULL),(6,'Night One','123456789','Krakow','Grodzka','3','1','12345','night@night.pl',NULL,NULL),(7,'Blue Lagoon','182739877','Krakow','Lubicz','2','','12345','blue@blue.com',NULL,NULL),(111,'ala','111111111','Krakow','Nowa','1','1','111','aa@aaa.com',NULL,NULL),(1111,'alą','111111111','Krakow','Nowa','1','1','111','aa1@aaa.com',NULL,NULL);
 /*!40000 ALTER TABLE `Bary` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,6 +132,29 @@ LOCK TABLES `Mecze` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Miasta`
+--
+
+DROP TABLE IF EXISTS `Miasta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Miasta` (
+  `miasto` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`miasto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Miasta`
+--
+
+LOCK TABLES `Miasta` WRITE;
+/*!40000 ALTER TABLE `Miasta` DISABLE KEYS */;
+INSERT INTO `Miasta` VALUES ('Gdynia'),('Katowice'),('Kraków'),('Poznań'),('Warszawa'),('Wrocław');
+/*!40000 ALTER TABLE `Miasta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Uzytkownicy`
 --
 
@@ -139,14 +163,14 @@ DROP TABLE IF EXISTS `Uzytkownicy`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Uzytkownicy` (
   `id_uzytkownika` int(11) NOT NULL AUTO_INCREMENT,
-  `imie` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nazwisko` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nazwisko` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET latin1 NOT NULL,
   `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
   `haslo` varchar(256) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id_uzytkownika`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,6 +179,7 @@ CREATE TABLE `Uzytkownicy` (
 
 LOCK TABLES `Uzytkownicy` WRITE;
 /*!40000 ALTER TABLE `Uzytkownicy` DISABLE KEYS */;
+INSERT INTO `Uzytkownicy` VALUES (1,'Rafal','Kowalski','kowalski@kowalski.com','111111111','12345'),(2,'mmmm','mmmm','mmm@mmm.com','NULL','12345'),(3,'aaaa','aaaa','bbb@bbb.com','NULL','12345'),(4,'aaaa','aaaa','ab@ab.com','NULL','12345'),(6,'aaaa','aaaa','pueblo@pueblo1.com','NULL','12345'),(7,'as','as','aa@am.com','NULL','12345'),(8,'am','am','m@m.com','NULL','12345'),(9,'m','m','m@m.clm','NULL','12345');
 /*!40000 ALTER TABLE `Uzytkownicy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -193,4 +218,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-29 18:08:25
+-- Dump completed on 2019-04-22 17:13:06
