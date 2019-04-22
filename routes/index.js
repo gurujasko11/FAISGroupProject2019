@@ -84,8 +84,6 @@ router.post('/register_bar', function(req, res, next)
   var local_number = req.body.local_number.replace("'", "''");
   var password = req.body.password.replace("'", "''");
   var email = req.body.email.replace("'", "''");
-  var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-              "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + "', '" + email + "');";
 
 
   validateCityInDB(city).then(function(value) {
