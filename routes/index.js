@@ -41,10 +41,20 @@ router.get('/account', function(req, res, next)
 
 router.post('/search_match', function(req, res, next)
 {
-  dbconn.query("SELECT * FROM Zespolowe.Mecze;", function(err, rows)
+  console.log(req.body.search_text)
+  teams = req.body.search_text.split(',')
+  query = "SELECT czas, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
+      "  FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 \n" +
+      " WHERE m.id_druzyna1 = t1.id_druzyny\n" +
+      "   AND m.id_druzyna2 = t2.id_druzyny" +
+      "   AND t1.nazwa_druzyny = \'" + teams[0] +
+      "\'   AND t2.nazwa_druzyny = \'" + teams[1] + "\'"
+  dbconn.query(query, function(err, rows)
   {
-    if(err)  res.render('register_bar', { page: 'main', title: err, desc: err.msg });
-    else res.render('search_match_result', { page: 'main', title: 'Wyniki wyszukiwania', args : rows});
+    if(err)  res.render('search_match_result', { page: 'main', title: err, desc: err.msg });
+    else {
+      res.render('search_match_result', { page: 'main', title: 'Wyniki wyszukiwania', args : rows});
+    }
   });
 })
 

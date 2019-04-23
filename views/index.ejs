@@ -7,6 +7,13 @@
     <script>
         function validateForm()
         {
+            var search_text = document.getElementById("search_text").value
+            var teams = search_text.split(',')
+            if(teams.length != 2)
+            {
+                AlertError('Błąd!',"Podaj dwie nazwy druzyn oddzielone znakiem \",\"");
+                return false;
+            }
             return true;
         }
     </script>
@@ -14,15 +21,16 @@
         <div id="alerts"></div><br>
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <form method="POST" action="/search_match" onsubmit="return validateForm();">
-                Wyszukaj: <input type="text" id="search" tabindex="100" style="width: 70%">
-                <input type="submit" tabindex="100" value="Szukaj">
-                <br>
-                <input type="radio" tabindex="100" id="bary" name="opt" value="bary" checked>
-                <label for="bary" style="width: 75%"><span></span>Wyszukaj bary po nazwie</label>
-                <br>
-                <input type="radio" tabindex="100" id="mecze" name="opt" value="macze">
-                <label for="mecze" style="width: 75%"><span></span>Wyszukaj macze po drużynach</label>
-                <br>
+                <table>
+                    <td>
+                        Znajdź mecz:
+                    </td>
+                    <td>
+                        <input tabindex="100" type="text" name="search_text">
+                    </td>
+                </table>
+                <pre id="error" style="color:red"></pre>
+                <input type="submit" tabindex="100" value="Szukaj" if="search_text">
             </form>
         </div>
         <% include header.ejs %>      <!--Include header (top menu logo etc)-->
