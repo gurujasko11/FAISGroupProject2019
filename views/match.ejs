@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
-<script src='/javascripts/alert.js' type='text/javascript' ></script>
+<script src='/javascripts/alert.js' type='text/javascript'></script>
 
 <script>
-    function validateForm()
-    {
+    function validateForm() {
         return true;
     }
 </script>
@@ -16,7 +16,7 @@
 <div id="page" class=page style="overflow: hidden;">
     <h1><%= title %></h1>
 
-    <form method="POST" action="/edit_match" onsubmit="return validateForm();">
+    <form method="GET" action="/edit_match" onsubmit="return validateForm();">
         <table class="table">
             <th>Bieżące rozgrywki</th>
             <tr>
@@ -36,10 +36,10 @@
     </form>
 
 
-    <form method="POST" action="/add_match" onsubmit="return validateForm();">
+    <form method="GET" action="/add_match" onsubmit="return validateForm();">
         <br></br>
         <br></br>
-                    <input type="submit" tabindex="100" value="Dodaj mecz">
+        <input type="submit" tabindex="100" value="Dodaj mecz">
     </form>
 </div>
 <% include header.ejs %>

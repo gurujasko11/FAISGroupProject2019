@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
-<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
-<script src='/javascripts/alert.js' type='text/javascript' ></script>
+<script src='/javascripts/alert.js' type='text/javascript'></script>
 
 <!--Inline Javascript-->
 <script>
-    function validateForm()
-    {
+    function validateForm() {
         return true;
     }
 </script>
@@ -24,7 +24,7 @@
                     Nazwa rozgrywki:
                 </td>
                 <td>
-                    <input tabindex="100" type="text" name="bar_name">
+                    <input tabindex="100" type="text" name="bar_name" value="<%= match.name %>">
                 </td>
             </tr>
             <tr>
@@ -43,7 +43,9 @@
     </form>
 
 </div>
-<% include header.ejs %>      <!--Include header (top menu logo etc)-->
-<% include footer.ejs %>      <!--Include footer-->
+<% include header.ejs %>
+<!--Include header (top menu logo etc)-->
+<% include footer.ejs %>
+<!--Include footer-->
 </body>
 </html>
