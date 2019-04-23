@@ -20,6 +20,7 @@ passport.use(new LocalStrategy({
       if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
       if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
 
+
       var encPassword = password;
       var dbPassword  = rows[0].haslo;
       bcrypt.compare(encPassword, dbPassword, function(err, res) {
@@ -148,6 +149,8 @@ router.post('/register_user', function(req, res, next)
       res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
     }
   });
+  console.log("pas:", password);
+  
 });
 
 router.get('/login', function(req, res, next) {
