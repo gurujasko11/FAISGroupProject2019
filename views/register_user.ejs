@@ -9,14 +9,10 @@
         function validateForm() 
         {
             var err = "";
-            if(document.getElementsByName("first_name")[0].value === "")
-                err += "Podaj imię. ";
-            else if(document.getElementsByName("first_name")[0].value.length > 30)
+            if(document.getElementsByName("first_name")[0].value.length > 30)
                 err += "Imię jest za długie. "
             
-            if(document.getElementsByName("last_name")[0].value === "")
-                err += "Podaj nazwisko. ";
-            else if(document.getElementsByName("last_name")[0].value.length > 30)
+            if(document.getElementsByName("last_name")[0].value.length > 30)
                 err += "Nazwisko jest za długie. "
             
             if(document.getElementsByName("email")[0].value === "")
@@ -66,22 +62,6 @@
                 <table>
                     <tr>
                         <td>
-                            Imię*:
-                        </td>
-                        <td>
-                            <input tabindex="60" type="text" name="first_name">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Nazwisko*:
-                        </td>
-                        <td>
-                            <input tabindex="61" type="text" name="last_name">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             E-mail*:
                         </td>
                         <td>
@@ -102,6 +82,22 @@
                         </td>
                         <td>
                             <input tabindex="64" type="password" id="repeated_password">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Imię:
+                        </td>
+                        <td>
+                            <input tabindex="60" type="text" name="first_name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nazwisko:
+                        </td>
+                        <td>
+                            <input tabindex="61" type="text" name="last_name">
                         </td>
                     </tr>
                     <tr>
