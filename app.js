@@ -13,6 +13,7 @@ var BetterMemoryStore = require('session-memory-store')(sess);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var matchesRouter = require('./routes/match');
 
 var app = express();
 const session = require('express-session');
@@ -42,13 +43,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/match', matchesRouter);
 
 
 //require mysql
 var mysql = require('mysql');
 dbconn = mysql.createConnection({
 	user: 'root',
-	password: '12345',
+	password: 'password',
 	database: 'Zespolowe'
 });
 dbconn.connect();

@@ -84,9 +84,10 @@ router.get('/dev', function(req, res, next) {
   res.render('template', { page: getPageVariable(req), title: 'CSS Test' });
 });
 
-router.get('/rozgrywki', function(req, res, next) {
-  res.render('wip', { page: getPageVariable(req), title: 'Rozgrywki' });
-});
+// router.get('/match', function(req, res, next) {
+//   res.render('wip', { page: getPageVariable(req), title: 'Rozgrywki' });
+// });
+
 router.get('/about', function(req, res, next) {
   res.render('about', { page: getPageVariable(req), title: 'O stronie' });
 });
