@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+<script src='/javascripts/alert.js' type='text/javascript' ></script>
+
+
+<body>
+<div id="alerts"></div>
+<div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+    <h1><%= title %></h1>
+
+    <form method="POST" action="/delete_bar">
+        <h3>Czy na pewno chcesz usunąć bar z bazy?</h3>
+        <input type="submit" tabindex="100" value="Usuń bar">
+    </form>
+
+</div>
+<% include header.ejs %>      <!--Include header (top menu logo etc)-->
+<% include footer.ejs %>      <!--Include footer-->
+</body>
+</html>

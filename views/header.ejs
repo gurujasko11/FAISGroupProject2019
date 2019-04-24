@@ -72,6 +72,20 @@
                     menu
                 <% } %> href="/about" tabindex="3">O stronie
             </a>
+            <a class=
+               <% if(title=="Edycja baru"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/edit_bar" tabindex="2">Edycja baru
+            </a>
+            <a class=
+               <% if(title=="Usuń bar"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/delete_bar" tabindex="3">Usuń bar
+            </a>
         <% } %>
     </div>
 </div>
