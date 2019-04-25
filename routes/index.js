@@ -26,7 +26,8 @@ passport.use(new LocalStrategy({
       bcrypt.compare(encPassword, dbPassword, function(err, res) {
         if(res) {
           if(tableName == 'Uzytkownicy')
-            return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: req.body.user });
+            return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, 
+                                telephone: rows[0].telefon, type: req.body.user });
           else if(tableName == 'Bary')
               return done(null, { barID: rows[0].id_baru, bar_name: rows[0].nazwa_baru, telephone: rows[0].telefon, town: rows[0].miasto, 
                                   street: rows[0].ulica, building_number: rows[0].numer_budynku, local_number: rows[0].numer_lokalu, type: req.body.user });
@@ -136,7 +137,6 @@ router.post('/register_user', function(req, res, next)
   isEmailAvailable(email, 'Uzytkownicy').then(function(value) {
     addUserToDB(password, first_name, last_name, email, telephone, res, req);
   }, (reason) => {
-    res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: "Ten e-mail jest już zajęty" });
     if(typeof(reason) === 'undefined') //nigdy nie powinno do tego wejsc
     {
       console.log("[/register_user.isEmailAvailable] UNDEFINED REASON");
@@ -149,8 +149,6 @@ router.post('/register_user', function(req, res, next)
       res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
     }
   });
-  console.log("pas:", password);
-  
 });
 
 router.get('/login', function(req, res, next) {
@@ -180,7 +178,7 @@ router.get('/logout', function(req, res)
   else
   {
     req.logout();
-    req.flash('FLASH_MSG', ['INFO', 'Wylogowano pomyślnie']);
+    req.flash('FLASH_MSG', ['SUCCESS', 'Wylogowano pomyślnie']);
     res.redirect('/');
   }
 });
@@ -188,8 +186,119 @@ router.get('/logout', function(req, res)
 router.get('/test', function(req, res)
 {
   console.log("[/TEST] Zalogowany? " + req.isAuthenticated());
-  if(req.isAuthenticated()) console.log("[/TEST] req.user = " + JSON.stringify(req.user, null, 3));
+  if(req.isAuthenticated()) { console.log("[/TEST] req.user = "); printUserData(req); }
   res.redirect('/');
+});
+
+router.get('/my_account', function(req, res)
+{
+  if(!req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+    return res.redirect('/login');
+  }
+  if(req.user.type == 'user')
+    return res.redirect('/my_user_account');
+  req.flash('FLASH_MSG', ['ERROR', 'Konto bara w budowie...']);
+  return res.redirect('/');
+});
+
+router.get('/my_user_account', function(req, res)
+{
+  if(!req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+    return res.redirect('/login');
+  }
+  res.render('my_user_account', { page: getPageVariable(req), title: 'Moje konto', user_data: req.user });
+});
+
+router.post('/edit_user_account', function(req, res)
+{
+  if(!req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+    return res.redirect('/login');
+  }
+  if(req.user.type != 'user') 
+  {
+    console.log("[/delete_account] ERROR: EXPECTED USER ACCOUNT, GOT SOMETHING ELSE, DATA: ");
+    console.log("req.user = ");
+    printUserData(req);
+    req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+    return res.redirect('/');
+  }
+
+});
+
+router.post('/delete_account', function(req, res)
+{
+  if(!req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+    return res.redirect('/login');
+  }
+  if(req.user.type != 'user') 
+  {
+    console.log("[/delete_account] ERROR: EXPECTED USER ACCOUNT, GOT SOMETHING ELSE, DATA: ");
+    console.log("req.user = ");
+    printUserData(req);
+    req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+    return res.redirect('/');
+  }
+  dbconn.query("delete from Uzytkownicy where id_uzytkownika=" + req.user.userID, function(err, rows)
+  {
+    if(err)
+    {
+      req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, usunięcie użytkownika nie powiodło się']);
+      console.log("[/delete_account] QUERY_DELETE_FAIL: " + err);
+      return res.redirect('/'); 
+    }
+    req.logout();
+    req.flash('FLASH_MSG', ['SUCCESS', 'Konto usunięto pomyślnie']);
+    res.redirect('/');
+  });
+});
+
+router.post('/edit_account',  function(req, res)
+{
+  if(!req.isAuthenticated())
+  {
+    req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+    return res.redirect('/login');
+  }
+  if(req.user.type != 'user') 
+  {
+    console.log("[/delete_account] ERROR: EXPECTED USER ACCOUNT, GOT SOMETHING ELSE, DATA: ");
+    console.log("req.user = ");
+    printUserData(req);
+    req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+    return res.redirect('/');
+  }
+
+  var telephone = req.body.telephone.replace("'", "''");
+  var password = req.body.password.replace("'", "''");
+  var email = req.body.email.replace("'", "''");
+  var first_name = req.body.first_name.replace("'", "''");
+  var last_name = req.body.last_name.replace("'", "''");
+  if(email == req.user.email) email = '';
+
+  isEmailAvailable(email, 'Uzytkownicy').then(function(value) {
+    updateUserInDB(password, first_name, last_name, email, telephone, res, req);
+  }, (reason) => {
+    if(typeof(reason) === 'undefined') //nigdy nie powinno do tego wejsc
+    {
+      console.log("[/edit_account.isEmailAvailable] UNDEFINED REASON");
+      res.render('my_user_account', { page: getPageVariable(req), title: 'Moje konto', user_data: req.user, type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+    }
+    else if(reason == 1) 
+    res.render('my_user_account', { page: getPageVariable(req), title: 'Moje konto', user_data: req.user, type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
+    else
+    {
+      console.log("[/edit_account.isEmailAvailable] SQL_ERROR: " + reason);
+      res.render('my_user_account', { page: getPageVariable(req), title: 'Moje konto', user_data: req.user, type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+    }
+  });
 });
 
 
@@ -210,6 +319,65 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
       });
     });
   });
+}
+
+function updateUserInDB(password, first_name, last_name, email, telephone, res, req) {
+  if(password != '')
+  {
+    const saltRounds = 10;
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+      bcrypt.hash(password, salt, function (err, hash) {
+        var query = "update Uzytkownicy set" + generateSQLString(hash, first_name, last_name, email, telephone) + " where id_uzytkownika=" + req.user.userID;
+        console.log("Wyslano update do bazy danych: " + query);
+        dbconn.query(query, function (err, rows) {
+          if (err) {
+            console.log("[/edit_account] SQL_UPDATE_ERROR: " + err);
+            return res.render('my_user_account', { page: getPageVariable(req), title: 'Moje konto', user_data: req.user, type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+          }
+          updateReqUser(req, first_name, last_name, email, telephone);
+          res.render('my_user_account', { page: getPageVariable(req), title: "Rejestracja użytkownika", user_data: req.user, type: 'SUCCESS', msg: 'Pomyślnie zmieniono dane' });
+        });
+      });
+    });
+  }
+  else 
+  {
+    var query = "update Uzytkownicy set" + generateSQLString(password, first_name, last_name, email, telephone) + " where id_uzytkownika=" + req.user.userID;
+    console.log("Wyslano update do bazy danych: " + query);
+    dbconn.query(query, function (err, rows) {
+      if (err) {
+        console.log("[/edit_account] SQL_UPDATE_ERROR: " + err);
+        return res.render('my_user_account', { page: getPageVariable(req), title: 'Moje konto', user_data: req.user, type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+      }
+      updateReqUser(req, first_name, last_name, email, telephone);
+      res.render('my_user_account', { page: getPageVariable(req), title: "Moje konto", user_data: req.user, type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.' });
+    });
+  }
+}
+
+function generateSQLString(password, first_name, last_name, email, telephone)
+{
+  var query = '';
+  if(password != '') query += " haslo='" + password + "'";
+  if(first_name != '') query += sqlCommaHelper(query) + " imie='" + first_name + "'";
+  if(last_name != '') query += sqlCommaHelper(query) + " nazwisko='" + last_name + "'";
+  if(email != '') query += sqlCommaHelper(query) + " email='" + email + "'";
+  if(telephone != '') query += sqlCommaHelper(query) + " telefon='" + telephone + "'";
+  return query;
+}
+
+function sqlCommaHelper(query)
+{
+  if(query == '') return '';
+  return ',';
+}
+
+function updateReqUser(req, first_name, last_name, email, telephone)
+{
+  if(first_name != '') req.user.first_name = first_name;
+  if(last_name != '')  req.user.last_name = last_name;
+  if(email != '')  req.user.email = email;
+  if(telephone != '')  req.user.telephone = telephone;
 }
 
 function getPageVariable(req)
@@ -283,6 +451,11 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
   });
 }
 
+function printUserData(req)
+{
+  if(req == undefined) console.log("[printUserData] ERROR: req is undefined");
+  console.log(JSON.stringify(req.user, null, 3));
+}
 
 module.exports = router;
 

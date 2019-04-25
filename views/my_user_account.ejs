@@ -18,15 +18,9 @@
             if(document.getElementsByName("email")[0].value === "")
                 err += "Podaj email. ";
 
-            if(document.getElementsByName("password")[0].value === "")
-                err += "Podaj hasło. ";
-            if(document.getElementById("repeated_password").value === "")
-                err += "Powtórz hasło. ";
-            else{
-                if(document.getElementById("repeated_password") != undefined &&
-                    document.getElementsByName("password")[0].value != document.getElementById("repeated_password").value)
-                    err += "Wprowadzone hasła nie są identyczne. ";
-            }
+            if(document.getElementById("repeated_password") != undefined &&
+                document.getElementsByName("password")[0].value != document.getElementById("repeated_password").value)
+                err += "Wprowadzone hasła nie są identyczne. ";
 
             if(document.getElementsByName("telephone")[0].value.length > 11)
                 err += "Numer telefonu jest za długi. "
@@ -42,7 +36,15 @@
         {
             var msg = "<%= (!!locals.msg)?msg:'' %>";
             var type = "<%= (!!locals.type)?type:'' %>";
+            var flash_messages = document.getElementById('flash_msg');
+            
+            
             showAlert(type, msg);
+            if(flash_messages != null) {
+                flash_messages = flash_messages.innerHTML.split(',');
+                if(flash_messages.length > 1)
+                    showAlert(flash_messages[0], flash_messages.slice(1, flash_messages.length).join(', '));
+            }
         }
         function showAlert(msg_type, msg)
         {
@@ -53,24 +55,27 @@
         }
     </script>
     
-    <body onload='getMessages()'>
+    <body onLoad='getMessages()'>
     <div id="alerts"></div>
+
+
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
-            <form method="POST" action="/register_user" onsubmit="return validateForm();">
+            <form method="POST" action="/edit_account" onsubmit="return validateForm();">
+                <label>Edytuj konto</label>
                 <table>
                     <tr>
                         <td>
-                            E-mail*:
+                            E-mail: 
                         </td>
                         <td>
-                            <input tabindex="60" type="email" name="email">
+                            <input tabindex="60" type="email" name="email" value=<%= user_data.email %>>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            Hasło*:
+                            Hasło:
                         </td>
                         <td>
                             <input tabindex="61" type="password" name="password">
@@ -78,7 +83,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Potwierdz hasło*:
+                            Potwierdz hasło:
                         </td>
                         <td>
                             <input tabindex="62" type="password" id="repeated_password">
@@ -89,7 +94,7 @@
                             Imię:
                         </td>
                         <td>
-                            <input tabindex="63" type="text" name="first_name">
+                            <input tabindex="63" type="text" name="first_name" value=<% if(user_data.first_name!='NULL') { %><%= user_data.first_name %><% } %>>
                         </td>
                     </tr>
                     <tr>
@@ -97,7 +102,7 @@
                             Nazwisko:
                         </td>
                         <td>
-                            <input tabindex="64" type="text" name="last_name">
+                            <input tabindex="64" type="text" name="last_name" value=<% if(user_data.last_name!='NULL') { %><%= user_data.last_name %><% } %>>
                         </td>
                     </tr>
                     <tr>
@@ -105,15 +110,18 @@
                             Telefon:
                         </td>
                         <td>
-                            <input tabindex="65" type="text" name="telephone">
+                            <input tabindex="65" type="text" name="telephone" value=<% if(user_data.telephone!='NULL') { %><%= user_data.telephone %><% } %>>
                         </td>
                     </tr>
                 </table>
-                <p>* - obowiązkowe</p>
                 <br>
-                <input type="submit" tabindex="66" value="Wyślij">
+                <input type="submit" tabindex="69" value="Zaktualizuj">
             </form>
 
+            <br><br><br>
+            <form method="POST" action="/delete_account" onsubmit="return true;">
+                <input type="submit" tabindex="70" value="Usuń konto">
+            </form>
         </div>
         <% include header.ejs %>      <!--Include header (top menu logo etc)-->
         <% include footer.ejs %>      <!--Include footer-->
