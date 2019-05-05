@@ -35,7 +35,7 @@ router.post('/add', function (req, res, next) {
 
 router.get('/edit/:id', function (req, res, next) {
     console.log(req.params.id);
-    dbconn.query("SELECT mecze.id_meczu as id, mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN druzyny dr1 ON dr1.id_druzyny = mecze.id_druzyna1 LEFT JOIN druzyny dr2 ON dr2.id_druzyny = mecze.id_druzyna2 WHERE id_meczu = " + req.params.id, function (err, result) {
+    dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_meczu =" + req.params.id, function (err, result) {
         result[0].czas = result[0].czas + "";
         console.log(result[0].czas);
         res.render('edit_match', {page: 'main', title: 'Edycja rozgrywki', data: result[0]});
