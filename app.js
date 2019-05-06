@@ -50,7 +50,7 @@ app.use('/match', matchesRouter);
 var mysql = require('mysql');
 dbconn = mysql.createConnection({
 	user: 'root',
-	password: 'password',
+	password: '12345',
 	database: 'Zespolowe'
 });
 dbconn.connect();

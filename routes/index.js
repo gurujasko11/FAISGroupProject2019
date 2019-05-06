@@ -5,7 +5,18 @@ var passport = require('passport');
 const LocalStrategy = require('passport-local');
 var flash = require('connect-flash');
 const bcrypt = require('bcrypt');
+var randtoken = require('rand-token');
+var uid = require('rand-token').uid;
 
+const nodemailer = require("nodemailer");
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'Nodemailerzespolowe@gmail.com',
+    pass: 'Nodemailer11!!'
+  }
+});
 
 function getTableNameFrom(user) //returns table name
 {
@@ -32,7 +43,7 @@ passport.use(new LocalStrategy({
       //console.log(err); console.log(rows);
       if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
       if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
-
+      if(rows[0].status != 'activated'){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik nie potwierdził konta linkiem aktywacyjnym'])); }
 
       var encPassword = password;
       var dbPassword  = rows[0].haslo;
@@ -140,38 +151,87 @@ router.get('/register_user', function(req, res, next)
     res.redirect('/');
   }
   else
-    res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika' });
+    res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika' , flash_messages: req.flash('FLASH_MSG')});
 });
 
-router.post('/register_user', function(req, res, next)
-{
+router.post('/register_user', function (req, res, next) {
   var first_name = req.body.first_name.replace("'", "''");
   var last_name = req.body.last_name.replace("'", "''");
   var telephone = req.body.telephone.replace("'", "''");
   var password = req.body.password.replace("'", "''");
   var email = req.body.email.replace("'", "''");
-  if(telephone == '') telephone = 'NULL';
+  if (telephone == '') telephone = 'NULL';
   const saltRounds = 10;
-  bcrypt.genSalt(saltRounds, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
+  var token = uid(60);
 
-                var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo) values " +
-              "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "');";
+  bcrypt.genSalt(saltRounds, function (err, salt) {
+    bcrypt.hash(password, salt, function (err, hash) {
 
-  		console.log("Wyslano insert do bazy danych: " + query);
-  		dbconn.query(query, function(err, rows)
-  		{
-    			if(err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message });
-    			else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 				'Pomyślnie utworzono konto.' });
-  		});
+      var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo, status) values " +
+        "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "', '" + token + "');";
+
+      console.log("Wyslano insert do bazy danych: " + query);
+      dbconn.query(query, function (err, rows) {
+        
+
+        var mailOptions = {
+          from: 'Nodemailer@gmail.com',
+          to: email,
+          subject: 'Registration to our service - Drink and watch',
+          text: 'Hello \n'
+            + 'To confirm registration click on the link below:\n' +
+            'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
+            console.log(error);
+            
+          } else {
+            console.log('Email sent: ' + info.response);
+            req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+          }
+          if (err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message, flash_messages: req.flash("FLASH_MSG") });
+          else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.', flash_messages: req.flash("FLASH_MSG") });
+        });
+      });
 
     });
   });
   console.log("pas:", password);
-  
+
 });
 
+router.get('/activate/:token', function(req, res, next){
 
+    var query = "select * from Uzytkownicy where status = '"+ req.params.token+ "'";
+    console.log('query: ',query)
+    console.log('token: ', req.params.token)
+    dbconn.query(query, function (err, rows) {
+
+      if (err) {
+        console.log('Mysql error while activation', err);
+        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+      }
+      else if(!rows.length){
+        console.log('No users with this token');
+        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+       }
+      else {
+        dbconn.query("update Uzytkownicy set status='activated' where status = '" +req.params.token+"'", function (err, rows) {
+          if (err) {
+            console.log('Mysql error while setting activated status', err);
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
+          }
+          res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+
+        });
+      }
+
+    });
+
+});
 router.get('/login', function(req, res, next) {
   if(req.isAuthenticated())
   {

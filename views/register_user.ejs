@@ -46,7 +46,15 @@
         {
             var msg = "<%= (!!locals.msg)?msg:'' %>";
             var type = "<%= (!!locals.type)?type:'' %>";
+            var flash_messages = document.getElementById('flash_msg');
+            
+            
             showAlert(type, msg);
+            if(flash_messages != null) {
+                flash_messages = flash_messages.innerHTML.split(',');
+                if(flash_messages.length > 1)
+                    showAlert(flash_messages[0], flash_messages.slice(1, flash_messages.length).join(', '));
+            }
         }
         function showAlert(msg_type, msg)
         {
@@ -59,6 +67,9 @@
     
     <body onload='getMessages()'>
     <div id="alerts"></div>
+    <% if (flash_messages) { %>
+        <div id='flash_msg' style="display: none;"><%= flash_messages %></div>
+    <% } %>
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
