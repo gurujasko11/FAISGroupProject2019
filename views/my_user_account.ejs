@@ -119,7 +119,7 @@
             </form>
 
             <br><br><br>
-            <form method="POST" action="/delete_account" onsubmit="return true;">
+            <form method="POST" action="/delete_account" onsubmit="return confirm('Czy napewno chcesz usunąć swoje konto?');">
                 <input type="submit" tabindex="70" value="Usuń konto">
             </form>
         </div>

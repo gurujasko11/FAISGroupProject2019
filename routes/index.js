@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const session = require('express-session');
 var passport = require('passport');
 const LocalStrategy = require('passport-local');
-var flash = require('connect-flash');
 const bcrypt = require('bcrypt');
 
 passport.use(new LocalStrategy({
