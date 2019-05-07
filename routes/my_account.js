@@ -7,16 +7,17 @@ const bcrypt = require('bcrypt');
 var printUserData = indexModule.printUserData;
 var getPageVariable = indexModule.getPageVariable;
 var isEmailAvailable = registrationModule.isEmailAvailable;
-var authenticatedUsersBarsOnly = authenticationModule.authenticatedUsersBarsOnly;
+var authenticatedOnly = authenticationModule.authenticatedOnly;
+var authenticatedUserOnly = authenticationModule.authenticatedUserOnly;
 
-router.get('/my_account', authenticatedUsersBarsOnly, function (req, res) {
+router.get('/my_account', authenticatedOnly, function (req, res) {
     if (req.user.type == 'user')
         return res.redirect('/my_user_account');
     req.flash('FLASH_MSG', ['ERROR', 'Konto bara w budowie...']);
     return res.redirect('/');
 });
 
-router.get('/my_user_account', authenticatedUsersBarsOnly, function (req, res) {
+router.get('/my_user_account', authenticatedUserOnly, function (req, res) {
     res.render('my_user_account', {
         page: getPageVariable(req),
         title: 'Moje konto',
@@ -24,9 +25,9 @@ router.get('/my_user_account', authenticatedUsersBarsOnly, function (req, res) {
     });
 });
 
-router.post('/edit_user_account', authenticatedUsersBarsOnly, function (req, res) {
+router.post('/edit_user_account', authenticatedUserOnly, function (req, res) {
     if (req.user.type != 'user') {
-        console.log("[/delete_account] ERROR: EXPECTED USER ACCOUNT, GOT SOMETHING ELSE, DATA: ");
+        console.log("[/edit_user_account] ERROR: EXPECTED USER ACCOUNT, GOT SOMETHING ELSE, DATA: ");
         console.log("req.user = ");
         printUserData(req);
         req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
@@ -74,7 +75,7 @@ router.post('/edit_user_account', authenticatedUsersBarsOnly, function (req, res
     });
 });
 
-router.post('/delete_account', authenticatedUsersBarsOnly, function (req, res) {
+router.post('/delete_account', authenticatedOnly, function (req, res) {
     if (req.user.type != 'user') {
         console.log("[/delete_account] ERROR: EXPECTED USER ACCOUNT, GOT SOMETHING ELSE, DATA: ");
         console.log("req.user = ");
@@ -99,11 +100,21 @@ function updateUserInDB(password, first_name, last_name, email, telephone, res, 
         const saltRounds = 10;
         bcrypt.genSalt(saltRounds, function (err, salt) {
             bcrypt.hash(password, salt, function (err, hash) {
-                var query = "update Uzytkownicy set" + generateSQLString(hash, first_name, last_name, email, telephone) + " where id_uzytkownika=" + req.user.userID;
+				var updatedString = generateSQLString(hash, first_name, last_name, email, telephone);
+				if(updatedString == '') {
+					return res.render('my_user_account', {
+						page: getPageVariable(req),
+						title: "Moje konto",
+						user_data: req.user,
+						type: 'INFO',
+						msg: 'Brak zmian'
+					});
+				}
+                var query = "update Uzytkownicy set" + updatedString + " where id_uzytkownika=" + req.user.userID;
                 console.log("Wyslano update do bazy danych: " + query);
                 dbconn.query(query, function (err, rows) {
                     if (err) {
-                        console.log("[/edit_account] SQL_UPDATE_ERROR: " + err);
+                        console.log("[/edit_user_account.updateUserInDB.salt] SQL_UPDATE_ERROR: " + err);
                         return res.render('my_user_account', {
                             page: getPageVariable(req),
                             title: 'Moje konto',
@@ -124,11 +135,21 @@ function updateUserInDB(password, first_name, last_name, email, telephone, res, 
             });
         });
     } else {
-        var query = "update Uzytkownicy set" + generateSQLString(password, first_name, last_name, email, telephone) + " where id_uzytkownika=" + req.user.userID;
+		var updatedString = generateSQLString(password, first_name, last_name, email, telephone);
+		if(updatedString == '') {
+			return res.render('my_user_account', {
+                page: getPageVariable(req),
+                title: "Moje konto",
+                user_data: req.user,
+                type: 'INFO',
+                msg: 'Brak zmian'
+            });
+		}
+        var query = "update Uzytkownicy set" + updatedString + " where id_uzytkownika=" + req.user.userID;
         console.log("Wyslano update do bazy danych: " + query);
         dbconn.query(query, function (err, rows) {
             if (err) {
-                console.log("[/edit_account] SQL_UPDATE_ERROR: " + err);
+                console.log("[/edit_user_account.updateUserInDB.passwordEmpty] SQL_UPDATE_ERROR: " + err);
                 return res.render('my_user_account', {
                     page: getPageVariable(req),
                     title: 'Moje konto',
