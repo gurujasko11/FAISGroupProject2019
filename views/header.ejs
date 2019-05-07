@@ -49,7 +49,14 @@
                     menu
                 <% } %> href="/register_user" tabindex="5">Rejestracja użytkownika
             </a>
-            
+             <a class=
+            <% if(title=="Drużyny"){ %>
+                menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/teams" tabindex="6">Drużyny
+            </a>
+
             <!-- Uzytkownik zalogowany:   -->
         <% } else if(page=="authenticated"){ %>
             <a class=

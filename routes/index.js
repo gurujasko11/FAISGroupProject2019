@@ -39,6 +39,24 @@ function printUserData(req) {
   console.log(JSON.stringify(req.user, null, 3));
 }
 
+
+var obj = {};
+
+router.get('/teams', function(req, res, next) {
+
+    dbconn.query('SELECT * FROM Druzyny', function(err, result) {
+
+        if(err){
+            throw err;
+        } else {
+            obj = {print: result, page: getPageVariable(req),title: 'teams'};
+            res.render('teams', obj);                
+        }
+    });
+
+  //res.render('teams', { page: getPageVariable(req), title: 'teams' });
+});
+
 module.exports = {
   router: router,
   printUserData: printUserData,
