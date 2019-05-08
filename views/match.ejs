@@ -40,6 +40,7 @@
                                 <td><%= data[i].team1 + " - " + data[i].team2%></td>
                                 <td><%= data[i].czas %></td>
                                 <td><a href="<%= "/match/edit/" + data[i].id %>">Edycja</a></td>
+                                <td><a href="<%= "/match/delete/" + data[i].id %>">Usun</a></td>
                             </tr>
                         <% } %>
                         </tbody>
