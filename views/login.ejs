@@ -3,6 +3,7 @@
     <% include head.ejs %>      <!--Include head section (same for all pages)-->
     <!--Javascripts includes-->
     <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    <script src='/javascripts/resetPassw.js' type='text/javascript' ></script>
     
     <!--Inline Javascript-->
     <script>
@@ -56,22 +57,22 @@
             <h1><%= title %></h1>
             
             <form method="POST" action="/login" onsubmit="return validateForm();">
-                <label style='text-align: center'>Zaloguj jako</label>
-                <table class='tableStyle'>
+                <label>Zaloguj jako</label>
+                <table>
                     <tr>
-                        <td >
+                        <td>
                             <input type="radio" tabindex="60" name="user" id="user_radio" value="user" checked>
-                            <label for="user_radio" style="width: 50%; font-size: small;"><span></span>Użytkownik</label>
+                            <label for="user_radio" style="width: 75%; font-size: small;"><span></span>Użytkownik</label>
                         </td>
                         <td>
                             <input type="radio" tabindex="61" name="user" id="bar_radio" value="bar">
-                            <label for="bar_radio" style="width: 50%; font-size: small"><span></span>Bar</label>
+                            <label for="bar_radio" style="width: 75%; font-size: small"><span></span>Bar</label>
                         </td>
                     </tr>
                     <tr><td><br></td></tr>
                     <tr>
                         <td>
-                            E-mail: 
+                            Nazwa użytkownika: 
                         </td>
                         <td>
                             <input tabindex="62" type="email" name="email">
@@ -87,7 +88,8 @@
                     </tr>
                 </table>
                 <br>
-                <input type="submit" tabindex="64" value="Wyślij">
+                <a class="link" href="javascript:sendResetLink(document.getElementsByName('user')[0].checked, document.getElementsByName('email')[0].value)" tabindex="100">Nie pamiętam hasła</a><br><br>
+                <input type="submit" tabindex="64" value="Zaloguj">
             </form>
 
         </div>
