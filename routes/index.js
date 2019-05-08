@@ -57,6 +57,13 @@ router.get('/teams', function(req, res, next) {
   //res.render('teams', { page: getPageVariable(req), title: 'teams' });
 });
 
+router.post('/observe', function(req, res, next) {
+  var id_druzyny = req.body.id_druzyn;
+  var checkbox = req.body.observation;
+
+  res.redirect('/');
+});
+
 module.exports = {
   router: router,
   printUserData: printUserData,

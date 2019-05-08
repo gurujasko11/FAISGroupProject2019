@@ -10,16 +10,25 @@
         <div id="alerts"></div>
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
-            <table class="table">
-                <th>id drużyny</th>  
-                <th>nazwa drużyny</th>  
-                <% print.forEach(function (team) { %>
-            <tr>  
-                <td><%= team.id_druzyny %></td>  
-                <td><%= team.nazwa_druzyny %></td>
-            </tr>                                   
-         <% }) %>
-            </table>
+            <form method="POST" action="/observe" onSubmit="return true;" onChange="this.form.submit()">
+                <table class="table">
+                    <th>id drużyny</th>
+                    <th>nazwa drużyny</th>
+                    <th>obserwowane </th>
+                    <th></th>  
+                    <% print.forEach(function (team) { %>
+                <tr>  
+                    <td><%= team.id_druzyny %></td>  
+                    <td><%= team.nazwa_druzyny %></td>
+                    <input type="hidden" name="id_druzyn" value=<%= team.id_druzyny %> />
+                <td><input type="checkbox"  name="observation" /></td>
+                <td></td>
+                </tr>                                   
+            <% }) %>
+            <input type="submit"tabindex="69" value="Zaktualizuj obserwacje">
+                </table>
+                
+            </form>    
         </div>
         <% include header.ejs %>      <!--Include header (top menu logo etc)-->
         <% include footer.ejs %>      <!--Include footer-->
