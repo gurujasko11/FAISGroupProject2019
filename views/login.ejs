@@ -56,22 +56,22 @@
             <h1><%= title %></h1>
             
             <form method="POST" action="/login" onsubmit="return validateForm();">
-                <label>Zaloguj jako</label>
-                <table>
+                <label style='text-align: center'>Zaloguj jako</label>
+                <table class='tableStyle'>
                     <tr>
-                        <td>
+                        <td >
                             <input type="radio" tabindex="60" name="user" id="user_radio" value="user" checked>
-                            <label for="user_radio" style="width: 75%; font-size: small;"><span></span>Użytkownik</label>
+                            <label for="user_radio" style="width: 50%; font-size: small;"><span></span>Użytkownik</label>
                         </td>
                         <td>
                             <input type="radio" tabindex="61" name="user" id="bar_radio" value="bar">
-                            <label for="bar_radio" style="width: 75%; font-size: small"><span></span>Bar</label>
+                            <label for="bar_radio" style="width: 50%; font-size: small"><span></span>Bar</label>
                         </td>
                     </tr>
                     <tr><td><br></td></tr>
                     <tr>
                         <td>
-                            Nazwa użytkownika: 
+                            E-mail: 
                         </td>
                         <td>
                             <input tabindex="62" type="email" name="email">
