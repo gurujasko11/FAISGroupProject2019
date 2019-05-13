@@ -84,4 +84,75 @@ router.get('/delete/:id', function (req, res, next) {
 });
 
 
+
+
+
+
+// var emailjs = require("emailjs");
+
+function sendEmail () {
+
+    var service_id = 'gmail';
+    var template_id = "template_JGGDCknV";
+
+    var template_params = {
+        name: 'Kamil',
+        reply_email: 'kamilo116@o2.pl',
+        message: 'This is awesome!'
+    };
+
+
+    var email   = require("emailjs");
+    var server  = email.server.connect({
+        // user: "Kamil",
+        user: "kamil.sladowski@gmail.com",
+        // user:    process.env.GMAIL_USER,
+        // password: "179021abb1d89d87dafc0ff7a40030e3",
+        password: "179021abb1d89d87dafc0ff7a40030e3",
+        user_id: "user_HHBrB5FSE3MUVMasNUB3t",
+        host: "smtp.gmail.com",
+        ssl:     true
+    });
+
+    server.send({
+        text:    "example",
+        from:    "kamil.sladowski@gmail.com",
+        to:      "kamilo116@o2.pl",
+        subject: "match",
+
+    }, function(err, message) { console.log(err || message); });
+
+
+    // emailjs.init("user_HHBrB5FSE3MUVMasNUB3t");
+    // var email 	= require("./path/to/emailjs/email");
+    // var server 	= email.server.connect({
+    //     user:	"username",
+    //     password:"password",
+    //     host:	"smtp.your-email.com",
+    //     ssl:		true
+    // });
+
+
+
+
+    //
+    // emailjs.send(service_id, template_id, template_params)
+    //     .then(function(response) {
+    //         console.log('SUCCESS!', response.status, response.text);
+    //     }, function(error) {
+    //         console.log('FAILED...', error);
+    //     });
+
+}
+
+
+router.get( '/send', function(req, res){
+
+
+
+    sendEmail ();
+
+});
+
+
 module.exports = router;
