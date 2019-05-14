@@ -1,27 +1,30 @@
 var express = require('express');
 var router = express.Router();
-const session = require('express-session');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { page: 'main', title: 'MatchBar' });
+  res.render('index', { page: getPageVariable(req), title: 'MatchBar', flash_messages: req.flash('FLASH_MSG') });
 });
 
 router.get('/dev', function(req, res, next) {
-  res.render('template', { page: 'main', title: 'CSS Test' });
+  res.render('template', { page: getPageVariable(req), title: 'CSS Test' });
 });
 
+// router.get('/match', function(req, res, next) {
+//   res.render('wip', { page: getPageVariable(req), title: 'Rozgrywki' });
+// });
 
-router.get('/rozgrywki', function(req, res, next) {
-  res.render('wip', { page: 'main', title: 'Rozgrywki' });
-});
 router.get('/about', function(req, res, next) {
-  res.render('about', { page: 'main', title: 'O stronie' });
+  res.render('about', { page: getPageVariable(req), title: 'O stronie' });
 });
 
-router.get('/register_bar', function(req, res, next)
-{
-  res.render('register_bar', { page: 'main', title: 'Rejestracja baru' });
+router.get('/test', function (req, res) {
+  console.log("[/TEST] Zalogowany? " + req.isAuthenticated());
+  if (req.isAuthenticated()) {
+    console.log("[/TEST] req.user = ");
+    printUserData(req);
+  }
+  res.redirect('/');
 });
 
 router.get('/bar_home', function(req, res, next)
@@ -89,5 +92,38 @@ router.get('/bar_login', function(req, res, next)
   }));
   res.redirect('/');
 });
+function getPageVariable(req) {
+  if (req.isAuthenticated())
+    return "authenticated";
+  else
+    return "main";
+}
 
-module.exports = router;
+function printUserData(req) {
+  if (req == undefined) console.log("[printUserData] ERROR: req is undefined");
+  console.log(JSON.stringify(req.user, null, 3));
+}
+
+
+var obj = {};
+
+router.get('/teams', function(req, res, next) {
+
+    dbconn.query('SELECT * FROM Druzyny', function(err, result) {
+
+        if(err){
+            throw err;
+        } else {
+            obj = {print: result, page: getPageVariable(req),title: 'teams'};
+            res.render('teams', obj);                
+        }
+    });
+
+  //res.render('teams', { page: getPageVariable(req), title: 'teams' });
+
+
+module.exports = {
+  router: router,
+  printUserData: printUserData,
+  getPageVariable: getPageVariable
+};

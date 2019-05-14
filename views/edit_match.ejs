@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <% include head.ejs %>
 <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
@@ -28,11 +27,11 @@
 
                 <div class="row">
                     <div class="input-field col s6">
-                        <input id="title" type="text" name="team1" class="validate" required>
+                        <input id="title" type="text" name="team1" class="validate" value="<%=data.team1%>" >
                         <label for="title">Drużyna I</label>
                     </div>
                     <div class="input-field col s6">
-                        <input id="title" type="text" name="team2" class="validate" required>
+                        <input id="title" type="text" name="team2" class="validate" value="<%=data.team2%>">
                         <label for="title">Drużyna II</label>
                     </div>
                 </div>
@@ -40,12 +39,11 @@
                 <div class="row">
                     <div class="input-field col s6">
                         <label></label>
-                        <input id="beginDate" type="date" name="date" class="datepicker" required>
-
+                        <input id="beginDate" type="date" name="date" class="datepicker" value="2019-04-28">
                     </div>
                     <div class="input-field col s6">
                         <label for="match_time"></label>
-                        <input id="match_time" type="time" name="time" class="datepicker">
+                        <input id="match_time" type="time" name="time" class="datepicker" value="22:00">
                     </div>
                 </div>
 

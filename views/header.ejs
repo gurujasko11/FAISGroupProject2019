@@ -6,6 +6,9 @@
     <div class=topRight>
         <% if(page=="main"){ %>
             <a class=link href="/login" tabindex="50">Logowanie</a>
+        <% } else if(page=="authenticated"){ %>
+            <a class=link href="/my_account" tabindex="49">Moje konto</a>
+            <a class=link href="/logout" tabindex="50">Wyloguj</a>
         <% } %>
         <!--guziki logowanie/wylogowanie/ustawienia konta-->
     </div>
@@ -16,22 +19,81 @@
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/" tabindex="1">Wyszukiwanie</a><a class=
+                <% } %> href="/" tabindex="1">Wyszukiwanie
+            </a>
+            <a class=
                 <% if(title=="Rozgrywki"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki</a><a class=
+                <% } %> href="/match" tabindex="2">Rozgrywki
+            </a>
+            <a class=
                 <% if(title=="O stronie"){ %>
                    menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/about" tabindex="3">O stronie</a><a class=
+                <% } %> href="/about" tabindex="3">O stronie
+            </a>
+            <a class=
                 <% if(title=="Rejestracja baru"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_bar" tabindex="4">Rejestracja baru</a>
+                <% } %> href="/register_bar" tabindex="4">Rejestracja baru
+            </a>
+            <a class=
+                <% if(title=="Rejestracja użytkownika"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/register_user" tabindex="5">Rejestracja użytkownika
+            </a>
+             <a class=
+            <% if(title=="Drużyny"){ %>
+                menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/teams" tabindex="6">Drużyny
+            </a>
+
+            <!-- Uzytkownik zalogowany:   -->
+        <% } else if(page=="authenticated"){ %>
+            <a class=
+                <% if(title=="MatchBar"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/" tabindex="1">Wyszukiwanie
+            </a>
+            <a class=
+                <% if(title=="Rozgrywki"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki
+            </a>
+            <a class=
+                <% if(title=="O stronie"){ %>
+                   menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/about" tabindex="3">O stronie
+            </a>
+            <a class=
+               <% if(title=="Edycja baru"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/edit_bar" tabindex="2">Edycja baru
+            </a>
+            <a class=
+               <% if(title=="Usuń bar"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/delete_bar" tabindex="3">Usuń bar
+            </a>
         <% } %>
     </div>
 </div>

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
 --
 -- Host: localhost    Database: Zespolowe
 -- ------------------------------------------------------
--- Server version	5.7.25-0ubuntu0.18.04.2
+-- Server version	5.7.26-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `Bary`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Bary` (
   `id_baru` int(11) NOT NULL AUTO_INCREMENT,
-  `nazwa_baru` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nazwa_baru` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
   `miasto` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ulica` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -35,8 +35,10 @@ CREATE TABLE `Bary` (
   `longitude` float(10,6) DEFAULT NULL,
   `latitude` float(10,6) DEFAULT NULL,
   PRIMARY KEY (`id_baru`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  UNIQUE KEY `email` (`email`),
+  KEY `miasto` (`miasto`),
+  CONSTRAINT `Bary_ibfk_1` FOREIGN KEY (`miasto`) REFERENCES `Miasta` (`miasto`)
+) ENGINE=InnoDB AUTO_INCREMENT=1116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +47,7 @@ CREATE TABLE `Bary` (
 
 LOCK TABLES `Bary` WRITE;
 /*!40000 ALTER TABLE `Bary` DISABLE KEYS */;
-INSERT INTO `Bary` VALUES (1,'Pueblo','111222333','Kraków','Norymberska','1','','12345','pueblo@pueblo.com',NULL,NULL),(6,'Night One','123456789','Krakow','Grodzka','3','1','12345','night@night.pl',NULL,NULL),(7,'Blue Lagoon','182739877','Krakow','Lubicz','2','','12345','blue@blue.com',NULL,NULL),(111,'ala','111111111','Krakow','Nowa','1','1','111','aa@aaa.com',NULL,NULL),(1111,'alą','111111111','Krakow','Nowa','1','1','111','aa1@aaa.com',NULL,NULL);
+INSERT INTO `Bary` VALUES (1112,'Pueblo1','111111111','Kraków','Lubicz','2','','$2b$10$wngZg3DNIxDNST8.KFyCxe7GX5YmQPTuzcYIJuN3UYs4LrEw37G0.','pueblo1@pueblo.com',NULL,NULL),(1113,'SuperBar','123456789','Krakow','Krakowska','12','12','$2b$10$P9Rgh50UEfZ1UOM.QD0d3OM4ZCLdMLp8gKBscPNsybuu4EiVBo1xW','super@bar.pl',NULL,NULL),(1114,'bar','111111111','Kraków','Łojasiewicza','1','','$2b$10$uex8UlHbQUOVXqjx2MQmeeN4Oap63RVvRAPaRgNCIwFgDJg3bG0c2','bar@bar.com',NULL,NULL),(1115,'barek','111111111','Kraków','Łojasiewicza','1','','$2b$10$zkYaWiBMFCpM69OnwAePSOyR/NP5xCf33n7ncYSXZmWpe5mftjI3.','barek@barek.com',NULL,NULL);
 /*!40000 ALTER TABLE `Bary` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,9 +89,10 @@ DROP TABLE IF EXISTS `Druzyny`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Druzyny` (
   `id_druzyny` int(11) NOT NULL AUTO_INCREMENT,
-  `nazwa_druzyny` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_druzyny`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `nazwa_druzyny` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_druzyny`),
+  UNIQUE KEY `nazwa_druzyny` (`nazwa_druzyny`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,6 +101,7 @@ CREATE TABLE `Druzyny` (
 
 LOCK TABLES `Druzyny` WRITE;
 /*!40000 ALTER TABLE `Druzyny` DISABLE KEYS */;
+INSERT INTO `Druzyny` VALUES (1,'legia'),(2,'pogoń');
 /*!40000 ALTER TABLE `Druzyny` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +122,7 @@ CREATE TABLE `Mecze` (
   KEY `id_druzyna2` (`id_druzyna2`),
   CONSTRAINT `Mecze_ibfk_1` FOREIGN KEY (`id_druzyna1`) REFERENCES `Druzyny` (`id_druzyny`),
   CONSTRAINT `Mecze_ibfk_2` FOREIGN KEY (`id_druzyna2`) REFERENCES `Druzyny` (`id_druzyny`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +131,31 @@ CREATE TABLE `Mecze` (
 
 LOCK TABLES `Mecze` WRITE;
 /*!40000 ALTER TABLE `Mecze` DISABLE KEYS */;
+INSERT INTO `Mecze` VALUES (1,1,2,'2019-05-08 00:00:00');
 /*!40000 ALTER TABLE `Mecze` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Miasta`
+--
+
+DROP TABLE IF EXISTS `Miasta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Miasta` (
+  `miasto` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`miasto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Miasta`
+--
+
+LOCK TABLES `Miasta` WRITE;
+/*!40000 ALTER TABLE `Miasta` DISABLE KEYS */;
+INSERT INTO `Miasta` VALUES ('Gdynia'),('Katowice'),('Kraków'),('Poznań'),('Warszawa'),('Wrocław');
+/*!40000 ALTER TABLE `Miasta` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -139,11 +167,12 @@ DROP TABLE IF EXISTS `Uzytkownicy`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Uzytkownicy` (
   `id_uzytkownika` int(11) NOT NULL AUTO_INCREMENT,
-  `imie` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nazwisko` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nazwisko` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(255) CHARACTER SET latin1 NOT NULL,
   `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
   `haslo` varchar(256) CHARACTER SET latin1 NOT NULL,
+  `status` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id_uzytkownika`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -193,4 +222,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-29 18:08:25
+-- Dump completed on 2019-05-07 22:28:02
