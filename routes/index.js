@@ -46,7 +46,7 @@ router.post('/search_match', function(req, res, next)
 {
   console.log(req.body.search_text)
   teams = req.body.search_text.split(',')
-  query = "SELECT czas, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
+  query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
       "  FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 \n" +
       " WHERE m.id_druzyna1 = t1.id_druzyny\n" +
       "   AND m.id_druzyna2 = t2.id_druzyny" +
@@ -127,3 +127,21 @@ module.exports = {
   printUserData: printUserData,
   getPageVariable: getPageVariable
 };
+
+
+router.get('/about/match/:id', function(req, res, next)
+{
+  match_id = req.params.id
+  console.log(req.body.search_text)
+  query = "SELECT t1.id_baru, t1.id_meczu, t2.nazwa_baru, t2.miasto, t2.ulica, t2.numer_budynku, t2.numer_lokalu\n" +
+      "FROM Zespolowe.Bary_Z_Meczami t1, Zespolowe.Bary t2\n" +
+      "WHERE t1.id_meczu = 1\n" +
+      "AND t1.id_baru = t2.id_baru;"
+  dbconn.query(query, function(err, rows)
+  {
+      if(err)  res.render('search_match_result', { page: 'main', title: err, desc: err.msg });
+      else {
+          res.render('about_match', { page: 'main', title: 'Gdzie rozgrywany jest mecz', args : rows});
+      }
+  });
+})

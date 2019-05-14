@@ -11,17 +11,19 @@
         <ul>
             <table>
                 <tr>
-                    <th>gospodarze</th>
-                    <th>goscie</th>
-                    <th>czas</th>
+                    <th>nazwa baru</th>
+                    <th>adres</th>
                 </tr>
-            <% args.map((element)=>{%>
-                <tr>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>"><%= element.home %></a></td>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>"><%= element.away %></a></td>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>"><%= element.czas %></a></td>
-                </tr>
-            <%}) %>
+                <% args.map((element)=>{%>
+                    <tr>
+                        <td><%= element.nazwa_baru %></td>
+                        <td><%= element.miasto %></td>
+                        <td><%= element.ulica %></td>
+                        <td><%= element.numer_budynku %></td>
+                        <td><%= element.numer_lokalu+"\n" %></td>
+                    </tr>
+                <%}) %>
+
             </table>
         </ul>
     </div>
