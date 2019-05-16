@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<div class=header>
+    <div class=topLeft>
+        logo strony
+    </div>
+    <div class=topRight>
+        <% if(page=="main"){ %>
+            <a class=link href="/logout" tabindex="50">Wylogowanie</a>
+        <% } %>
+        <!--guziki logowanie/wylogowanie/ustawienia konta-->
+    </div>
+    <div class=topBar>      <!--This should configure itself dependent of options and views-->
+        <% if(page=="main"){ %>
+            <a class=
+            <% if(title=="bar_home"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+            <% } %> href="/bar_home" tabindex="1">Moje mecze</a><a class=
+            <% if(title=="addMatch"){ %>
+                 menu_s
+            <% } else{ %>
+                 menu
+            <% } %> href="/add_match" tabindex="2">Dodaj mecz</a><a class=
+            <% if(title=="account"){ %>
+               menu_s
+            <% } else{ %>
+               menu
+            <% } %> href="/account" tabindex="3">Konto</a><a class=
+        <% } %>
+    </div>
+</div>

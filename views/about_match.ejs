@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>      <!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+<script src='/javascripts/alert.js' type='text/javascript' >
+</script>
+<body>
+<div id="alerts"></div>
+<div id="page" class=page>      <!--Div page with id=page - main container-->
+    <div>
+        <ul>
+            <table>
+                <tr>
+                    <th>nazwa baru</th>
+                    <th>adres</th>
+                </tr>
+                <% args.map((element)=>{%>
+                    <tr>
+                        <td><%= element.nazwa_baru %></td>
+                        <td><%= element.miasto %></td>
+                        <td><%= element.ulica %></td>
+                        <td><%= element.numer_budynku %></td>
+                        <td><%= element.numer_lokalu+"\n" %></td>
+                    </tr>
+                <%}) %>
+
+            </table>
+        </ul>
+    </div>
+
+</div>
+<% include header.ejs %>      <!--Include header (top menu logo etc)-->
+<% include footer.ejs %>      <!--Include footer-->
+</body>
+</html>
