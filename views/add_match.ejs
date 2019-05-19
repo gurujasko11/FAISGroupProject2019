@@ -59,7 +59,11 @@
 
                 <div class="row">
                     <div class="input-field col s12">
-                        <input id="place" name="place" type="text" class="validate">
+                        <select id="place" name="place">
+                            <% for(var i=0; i < data.length; i++) { %>
+                                <option value=<%= data[i].id_baru %>><%= data[i].nazwa_baru %></option>
+                            <%}%>
+                        </select>
                         <label for="place">Lokal</label>
                     </div>
                 </div>

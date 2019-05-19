@@ -3,9 +3,6 @@
 <% include head.ejs %>
 <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
-<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<!--Import materialize.css-->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
 
 <script src='/javascripts/alert.js' type='text/javascript'></script>
 
@@ -17,45 +14,28 @@
 
 <body>
 <div id="alerts"></div>
-<div id="page" class=page style="overflow: hidden;">
+<div id="page" class=page>
     <h1><%= title %></h1>
-
-    <form method="POST" action="/edit_match" onsubmit="return validateForm();">
-
-        <ul class="collection with-header">
-            <li class="collection-item">
-                <h4>Lista rozgrywek</h4>
-            </li>
-            <li class="collection-item">
-                <div class="collapsible-header active">
-                    <table>
-                        <thead>
-                        <th>Nazwa</th>
-                        <th>Czas</th>
-                        <th>Opcje</th>
-                        </thead>
-                        <tbody>
-                        <% for(var i=0; i < data.length; i++) { %>
-                            <tr>
-                                <td><%= data[i].team1 + " - " + data[i].team2%></td>
-                                <td><%= data[i].czas %></td>
-                                <td><a href="<%= "/match/edit/" + data[i].id %>">Edycja</a></td>
+    <table class="table">
+        <thead>
+        <th>Nazwa</th>
+        <th>Czas</th>
+        <th>Opcje</th>
+        </thead>
+        <tbody>
+        <% for(var i = 0; i < data.length; i++) { %>
+            <tr>
+                <td><%= data[i].team1 + " - " + data[i].team2 %></td>
+                <td><%= data[i].czas %></td>
+                <td><a href="<%= "/match/edit/" + data[i].id %>">Edycja</a></td>
                                 <td><a href="<%= "/match/delete/" + data[i].id %>">Usun</a></td>
-                            </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                </div>
-
-
-                <div class="collapsible-body">
-                    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, totam?</span>
-                </div>
-            </li>
-        </ul>
-    </form>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
     <div style="text-align:center">
-        <a href="/match/add" class="btn btn-primary float-right">Dodaj</a>
+        <input type="button" value="Dodaj" onclick="location.href='/match/add'">
+        <!--<a href="/match/add" class="btn btn-primary float-right">Dodaj</a>-->
     </div>
 
 </div>
