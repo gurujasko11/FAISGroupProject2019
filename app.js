@@ -57,7 +57,7 @@ app.use('/', registrationRouter.router);
 var mysql = require('mysql');
 dbconn = mysql.createConnection({
 	user: 'root',
-	password: '12345',
+	password: 'password',
 	database: 'Zespolowe'
 });
 dbconn.connect();
