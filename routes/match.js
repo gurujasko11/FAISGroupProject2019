@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function (req, res, next) {
-        dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;", function (err, result) {
+    dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;", function (err, result) {
         let emptyArray = [];
 
-        if(result === undefined) {
+        if (result === undefined) {
             res.render('match', {page: 'main', title: 'Lista rozgrywek', data: emptyArray});
         }
         res.render('match', {page: 'main', title: 'Lista rozgrywek', data: result});
@@ -13,8 +13,9 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/add', function (req, res, next) {
-    res.render('add_match', {page: 'main', title: 'Dodaj rozgrywkę'});
-
+    dbconn.query("SELECT * from bary", function (err, result) {
+        res.render('add_match', {page: 'main', title: 'Dodaj rozgrywkę', data: result});
+    });
 });
 
 router.post('/add', function (req, res, next) {
