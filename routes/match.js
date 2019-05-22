@@ -4,17 +4,20 @@ const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
 
 // SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;
-
+// SELECT Mecze.id_meczu as id,Bary_Z_Meczami.id_baru,Bary.nazwa_baru, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 left join Bary_Z_Meczami ON Bary_Z_Meczami.id_meczu=Mecze.id_meczu inner join Bary ON Bary.id_baru=Bary_Z_Meczami.id_baru;
 router.get('/', function (req, res, next) {
-        dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 " +
-            "FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 " +
-            "LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;", function (err, result) {
+    let query_match_teams_place = "" +
+        "SELECT Mecze.id_meczu as id,Bary_Z_Meczami.id_baru,Bary.nazwa_baru, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 left join Bary_Z_Meczami ON Bary_Z_Meczami.id_meczu=Mecze.id_meczu inner join Bary ON Bary.id_baru=Bary_Z_Meczami.id_baru;"
+
+    dbconn.query(query_match_teams_place, function (err, result) {
         let emptyArray = [];
 
         if(result === undefined) {
-            res.render('match', {page: 'main', title: 'Lista rozgrywek', data: emptyArray});
+            res.render('match', {page: 'main', title: 'Lista rozgrywek', data: emptyArray, addPossible: req.isAuthenticated()});
         }
-        res.render('match', {page: 'main', title: 'Lista rozgrywek', data: result});
+
+        res.render('match', {page: 'main', title: 'Lista rozgrywek', data: result, addPossible: req.isAuthenticated()});
+
     });
 });
 
@@ -82,6 +85,17 @@ router.get('/edit', function (req, res, next) {
         res.render('edit_match', {page: 'main', title: 'Edycja rozgrywki', data: result[0]});
     });
 });
+
+
+router.get('/edit/:id', function (req, res, next) {
+    console.log(req.params.id);
+    dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_meczu =" + req.params.id, function (err, result) {
+        result[0].czas = result[0].czas + "";
+        console.log(result[0].czas);
+        res.render('edit_match', {page: 'main', title: 'Edycja rozgrywki', data: result[0]});
+    });
+});
+
 
 router.post('/edit', function (req, res, next) {
 
