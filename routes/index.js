@@ -230,7 +230,8 @@ router.post('/register_user', function(req, res, next)
   if(first_name == '') first_name = 'NULL';
   if(last_name == '') last_name = 'NULL';
 
-
+  
+  
   isEmailAvailable(email, 'Uzytkownicy').then(function(value) {
     addUserToDB(password, first_name, last_name, email, telephone, res, req);
   }, (reason) => {
@@ -313,6 +314,7 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
 function getPageVariable(req)
 {
   if(req.isAuthenticated())
+    
 router.get('/bar_home', function(req, res, next)
 {
   res.render('bar_home', { page: 'main', title: 'Moje mecze' });
@@ -447,6 +449,7 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
     });
   });
 }
+  
 var obj = {};
 
 router.get('/teams', function(req, res, next) {
