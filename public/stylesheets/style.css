@@ -338,7 +338,3 @@ table.table tr:nth-child(even) {
         transform: scaleY(0.9);
     } 
 }
-
-.tableStyle th, .tableStyle td {
-    width: 50%;
-}

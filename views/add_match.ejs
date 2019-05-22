@@ -4,8 +4,6 @@
 <% include head.ejs %>
 <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
-<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
 
 <script src='/javascripts/alert.js' type='text/javascript'></script>
 
@@ -18,61 +16,49 @@
 
 <body>
 <div id="alerts"></div>
-<div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+<td id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
     <h1><%= title %></h1>
 
     <form method="POST" action="/match/add" onsubmit="return validateForm();">
+        <table>
+            <tr>
+                <td>Drużyna I</td>
+                <td><input id="title" type="text" name="team1" class="validate" required></td>
+            </tr>
+            <tr>
+                <td>Drużyna II</td>
+                <td><input id="title" type="text" name="team2" class="validate" required></td>
+            </tr>
 
-        <div class="row">
-            <form class="col s12">
-
-                <div class="row">
-                    <div class="input-field col s6">
-                        <input id="title" type="text" name="team1" class="validate" required>
-                        <label for="title">Drużyna I</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="title" type="text" name="team2" class="validate" required>
-                        <label for="title">Drużyna II</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="input-field col s6">
-                        <label></label>
-                        <input id="beginDate" type="date" name="date" class="datepicker" required>
-
-                    </div>
-                    <div class="input-field col s6">
-                        <label for="match_time"></label>
-                        <input id="match_time" type="time" name="time" class="datepicker">
-                    </div>
-                </div>
+            <tr>
+                <td>Data</td>
+                <td><input id="beginDate" type="date" name="date" required></td>
+            </tr>
+            <tr>
+                <td>Czas</td>
+                <td><input id="match_time" type="time" name="time"></td>
+            </tr>
 
 
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input id="league" name="league" type="text" class="validate">
-                        <label for="league">Liga</label>
-                    </div>
-                </div>
+            <tr>
+                <td>Liga</td>
+                <td><input id="league" name="league" type="text" class="validate"></td>
+            </tr>
 
-                <div class="row">
-                    <div class="input-field col s12">
-                        <input id="place" name="place" type="text" class="validate">
-                        <label for="place">Lokal</label>
-                    </div>
-                </div>
-                <div style="text-align:center">
-                    <input type="submit" class="btn btn-primary" value="Submit"/>
-                </div>
-            </form>
-        </div>
+            <tr>
+                <td>Bar</td>
+                <td><select id="place" name="place">
+                        <% for(var i = 0; i < data.length; i++) { %>
+                            <option value=<%= data[i].id_baru %>><%= data[i].nazwa_baru %></option>
+                        <% } %>
+                    </select></td>
+            </tr>
+        </table>
+        <p>* - obowiązkowe</p>
+        <br>
+        <input type="submit" class="btn btn-primary" value="Submit"/>
     </form>
-</div>
-<% include header.ejs %>
-<!--Include header (top menu logo etc)-->
-<% include footer.ejs %>
-<!--Include footer-->
+    <% include header.ejs %>
+    <% include footer.ejs %>
 </body>
 </html>
