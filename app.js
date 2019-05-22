@@ -13,6 +13,7 @@ var BetterMemoryStore = require('session-memory-store')(sess);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
 var barsRouter = require('./routes/bars');
 var matchesRouter = require('./routes/match');
 var myAccountRouter = require('./routes/my_account');
@@ -45,13 +46,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter.router);
+app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
 app.use('/match', matchesRouter);
 app.use('/bars', barsRouter);
 app.use('/', myAccountRouter);
 app.use('/', authenticationRouter.router);
 app.use('/', registrationRouter.router);
+
 
 //require mysql
 var mysql = require('mysql');
