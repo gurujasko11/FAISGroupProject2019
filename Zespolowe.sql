@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
 --
 -- Host: localhost    Database: Zespolowe
 -- ------------------------------------------------------
--- Server version	5.7.25-0ubuntu0.18.04.2
+-- Server version	5.7.26-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,7 +38,7 @@ CREATE TABLE `Bary` (
   UNIQUE KEY `email` (`email`),
   KEY `miasto` (`miasto`),
   CONSTRAINT `Bary_ibfk_1` FOREIGN KEY (`miasto`) REFERENCES `Miasta` (`miasto`)
-) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,6 +47,7 @@ CREATE TABLE `Bary` (
 
 LOCK TABLES `Bary` WRITE;
 /*!40000 ALTER TABLE `Bary` DISABLE KEYS */;
+INSERT INTO `Bary` VALUES (1112,'Pueblo1','111111111','Kraków','Lubicz','2','','$2b$10$wngZg3DNIxDNST8.KFyCxe7GX5YmQPTuzcYIJuN3UYs4LrEw37G0.','pueblo1@pueblo.com',NULL,NULL),(1113,'SuperBar','123456789','Krakow','Krakowska','12','12','$2b$10$P9Rgh50UEfZ1UOM.QD0d3OM4ZCLdMLp8gKBscPNsybuu4EiVBo1xW','super@bar.pl',NULL,NULL),(1114,'bar','111111111','Kraków','Łojasiewicza','1','','$2b$10$uex8UlHbQUOVXqjx2MQmeeN4Oap63RVvRAPaRgNCIwFgDJg3bG0c2','bar@bar.com',NULL,NULL),(1115,'barek','111111111','Kraków','Łojasiewicza','1','','$2b$10$zkYaWiBMFCpM69OnwAePSOyR/NP5xCf33n7ncYSXZmWpe5mftjI3.','barek@barek.com',NULL,NULL);
 /*!40000 ALTER TABLE `Bary` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,9 +89,10 @@ DROP TABLE IF EXISTS `Druzyny`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Druzyny` (
   `id_druzyny` int(11) NOT NULL AUTO_INCREMENT,
-  `nazwa_druzyny` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id_druzyny`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `nazwa_druzyny` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_druzyny`),
+  UNIQUE KEY `nazwa_druzyny` (`nazwa_druzyny`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,6 +101,7 @@ CREATE TABLE `Druzyny` (
 
 LOCK TABLES `Druzyny` WRITE;
 /*!40000 ALTER TABLE `Druzyny` DISABLE KEYS */;
+INSERT INTO `Druzyny` VALUES (1,'legia'),(2,'pogoń');
 /*!40000 ALTER TABLE `Druzyny` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,7 +122,7 @@ CREATE TABLE `Mecze` (
   KEY `id_druzyna2` (`id_druzyna2`),
   CONSTRAINT `Mecze_ibfk_1` FOREIGN KEY (`id_druzyna1`) REFERENCES `Druzyny` (`id_druzyny`),
   CONSTRAINT `Mecze_ibfk_2` FOREIGN KEY (`id_druzyna2`) REFERENCES `Druzyny` (`id_druzyny`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,6 +131,7 @@ CREATE TABLE `Mecze` (
 
 LOCK TABLES `Mecze` WRITE;
 /*!40000 ALTER TABLE `Mecze` DISABLE KEYS */;
+INSERT INTO `Mecze` VALUES (1,1,2,'2019-05-08 00:00:00');
 /*!40000 ALTER TABLE `Mecze` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,9 +172,10 @@ CREATE TABLE `Uzytkownicy` (
   `email` varchar(255) CHARACTER SET latin1 NOT NULL,
   `telefon` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
   `haslo` varchar(256) CHARACTER SET latin1 NOT NULL,
+  `status` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id_uzytkownika`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,7 +184,6 @@ CREATE TABLE `Uzytkownicy` (
 
 LOCK TABLES `Uzytkownicy` WRITE;
 /*!40000 ALTER TABLE `Uzytkownicy` DISABLE KEYS */;
-INSERT INTO `Uzytkownicy` VALUES (1,'Rafal','Kowalski','kowalski@kowalski.com','111111111','12345'),(2,'mmmm','mmmm','mmm@mmm.com','NULL','12345'),(3,'aaaa','aaaa','bbb@bbb.com','NULL','12345'),(4,'aaaa','aaaa','ab@ab.com','NULL','12345'),(6,'aaaa','aaaa','pueblo@pueblo1.com','NULL','12345'),(7,'as','as','aa@am.com','NULL','12345'),(8,'am','am','m@m.com','NULL','12345'),(9,'m','m','m@m.clm','NULL','12345');
 /*!40000 ALTER TABLE `Uzytkownicy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,4 +222,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-22 17:13:06
+-- Dump completed on 2019-05-07 22:28:02

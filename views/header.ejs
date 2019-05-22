@@ -7,6 +7,7 @@
         <% if(page=="main"){ %>
             <a class=link href="/login" tabindex="50">Logowanie</a>
         <% } else if(page=="authenticated"){ %>
+            <a class=link href="/my_account" tabindex="49">Moje konto</a>
             <a class=link href="/logout" tabindex="50">Wyloguj</a>
         <% } %>
         <!--guziki logowanie/wylogowanie/ustawienia konta-->
@@ -25,7 +26,7 @@
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/rozgrywki" tabindex="2">Rozgrywki
+                <% } %> href="/match" tabindex="2">Rozgrywki
             </a>
             <a class=
                <% if(title=="Bary"){ %>
@@ -55,7 +56,14 @@
                     menu
                 <% } %> href="/register_user" tabindex="6">Rejestracja użytkownika
             </a>
-            
+             <a class=
+            <% if(title=="Drużyny"){ %>
+                menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/teams" tabindex="6">Drużyny
+            </a>
+
             <!-- Uzytkownik zalogowany:   -->
         <% } else if(page=="authenticated"){ %>
             <a class=

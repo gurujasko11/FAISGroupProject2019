@@ -1,18 +1,19 @@
 var express = require('express');
 var router = express.Router();
 var indexModule = require('./index');
+var bcrypt = require('bcrypt');
 var getPageVariable = indexModule.getPageVariable;
 var authenticationModule = require('./authentication');
-var notAuthenticatedUserBar = authenticationModule.notAuthenticatedUserBar;
+var notAuthenticatedOnly = authenticationModule.notAuthenticatedOnly;
 
-router.get('/register_bar', notAuthenticatedUserBar, function (req, res, next) {
+router.get('/register_bar', notAuthenticatedOnly, function (req, res, next) {
     res.render('register_bar', {
         page: getPageVariable(req),
         title: 'Rejestracja baru'
     });
 });
 
-router.post('/register_bar', notAuthenticatedUserBar, function (req, res, next) {
+router.post('/register_bar', notAuthenticatedOnly, function (req, res, next) {
     var bar_name = req.body.bar_name.replace("'", "''");
     var telephone = req.body.telephone.replace("'", "''");
     var city = req.body.city.replace("'", "''");
@@ -64,14 +65,14 @@ router.post('/register_bar', notAuthenticatedUserBar, function (req, res, next) 
     });
 });
 
-router.get('/register_user', notAuthenticatedUserBar, function (req, res, next) {
+router.get('/register_user', notAuthenticatedOnly, function (req, res, next) {
     res.render('register_user', {
         page: getPageVariable(req),
         title: 'Rejestracja użytkownika'
     });
 });
 
-router.post('/register_user', notAuthenticatedUserBar, function (req, res, next) {
+router.post('/register_user', notAuthenticatedOnly, function (req, res, next) {
     var telephone = req.body.telephone.replace("'", "''");
     var password = req.body.password.replace("'", "''");
     var email = req.body.email.replace("'", "''");

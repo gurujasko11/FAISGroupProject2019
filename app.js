@@ -46,20 +46,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/', indexRouter.router);
 app.use('/users', usersRouter);
-
 app.use('/match', matchesRouter);
 app.use('/bars', barsRouter);
 app.use('/', myAccountRouter);
 app.use('/', authenticationRouter.router);
 app.use('/', registrationRouter.router);
 
+//require mysql
 var mysql = require('mysql');
 dbconn = mysql.createConnection({
-    user: 'root',
-    password: 'password',
-    database: 'Zespolowe'
+	user: 'root',
+	password: 'password',
+	database: 'Zespolowe'
 });
 dbconn.connect();
 

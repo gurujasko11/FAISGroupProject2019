@@ -112,7 +112,7 @@ function getTableNameFrom(user) //returns table name
         return 'Bary';
 }
 
-function authenticatedUsersBarsOnly(req, res, next) {
+function authenticatedOnly(req, res, next) {
     if (!req.isAuthenticated()) {
         req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
         return res.redirect('/login');
@@ -120,16 +120,29 @@ function authenticatedUsersBarsOnly(req, res, next) {
     next();
 }
 
-function notAuthenticatedUserBar(req, res, next) {
+function authenticatedUserOnly(req, res, next) {
+    if (!req.isAuthenticated()) {
+        req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+        return res.redirect('/login');
+    }
+	if(req.user.type != 'user') {
+		req.flash('FLASH_MSG', ['ERROR', 'Przepaszamy, tylko użytkownik ma dostęp do tego panelu']);
+        return res.redirect('/');
+	}
+    next();
+}
+
+function notAuthenticatedOnly(req, res, next) {
     if (req.isAuthenticated()) {
         req.flash('FLASH_MSG', ['INFO', 'Jesteś już zalogowany']);
-        res.redirect('/');
+        return res.redirect('/');
     }
     next();
 }
 
 module.exports = {
     router: router,
-    authenticatedUsersBarsOnly: authenticatedUsersBarsOnly,
-    notAuthenticatedUserBar: notAuthenticatedUserBar
+    authenticatedOnly: authenticatedOnly,
+	authenticatedUserOnly: authenticatedUserOnly,
+    notAuthenticatedOnly: notAuthenticatedOnly
 };
