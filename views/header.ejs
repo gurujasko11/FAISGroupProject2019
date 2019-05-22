@@ -28,25 +28,32 @@
                 <% } %> href="/rozgrywki" tabindex="2">Rozgrywki
             </a>
             <a class=
+               <% if(title=="Bary"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+                    <% } %> href="/bars" tabindex="3">Bary
+            </a>
+            <a class=
                 <% if(title=="O stronie"){ %>
                    menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/about" tabindex="3">O stronie
+                <% } %> href="/about" tabindex="4">O stronie
             </a>
             <a class=
                 <% if(title=="Rejestracja baru"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_bar" tabindex="4">Rejestracja baru
+                <% } %> href="/register_bar" tabindex="5">Rejestracja baru
             </a>
             <a class=
                 <% if(title=="Rejestracja użytkownika"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/register_user" tabindex="5">Rejestracja użytkownika
+                <% } %> href="/register_user" tabindex="6">Rejestracja użytkownika
             </a>
             
             <!-- Uzytkownik zalogowany:   -->
@@ -66,11 +73,32 @@
                 <% } %> href="/rozgrywki" tabindex="2">Rozgrywki
             </a>
             <a class=
+               <% if(title=="Bary"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+                    <% } %> href="/bars" tabindex="3">Bary
+            </a>
+            <a class=
                 <% if(title=="O stronie"){ %>
                    menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/about" tabindex="3">O stronie
+                <% } %> href="/about" tabindex="4">O stronie
+            </a>
+            <a class=
+               <% if(title=="Edycja baru"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/edit_bar" tabindex="5">Edycja baru
+            </a>
+            <a class=
+               <% if(title=="Usuń bar"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/delete_bar" tabindex="6">Usuń bar
             </a>
         <% } %>
     </div>
