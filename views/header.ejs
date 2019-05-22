@@ -63,6 +63,13 @@
                 menu
             <% } %> href="/teams" tabindex="6">Drużyny
             </a>
+            <a class=
+               <% if(title=="Terminarz rozrywek"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/match_schedule" tabindex="7">Terminarz rozrywek
+            </a>
 
             <!-- Uzytkownik zalogowany:   -->
         <% } else if(page=="authenticated"){ %>

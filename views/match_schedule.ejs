@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+
+<script src='/javascripts/alert.js' type='text/javascript'></script>
+
+<script>
+    function validateForm() {
+        return true;
+    }
+</script>
+
+<body>
+
+
+<div id="alerts"></div>
+<div id="page" class=page>
+    <h1><%= title %></h1>
+    <table class="table">
+        <thead>
+        <th><a href="?orderBy=czas">Data</a></th>
+        <th><a href="?orderBy=nazwa_baru">Bar</a></th>
+        <th><a href="?orderBy=id_druzyna1">Druzyna 1</a></th>
+        <th><a href="?orderBy=id_druzyna2">Druzyna 2</a></th>
+        </thead>
+        <tbody>
+        <%
+        for(var i = 0; i < data.length; i++) { %>
+        <tr>
+            <td><%= moment(data[i].czas).format('YYYY-MM-DD HH:mm') %></td>
+            <td><%=data[i].nazwa_baru%></td>
+            <td><%=data[i].druzyna1%></td>
+            <td><%=data[i].druzyna2%></td>
+
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+
+
+</div>
+<% include header.ejs %>
+<% include footer.ejs %>
+</body>
+</html>
+
+<script>
+
+</script>

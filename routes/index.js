@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
+
 router.get('/', function(req, res, next) {
 	dbconn.query('SELECT Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 ' +
 		'FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN ' +
@@ -12,8 +13,8 @@ router.get('/', function(req, res, next) {
 	});
 });
 
-router.get('/dev', function(req, res, next) {
-  res.render('template', { page: getPageVariable(req), title: 'CSS Test' });
+router.get('/dev', function (req, res, next) {
+    res.render('template', {page: getPageVariable(req), title: 'CSS Test'});
 });
 
 // router.get('/match', function(req, res, next) {
@@ -157,78 +158,142 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/test', function (req, res) {
-  console.log("[/TEST] Zalogowany? " + req.isAuthenticated());
-  if (req.isAuthenticated()) {
-    console.log("[/TEST] req.user = ");
-    printUserData(req);
-  }
-  res.redirect('/');
-});
-
-router.get('/bar_home', function(req, res, next)
-{
-  res.render('bar_home', { page: 'main', title: 'Moje mecze' });
-});
-
-router.get('/add_match', function(req, res, next)
-{
-  res.render('add_match', { page: 'main', title: 'Dodaj mecz' });
-});
-
-router.get('/account', function(req, res, next)
-{
-  res.render('account', { page: 'main', title: 'Konto' });
-});
-
-router.post('/search_match', function(req, res, next)
-{
-  console.log(req.body.search_text)
-  teams = req.body.search_text.split(',')
-  query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
-      "  FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 \n" +
-      " WHERE m.id_druzyna1 = t1.id_druzyny\n" +
-      "   AND m.id_druzyna2 = t2.id_druzyny" +
-      "   AND t1.nazwa_druzyny = \'" + teams[0] +
-      "\'   AND t2.nazwa_druzyny = \'" + teams[1] + "\'"
-  dbconn.query(query, function(err, rows)
-  {
-    if(err)  res.render('search_match_result', { page: 'main', title: err, desc: err.msg });
-    else {
-      res.render('search_match_result', { page: 'main', title: 'Wyniki wyszukiwania', args : rows});
+    console.log("[/TEST] Zalogowany? " + req.isAuthenticated());
+    if (req.isAuthenticated()) {
+        console.log("[/TEST] req.user = ");
+        printUserData(req);
     }
-  });
+    res.redirect('/');
+});
+
+router.get('/bar_home', function (req, res, next) {
+    res.render('bar_home', {page: 'main', title: 'Moje mecze'});
+});
+
+router.get('/add_match', function (req, res, next) {
+    res.render('add_match', {page: 'main', title: 'Dodaj mecz'});
+});
+
+router.get('/account', function (req, res, next) {
+    res.render('account', {page: 'main', title: 'Konto'});
+});
+
+router.post('/search_match', function (req, res, next) {
+    console.log(req.body.search_text)
+    teams = req.body.search_text.split(',')
+    query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
+        "  FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 \n" +
+        " WHERE m.id_druzyna1 = t1.id_druzyny\n" +
+        "   AND m.id_druzyna2 = t2.id_druzyny" +
+        "   AND t1.nazwa_druzyny = \'" + teams[0] +
+        "\'   AND t2.nazwa_druzyny = \'" + teams[1] + "\'"
+    dbconn.query(query, function (err, rows) {
+        if (err) res.render('search_match_result', {page: 'main', title: err, desc: err.msg});
+        else {
+            res.render('search_match_result', {page: 'main', title: 'Wyniki wyszukiwania', args: rows});
+        }
+    });
 })
 
+router.post('/register_bar', function (req, res, next) {
+    //TODO: escape '
+    var bar_name = req.body.bar_name;
+    var telephone = req.body.telephone;
+    var city = req.body.city;
+    var street = req.body.street;
+    var building_number = req.body.building_number;
+    var local_number = req.body.local_number;
+    var password = req.body.password;
+    var email = req.body.email;
+    var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
+        "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + "', '" + email + "');";
+
+    console.log("Wyslano insert do bazy danych: " + query);
+    dbconn.query(query, function (err, rows) {
+        if (err) res.render('register_bar', {page: 'main', title: err, desc: err.msg});
+        else res.render('register_bar', {page: 'main', title: "Pomyślnie utworzono konto"});
+    });
+
+})
+
+router.get('/bar_login', function (req, res, next) {
+
+    app.use(session({
+        secret: '343ji43j4n3jn4jk3n'
+    }));
+    res.redirect('/');
+});
+
 function getPageVariable(req) {
-  if (req.isAuthenticated())
-    return "authenticated";
-  else
-    return "main";
+    if (req.isAuthenticated())
+        return "authenticated";
+    else
+        return "main";
 }
 
 function printUserData(req) {
-  if (req == undefined) console.log("[printUserData] ERROR: req is undefined");
-  console.log(JSON.stringify(req.user, null, 3));
+    if (req == undefined) console.log("[printUserData] ERROR: req is undefined");
+    console.log(JSON.stringify(req.user, null, 3));
 }
 
 
 var obj = {};
 
-router.get('/teams', function(req, res, next) {
+router.post('/edit_bar', function (req, res, next) {
 
-  dbconn.query('SELECT * FROM Druzyny', function (err, result) {
-
-    if (err) {
-      throw err;
-    } else {
-      obj = {print: result, page: getPageVariable(req), title: 'teams'};
-      res.render('teams', obj);
+    var password_changed = false;
+    if (req.body.password.length > 2) {
+        password_changed = true
     }
-  });
 
-  //res.render('teams', { page: getPageVariable(req), title: 'teams' });
+    var bar_name = "'" + req.body.bar_name.replace("'", "''") + "'";
+    var telephone = "'" + req.body.telephone.replace("'", "''") + "'";
+    var city = "'" + req.body.city.replace("'", "''") + "'";
+    var street = "'" + req.body.street.replace("'", "''") + "'";
+    var building_number = "'" + req.body.building_number.replace("'", "''") + "'";
+    var local_number = "'" + req.body.local_number.replace("'", "''") + "'";
+    var password = "'" + req.body.password.replace("'", "''") + "'";
+    var email = "'" + req.body.email.replace("'", "''") + "'";
+
+    const saltRounds = 10;
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+        bcrypt.hash(password, salt, function (err, hash) {
+
+            var query = "UPDATE Bary " +
+                "SET nazwa_baru = " + bar_name + ", telefon = " + telephone + ", miasto = " + city + ", ulica = " + street
+                + ", numer_budynku = " + building_number + ", numer_lokalu = " + local_number + ", haslo = '" + hash +
+                "', email = " + email +
+                " WHERE id_baru = '" + req.user.barID + "'";
+
+            if (!password_changed) {
+                query = "UPDATE Bary " +
+                    "SET nazwa_baru = " + bar_name + ", telefon = " + telephone + ", miasto = " + city + ", ulica = " + street
+                    + ", numer_budynku = " + building_number + ", numer_lokalu = " + local_number +
+                    "', email = " + email +
+                    " WHERE id_baru = '" + req.user.barID + "'";
+            }
+            console.log("Wyslano update do bazy danych: " + query);
+            dbconn.query(query, function (err, rows) {
+                console.log(err);
+            });
+        });
+    });
 });
 
+router.get('/teams', function (req, res, next) {
+
+    dbconn.query('SELECT * FROM Druzyny', function (err, result) {
+
+        if (err) {
+            throw err;
+        } else {
+            obj = {print: result, page: getPageVariable(req), title: 'teams'};
+            res.render('teams', obj);
+        }
+    });
+
+    //res.render('teams', { page: getPageVariable(req), title: 'teams' });
+});
 
 router.get('/about/match/:id', function(req, res, next)
 {
@@ -373,3 +438,271 @@ module.exports = {
   printUserData: printUserData,
   getPageVariable: getPageVariable
 };
+
+router.get('/about/match/:id', function (req, res, next) {
+    match_id = req.params.id;
+    console.log(req.body.search_text);
+    query = "SELECT t1.id_baru, t1.id_meczu, t2.nazwa_baru, t2.miasto, t2.ulica, t2.numer_budynku, t2.numer_lokalu\n" +
+        "FROM Zespolowe.Bary_Z_Meczami t1, Zespolowe.Bary t2\n" +
+        "WHERE t1.id_meczu = 1\n" +
+        "AND t1.id_baru = t2.id_baru;";
+    dbconn.query(query, function (err, rows) {
+        if (err) res.render('search_match_result', {page: 'main', title: err, desc: err.msg});
+        else {
+            res.render('about_match', {page: 'main', title: 'Gdzie rozgrywany jest mecz', args: rows});
+        }
+    });
+});
+
+const moment = require('moment');
+
+router.get('/match_schedule', function (req, res, next) {
+    var orderBy = 'czas';
+    if (req.query.orderBy) {
+        orderBy = req.query.orderBy;
+    }
+
+    if (orderBy == 'nazwa_baru') {
+
+
+
+        dbconn.query(
+            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY b." + orderBy,
+            function (err, result) {
+                const emptyArray = [];
+                if (result === undefined) {
+                    res.render('match_schedule', {
+                        page: 'match_schedule',
+                        title: 'Terminarz rozrywek',
+                        data: emptyArray
+                    });
+                }
+
+                dbconn.query(
+                    "SELECT * FROM Druzyny",
+                    function (err, teams) {
+                        if (teams) {
+                            // console.log(teams)
+
+                            const matches = [];
+
+                            function getTeamName(id) {
+                                var name = 'Wisla';
+
+                                for (var i = 0; i < teams.length; i++) {
+                                    if (teams[i].id_druzyny == id) {
+                                        return teams[i].nazwa_druzyny;
+                                    }
+                                }
+                                return name;
+                            }
+
+                            result.map(function(singleResult) {
+                                const match = {
+                                    nazwa_baru: singleResult.nazwa_baru,
+                                    czas: singleResult.czas,
+                                    druzyna1: getTeamName(singleResult.id_druzyna1),
+                                    druzyna2: getTeamName(singleResult.id_druzyna2)
+                                };
+                                matches.push(match);
+                            });
+
+                            res.render('match_schedule', {
+                                page: 'main',
+                                title: 'Terminarz rozrywek',
+                                data: matches,
+                                moment: moment
+                            });
+
+                        }
+                    }
+                );
+            }
+        );
+
+
+
+
+
+
+    } else if (orderBy == 'id_druzyna1') {
+
+
+        dbconn.query(
+            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy,
+            function (err, result) {
+                const emptyArray = [];
+                if (result === undefined) {
+                    res.render('match_schedule', {
+                        page: 'main',
+                        title: 'Terminarz rozrywek',
+                        data: emptyArray
+                    });
+                }
+
+                dbconn.query(
+                    "SELECT * FROM Druzyny",
+                    function (err, teams) {
+                        if (teams) {
+                            // console.log(teams)
+
+                            const matches = [];
+
+                            function getTeamName(id) {
+                                var name = 'Wisla';
+
+                                for (var i = 0; i < teams.length; i++) {
+                                    if (teams[i].id_druzyny == id) {
+                                        return teams[i].nazwa_druzyny;
+                                    }
+                                }
+                                return name;
+                            }
+
+                            result.map(function(singleResult) {
+                                const match = {
+                                    nazwa_baru: singleResult.nazwa_baru,
+                                    czas: singleResult.czas,
+                                    druzyna1: getTeamName(singleResult.id_druzyna1),
+                                    druzyna2: getTeamName(singleResult.id_druzyna2)
+                                };
+                                matches.push(match);
+                            });
+
+
+                            matches.sort(function(a, b) {
+                               return a.druzyna1.localeCompare(b.druzyna1);
+                            });
+
+                            res.render('main', {
+                                page: 'match_schedule',
+                                title: 'Terminarz rozrywek',
+                                data: matches,
+                                moment: moment
+                            });
+
+                        }
+                    }
+                );
+            }
+        );
+
+
+    } else if (orderBy == 'id_druzyna2') {
+
+
+        dbconn.query(
+            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy,
+            function (err, result) {
+                const emptyArray = [];
+                if (result === undefined) {
+                    res.render('match_schedule', {
+                        page: 'match_schedule',
+                        title: 'Terminarz rozrywek',
+                        data: emptyArray
+                    });
+                }
+
+                dbconn.query(
+                    "SELECT * FROM Druzyny",
+                    function (err, teams) {
+                        if (teams) {
+                            // console.log(teams)
+
+                            const matches = [];
+
+                            function getTeamName(id) {
+                                var name = 'Wisla';
+
+                                for (var i = 0; i < teams.length; i++) {
+                                    if (teams[i].id_druzyny == id) {
+                                        return teams[i].nazwa_druzyny;
+                                    }
+                                }
+                                return name;
+                            }
+
+                            result.map(function(singleResult) {
+                                const match = {
+                                    nazwa_baru: singleResult.nazwa_baru,
+                                    czas: singleResult.czas,
+                                    druzyna1: getTeamName(singleResult.id_druzyna1),
+                                    druzyna2: getTeamName(singleResult.id_druzyna2)
+                                };
+                                matches.push(match);
+                            });
+
+
+                            matches.sort(function(a, b) {
+                                return a.druzyna2.localeCompare(b.druzyna2);
+                            });
+
+                            res.render('match_schedule', {
+                                page: 'main',
+                                title: 'Terminarz rozrywek',
+                                data: matches,
+                                moment: moment
+                            });
+
+                        }
+                    }
+                );
+            }
+        );
+
+    } else {
+        dbconn.query(
+            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy,
+            function (err, result) {
+                const emptyArray = [];
+                if (result === undefined) {
+                    res.render('match_schedule', {
+                        page: 'main',
+                        title: 'Terminarz rozrywek',
+                        data: emptyArray
+                    });
+                }
+
+                dbconn.query(
+                    "SELECT * FROM Druzyny",
+                    function (err, teams) {
+                        if (teams) {
+                            // console.log(teams)
+
+                            const matches = [];
+
+                            function getTeamName(id) {
+                                var name = 'Wisla';
+
+                                for (var i = 0; i < teams.length; i++) {
+                                    if (teams[i].id_druzyny == id) {
+                                        return teams[i].nazwa_druzyny;
+                                    }
+                                }
+                                return name;
+                            }
+
+                            result.map(function(singleResult) {
+                                const match = {
+                                    nazwa_baru: singleResult.nazwa_baru,
+                                    czas: singleResult.czas,
+                                    druzyna1: getTeamName(singleResult.id_druzyna1),
+                                    druzyna2: getTeamName(singleResult.id_druzyna2)
+                                };
+                                matches.push(match);
+                            });
+
+                            res.render('match_schedule', {
+                                page: 'main',
+                                title: 'Terminarz rozrywek',
+                                data: matches,
+                                moment: moment
+                            });
+
+                        }
+                    }
+                );
+            }
+        );
+    }
+});
