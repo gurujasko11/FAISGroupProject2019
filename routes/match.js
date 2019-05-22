@@ -7,8 +7,8 @@ const nodemailer = require("nodemailer");
 // SELECT Mecze.id_meczu as id,Bary_Z_Meczami.id_baru,Bary.nazwa_baru, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 left join Bary_Z_Meczami ON Bary_Z_Meczami.id_meczu=Mecze.id_meczu inner join Bary ON Bary.id_baru=Bary_Z_Meczami.id_baru;
 router.get('/', function (req, res, next) {
     let query_match_teams_place = "" +
-        "SELECT Mecze.id_meczu as id,Bary_Z_Meczami.id_baru,Bary.nazwa_baru, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 left join Bary_Z_Meczami ON Bary_Z_Meczami.id_meczu=Mecze.id_meczu inner join Bary ON Bary.id_baru=Bary_Z_Meczami.id_baru;"
-
+        //"SELECT Mecze.id_meczu as id,Bary_Z_Meczami.id_baru,Bary.nazwa_baru, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 left join Bary_Z_Meczami ON Bary_Z_Meczami.id_meczu=Mecze.id_meczu inner join Bary ON Bary.id_baru=Bary_Z_Meczami.id_baru;"
+        "SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;";
     dbconn.query(query_match_teams_place, function (err, result) {
         let emptyArray = [];
 
@@ -22,7 +22,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/add', function (req, res, next) {
-    dbconn.query("SELECT * from bary", function (err, result) {
+    dbconn.query("SELECT * from Bary", function (err, result) {
         res.render('add_match', {page: 'main', title: 'Dodaj rozgrywkę', data: result});
     });
 });
@@ -56,8 +56,11 @@ function notify_users_about_match(team1_id, team2_id, datetime){
 }
 
 router.post('/add', function (req, res, next) {
-    let team1_id, team2_id;
+    let team1_id, team2_id, id_baru, id_meczu;
+    let place = req.body.place;
+
     //todo if in database
+    dbconn.query("SET FOREIGN_KEY_CHECKS=0;", function (err, res) {});
     dbconn.query("INSERT INTO Druzyny(nazwa_druzyny) VALUES ('" + req.body.team1 + "')", function (err, result) {
         team1_id = result.insertId;
 
@@ -65,9 +68,30 @@ router.post('/add', function (req, res, next) {
             team2_id = result.insertId;
             let datetime = req.body.date + " " + req.body.time;
             let add_match_query = "INSERT INTO Mecze(id_druzyna1, id_druzyna2, czas) VALUES(" + team1_id + "," + team2_id + ",'" + datetime + "')";
+
+
+
+            // console.log(add_match_query);
+            // console.log(insert_to_bary_z_meczami);
+            //
+            // dbconn.query(insert_to_bary_z_meczami, function (err, res) {});
+
             dbconn.query(add_match_query, function (err, result) {
-                notify_users_about_match(team1_id, team2_id, datetime);
-                res.redirect("/");
+                id_meczu = result.insertId;
+                console.log("place");
+                console.log(place);
+                let get_bar_id_query = "select id_baru, nazwa_baru from Bary where nazwa_baru=" + place;
+                dbconn.query(get_bar_id_query, function (err, result) {
+                    id_baru = result.id_baru;
+                    let insert_to_bary_z_meczami = "INSERT INTO Bary_Z_Meczami(id_baru, id_meczu, czas) VALUES(" + id_baru + ", " + id_meczu + ", " + datetime + "')";
+
+                    dbconn.query(insert_to_bary_z_meczami, function (err, result) {
+                        notify_users_about_match(team1_id, team2_id, datetime);
+                        dbconn.query("SET FOREIGN_KEY_CHECKS=1;", function (err, res) {});
+                        res.redirect("/");
+                    });
+
+                });
             });
         });
     });
@@ -108,8 +132,7 @@ router.get('/delete/:id', function (req, res, next) {
     dbconn.query("select * from Mecze where id_meczu="
         + req.params.id, function (err, result) {
 
-        dbconn.query("SET FOREIGN_KEY_CHECKS=0;", function (err, res) {
-        });
+        dbconn.query("SET FOREIGN_KEY_CHECKS=0;", function (err, res) {});
 
         dbconn.query("delete from Druzyny where id_druzyny="
             + result[0].id_druzyna1, function (err, res) {
@@ -122,8 +145,7 @@ router.get('/delete/:id', function (req, res, next) {
         dbconn.query("delete from Mecze where id_meczu="
             + req.params.id, function (err, res) {
         });
-        dbconn.query("SET FOREIGN_KEY_CHECKS=1;", function (err, res) {
-        });
+        dbconn.query("SET FOREIGN_KEY_CHECKS=1;", function (err, res) {});
         res.redirect('/match');
     });
 });
