@@ -11,8 +11,8 @@ const nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'piotr.intes@gmail.com',
-    pass: '######'
+    user: 'zespolowe.fais@gmail.com',
+    pass: 'alama100$'
   }
 });
 
@@ -21,33 +21,33 @@ passport.use(new LocalStrategy({
   passwordField: 'password',
   passReqToCallback : true
 },
-  function(req, username, password, done) {
-    username = req.body.email.replace("'", "''");
-    password = req.body.password.replace("'", "''");
-    tableName = getTableNameFrom(req.body.user.replace("'", "''"));
-    if(!username || !password ) { console.log("username/password not given: "); console.log(username); console.log(password); return done(null, false); }
-      dbconn.query("select * from " + tableName + " where email = '"+ username+"'", function(err, rows) {
-      if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
-      if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
-
-
-      var encPassword = password;
-      var dbPassword  = rows[0].haslo;
-      bcrypt.compare(encPassword, dbPassword, function(err, res) {
-        if(res) {
-          if(tableName == 'Uzytkownicy')
-            return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: req.body.user });
-          else if(tableName == 'Bary')
-              return done(null, { barID: rows[0].id_baru, bar_name: rows[0].nazwa_baru, telephone: rows[0].telefon, town: rows[0].miasto, 
-                                  street: rows[0].ulica, building_number: rows[0].numer_budynku, local_number: rows[0].numer_lokalu, type: req.body.user });
+function(req, username, password, done) {
+  username = req.body.email.replace("'", "''");
+  password = req.body.password.replace("'", "''");
+  tableName = getTableNameFrom(req.body.user.replace("'", "''"));
+  if(!username || !password ) { console.log("username/password not given: "); console.log(username); console.log(password); return done(null, false); }
+  dbconn.query("select * from " + tableName + " where email = '"+ username+"'", function(err, rows) {
+    if (err) return done(null, false, req.flash('FLASH_MSG', ['SQL ERROR', err]));
+              if(!rows.length){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje'])); }
+              
+              
+              var encPassword = password;
+    var dbPassword  = rows[0].haslo;
+    bcrypt.compare(encPassword, dbPassword, function(err, res) {
+      if(res) {
+        if(tableName == 'Uzytkownicy')
+          return done(null, { userID: rows[0].id_uzytkownika, first_name: rows[0].imie, last_name: rows[0].nazwisko, email: rows[0].email, type: req.body.user });
+        else if(tableName == 'Bary')
+          return done(null, { barID: rows[0].id_baru, bar_name: rows[0].nazwa_baru, telephone: rows[0].telefon, town: rows[0].miasto, 
+            street: rows[0].ulica, building_number: rows[0].numer_budynku, local_number: rows[0].numer_lokalu, type: req.body.user });
           else
             return done(null, rows[0]);
-        } else {
-          return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
-        } 
-      });
+      } else {
+        return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
+      } 
     });
-  }
+  });
+}
 ));
 
 passport.serializeUser(function(user, done) {
@@ -106,11 +106,11 @@ router.get('/sentReset/:isBar/:email', function (req, res) {
       var mailOptions = {
         from: 'Nodemailer@gmail.com',
         to: req.param("email", 0),
-        subject: 'Reset password to our service - Drink and watch',
-        html: 'Hello <br>'
-            + 'To reset your password to "password" click link below:<br>'
-            + '<a href=' + link + '>' + link + '</a>'
-            + '<br>Bests, <br>Project team'
+              subject: 'Resetowanie hasła - Drink and watch',
+              html: 'Witaj! <br>'
+              + 'Aby ustawić nowe hasło kliknij poniższy link:<br>'
+              + '<a href=' + link + '>' + link + '</a>'
+              + '<br>Bests, <br>Project team'
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
@@ -143,14 +143,43 @@ router.get('/resetPassw/:isBar/:Token', function (req, res) {
       res.render('error', { page: 'Element is not found is database', title: 'Informacje o barze' });
     } else {
       //console.debug(result);
-      let que ='UPDATE ' + table + ' SET haslo = \"$2b$10$Yyl4iauHXmwxVKjlioCBrODMEsQmzU3/OLSTdvgrZnpyhq3W6NHjO\" WHERE haslo = \"' + token + '\"';
-      //console.debug(que);
-      dbconn.query(que), function (err, result) {
-        //console.debug(err);
-      }
-      req.flash('FLASH_MSG', ['SUCCESS', 'Hasło zostało zresetowane do "password".']);
-      res.render('login', { page: getPageVariable(req), title: 'Logowanie', flash_messages: req.flash('FLASH_MSG') });
+      res.render('newPasswd', { page: getPageVariable(req), title: 'Zmiana hasła', isBar: req.param("isBar", 0), token: req.param("Token",0) , flash_messages: req.flash('FLASH_MSG') });
     }
+  });
+
+});
+
+router.post('/setPassw/:isBar/:Token', function(req, res, next)
+{
+  var password = req.body.password.replace("'", "''");
+
+  const saltRounds = 10;
+
+  let table = "Uzytkownicy";
+  let token = req.param("Token",0);
+  token = token.replace(/-sl-/g,"/");
+  if (req.param("isBar", 0) == 1) {
+    table = "Bary";
+  }
+
+  bcrypt.genSalt(saltRounds, function (err, salt) {
+    bcrypt.hash(password, salt, function (err, hash) {
+      dbconn.query('SELECT * FROM `' + table + '` WHERE `haslo` = "' + token + '"', function (err, result) {
+        if (result.length == 0)
+        {
+          res.render('error', { page: 'Element is not found is database', title: 'Informacje o barze' });
+        } else {
+          //console.debug(result);
+          let que ='UPDATE ' + table + ' SET haslo = \"'+ hash +'\" WHERE haslo = \"' + token + '\"';
+          //console.debug(que);
+          dbconn.query(que), function (err, result) {
+            //console.debug(err);
+          }
+          req.flash('FLASH_MSG', ['SUCCESS', 'Hasło zostało zmienione']);
+          res.render('login', { page: getPageVariable(req), title: 'Logowanie', flash_messages: req.flash('FLASH_MSG') });
+        }
+      });
+    })
   });
 });
 
@@ -183,8 +212,8 @@ router.post('/register_bar', function(req, res, next)
   var local_number = req.body.local_number.replace("'", "''");
   var password = req.body.password.replace("'", "''");
   var email = req.body.email.replace("'", "''");
-
-
+  
+  
   validateCityInDB(city).then(function(value) {
     isEmailAvailable(email, 'Bary').then(function(value) {
       addBarToDB(password, bar_name, telephone, city, street, building_number, local_number, email, res, req);
@@ -195,11 +224,11 @@ router.post('/register_bar', function(req, res, next)
         res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
       }
       else if(reason == 1) res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
-      else
-      {
-        console.log("[/register_bar.isEmailAvailable] SQL_ERROR: " + reason);
-        res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
-      }
+                                        else
+                                        {
+                                          console.log("[/register_bar.isEmailAvailable] SQL_ERROR: " + reason);
+                                          res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+                                        }
     });
   }, (reason) => {//dodanie miasta sie nie powiodlo
     console.log("[/register_bar.validateCityInDB] SQL_ERROR: " + reason);
@@ -227,29 +256,28 @@ router.post('/register_user', function(req, res, next)
   var first_name = req.body.first_name.replace("'", "''");
   var last_name = req.body.last_name.replace("'", "''");
   if(telephone == '') telephone = 'NULL';
-  if(first_name == '') first_name = 'NULL';
-  if(last_name == '') last_name = 'NULL';
-
-  
-  
-  isEmailAvailable(email, 'Uzytkownicy').then(function(value) {
-    addUserToDB(password, first_name, last_name, email, telephone, res, req);
-  }, (reason) => {
-    res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: "Ten e-mail jest już zajęty" });
-    if(typeof(reason) === 'undefined') //nigdy nie powinno do tego wejsc
-    {
-      console.log("[/register_user.isEmailAvailable] UNDEFINED REASON");
-      res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
-    }
-    else if(reason == 1) res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
-    else
-    {
-      console.log("[/register_user.isEmailAvailable] SQL_ERROR: " + reason);
-      res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
-    }
-  });
-  console.log("pas:", password);
-  
+            if(first_name == '') first_name = 'NULL';
+            if(last_name == '') last_name = 'NULL';
+            
+            
+            isEmailAvailable(email, 'Uzytkownicy').then(function(value) {
+              addUserToDB(password, first_name, last_name, email, telephone, res, req);
+            }, (reason) => {
+              res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: "Ten e-mail jest już zajęty" });
+              if(typeof(reason) === 'undefined') //nigdy nie powinno do tego wejsc
+              {
+                console.log("[/register_user.isEmailAvailable] UNDEFINED REASON");
+                res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+              }
+              else if(reason == 1) res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Ten e-mail już jest zajęty" });
+                                                        else
+                                                        {
+                                                          console.log("[/register_user.isEmailAvailable] SQL_ERROR: " + reason);
+                                                          res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'ERROR', msg: "Przepraszamy, wystąpił błąd po stronie serwera" });
+                                                        }
+            });
+            console.log("pas:", password);
+            
 });
 
 router.get('/login', function(req, res, next) {
@@ -263,11 +291,11 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login', failureFlash : true}),
-  function(req, res, next) {
-    req.flash('FLASH_MSG', ['SUCCESS', 'Zalogowano pomyślnie']);
-    res.redirect('/');
-  });
+            passport.authenticate('local', { failureRedirect: '/login', failureFlash : true}),
+            function(req, res, next) {
+              req.flash('FLASH_MSG', ['SUCCESS', 'Zalogowano pomyślnie']);
+              res.redirect('/');
+            });
 
 router.get('/logout', function(req, res)
 {
@@ -288,7 +316,7 @@ router.get('/test', function(req, res)
 {
   console.log("[/TEST] Zalogowany? " + req.isAuthenticated());
   if(req.isAuthenticated()) console.log("[/TEST] req.user = " + JSON.stringify(req.user, null, 3));
-  res.redirect('/');
+          res.redirect('/');
 });
 
 
@@ -297,7 +325,7 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
   bcrypt.genSalt(saltRounds, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo) values " +
-        "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "');";
+      "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "');";
       console.log("Wyslano insert do bazy danych: " + query);
       dbconn.query(query, function (err, rows) {
         if (err) {
@@ -314,74 +342,6 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
 function getPageVariable(req)
 {
   if(req.isAuthenticated())
-    
-router.get('/bar_home', function(req, res, next)
-{
-  res.render('bar_home', { page: 'main', title: 'Moje mecze' });
-});
-
-router.get('/add_match', function(req, res, next)
-{
-  res.render('add_match', { page: 'main', title: 'Dodaj mecz' });
-});
-
-router.get('/account', function(req, res, next)
-{
-  res.render('account', { page: 'main', title: 'Konto' });
-});
-
-router.post('/search_match', function(req, res, next)
-{
-  console.log(req.body.search_text)
-  teams = req.body.search_text.split(',')
-  query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
-      "  FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 \n" +
-      " WHERE m.id_druzyna1 = t1.id_druzyny\n" +
-      "   AND m.id_druzyna2 = t2.id_druzyny" +
-      "   AND t1.nazwa_druzyny = \'" + teams[0] +
-      "\'   AND t2.nazwa_druzyny = \'" + teams[1] + "\'"
-  dbconn.query(query, function(err, rows)
-  {
-    if(err)  res.render('search_match_result', { page: 'main', title: err, desc: err.msg });
-    else {
-      res.render('search_match_result', { page: 'main', title: 'Wyniki wyszukiwania', args : rows});
-    }
-  });
-})
-
-router.post('/register_bar', function(req, res, next)
-{
-  //TODO: escape '
-  var bar_name = req.body.bar_name;
-  var telephone = req.body.telephone;
-  var city = req.body.city;
-  var street = req.body.street;
-  var building_number = req.body.building_number;
-  var local_number = req.body.local_number;
-  var password = req.body.password;
-  var email = req.body.email;
-  var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-              "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + "', '" + email + "');";
-
-  console.log("Wyslano insert do bazy danych: " + query);
-  dbconn.query(query, function(err, rows)
-  {
-    if(err) res.render('register_bar', { page: 'main', title: err, desc: err.msg });
-    else res.render('register_bar', { page: 'main', title: "Pomyślnie utworzono konto" });
-  });
-  
-})
-
-router.get('/bar_login', function(req, res, next)
-{
-
-  app.use(session({
-    secret: '343ji43j4n3jn4jk3n'
-  }));
-  res.redirect('/');
-});
-function getPageVariable(req) {
-  if (req.isAuthenticated())
     return "authenticated";
   else
     return "main";
@@ -418,7 +378,7 @@ function isEmailAvailable(email, tableNameInDB)
         reject(err);
       } 
       if(rows.length >= 1) reject(rows.length);
-      else resolve();
+                else resolve();
     });
   });
 }
@@ -436,7 +396,7 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
   bcrypt.genSalt(saltRounds, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-        "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "');";
+      "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "');";
       console.log("Wyslano insert do bazy danych: " + query);
       dbconn.query(query, function (err, rows) {
         if (err) {
@@ -449,41 +409,7 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
     });
   });
 }
-  
-var obj = {};
-
-router.get('/teams', function(req, res, next) {
-
-  dbconn.query('SELECT * FROM Druzyny', function (err, result) {
-
-    if (err) {
-      throw err;
-    } else {
-      obj = {print: result, page: getPageVariable(req), title: 'teams'};
-      res.render('teams', obj);
-    }
-  });
-
-module.exports = {
-  router: router,
-  printUserData: printUserData,
-  getPageVariable: getPageVariable
-};
 
 
-router.get('/about/match/:id', function(req, res, next)
-{
-  match_id = req.params.id
-  console.log(req.body.search_text)
-  query = "SELECT t1.id_baru, t1.id_meczu, t2.nazwa_baru, t2.miasto, t2.ulica, t2.numer_budynku, t2.numer_lokalu\n" +
-      "FROM Zespolowe.Bary_Z_Meczami t1, Zespolowe.Bary t2\n" +
-      "WHERE t1.id_meczu = 1\n" +
-      "AND t1.id_baru = t2.id_baru;"
-  dbconn.query(query, function(err, rows)
-  {
-      if(err)  res.render('search_match_result', { page: 'main', title: err, desc: err.msg });
-      else {
-          res.render('about_match', { page: 'main', title: 'Gdzie rozgrywany jest mecz', args : rows});
-      }
-  });
-})
+module.exports = router;
+

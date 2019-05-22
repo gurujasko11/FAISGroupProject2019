@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+
+<script src='/javascripts/alert.js' type='text/javascript'></script>
+
+<script>
+    function validateForm() {
+        return true;
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<div id="page" class=page>
+    <h1><%= title %></h1>
+    <table class="table">
+        <thead>
+        <th>Nazwa</th>
+        <th>Czas</th>
+        <th>Opcje</th>
+        </thead>
+        <tbody>
+        <% for(var i = 0; i < data.length; i++) { %>
+            <tr>
+                <td><%= data[i].team1 + " - " + data[i].team2 %></td>
+                <td class="data"><%= data[i].czas %></td>
+                <td><a href="<%= "/match/edit/" + data[i].id %>">Edycja</a>
+                    <a href="<%= "/match/delete/" + data[i].id %>">Usun</a></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <div style="text-align:center">
+        <% if(addPossible){ %>
+            <input type="button" value="Dodaj" onclick="location.href='/match/add'">
+        <% } %>
+        <!--<a href="/match/add" class="btn btn-primary float-right">Dodaj</a>-->
+    </div>
+
+</div>
+<% include header.ejs %>
+<% include footer.ejs %>
+</body>
+</html>
+
+<script>
+    let date = document.getElementsByClassName("data");
+    dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
+    Array.from(date).forEach(function (element, index, array) {
+        console.log(element)
+        let datetime = new Date(element.innerHTML);
+        let str = (dni[datetime.getDay()] + ", " + datetime.getDate()) + "." + (datetime.getMonth() + 1) + "." + datetime.getFullYear() + " " + datetime.getHours() + ":" + datetime.getMinutes();
+        element.innerHTML = str;
+    })
+</script>
