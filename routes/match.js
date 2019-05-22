@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const bcrypt = require('bcrypt');
+const nodemailer = require("nodemailer");
 
 // SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;
 
@@ -21,17 +23,47 @@ router.get('/add', function (req, res, next) {
 
 });
 
+
+function sendE(team_id, user_id) {
+    console.log("likes:");
+    console.log(team_id);
+    console.log(user_id);
+    dbconn.query("SELECT email FROM Uzytkownicy WHERE id_uzytkownika=" + user_id, function (err, result) {
+        if(result !== undefined) {
+            console.log(result);
+            let email = result[0].email;
+            console.log(email);
+            send_email(email);
+        }
+    });
+}
+
+function notify_users_about_match(team1_id, team2_id, datetime){
+    dbconn.query("SELECT * FROM Uzytkownik_Z_Druzynami", function (err, result) {
+        for(var i = 0, size = result.length; i < size ; i++){
+
+            let user_id = result[i].id_uzytkownika;
+            let team_id = result[i].id_druzyny;
+            if(team_id === team1_id || team_id === team2_id){
+                sendE(team_id, user_id, datetime);
+            }
+        }
+    });
+}
+
 router.post('/add', function (req, res, next) {
     let team1_id, team2_id;
+    //todo if in database
     dbconn.query("INSERT INTO Druzyny(nazwa_druzyny) VALUES ('" + req.body.team1 + "')", function (err, result) {
         team1_id = result.insertId;
 
         dbconn.query("INSERT INTO Druzyny(nazwa_druzyny) VALUES ('" + req.body.team2 + "')", function (err, result) {
             team2_id = result.insertId;
             let datetime = req.body.date + " " + req.body.time;
-            let query = "INSERT INTO Mecze(id_druzyna1, id_druzyna2, czas) VALUES(" + team1_id + "," + team2_id + ",'" + datetime + "')";
-            dbconn.query(query, function (err, result) {
-                res.redirect("/");// ('match', {page: 'main', title: 'Lista rozgrywek'})
+            let add_match_query = "INSERT INTO Mecze(id_druzyna1, id_druzyna2, czas) VALUES(" + team1_id + "," + team2_id + ",'" + datetime + "')";
+            dbconn.query(add_match_query, function (err, result) {
+                notify_users_about_match(team1_id, team2_id, datetime);
+                res.redirect("/");
             });
         });
     });
@@ -84,74 +116,47 @@ router.get('/delete/:id', function (req, res, next) {
 });
 
 
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'zespolowe.fais@gmail.com',
+        pass: 'alama100$'
+    }
+});
 
 
 
 
-// var emailjs = require("emailjs");
-
-function sendEmail () {
+function send_email (target_email) {
 
     var service_id = 'gmail';
-    var template_id = "template_JGGDCknV";
+    var link = "http://localhost:3000/match"; // todo need correct link
 
-    var template_params = {
-        name: 'Kamil',
-        reply_email: 'kamilo116@o2.pl',
-        message: 'This is awesome!'
+    var mailOptions = {
+        from: 'zespolowe.fais@gmail.com',
+        to: target_email,
+        subject: 'Mecz w twojej okolicy',
+        html: 'Witaj! <br>'
+            + 'W towjej okolicy gra twoja ulubiona drużyna. Kliknij poniższy link, by zobaczyć szczegóły:<br>'
+            + '<a href=' + link + '>' + link + '</a>'
+            + '<br>Bests, <br>Project team'
     };
 
 
-    var email   = require("emailjs");
-    var server  = email.server.connect({
-        // user: "Kamil",
-        user: "kamil.sladowski@gmail.com",
-        // user:    process.env.GMAIL_USER,
-        // password: "179021abb1d89d87dafc0ff7a40030e3",
-        password: "179021abb1d89d87dafc0ff7a40030e3",
-        user_id: "user_HHBrB5FSE3MUVMasNUB3t",
-        host: "smtp.gmail.com",
-        ssl:     true
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
     });
-
-    server.send({
-        text:    "example",
-        from:    "kamil.sladowski@gmail.com",
-        to:      "kamilo116@o2.pl",
-        subject: "match",
-
-    }, function(err, message) { console.log(err || message); });
-
-
-    // emailjs.init("user_HHBrB5FSE3MUVMasNUB3t");
-    // var email 	= require("./path/to/emailjs/email");
-    // var server 	= email.server.connect({
-    //     user:	"username",
-    //     password:"password",
-    //     host:	"smtp.your-email.com",
-    //     ssl:		true
-    // });
-
-
-
-
-    //
-    // emailjs.send(service_id, template_id, template_params)
-    //     .then(function(response) {
-    //         console.log('SUCCESS!', response.status, response.text);
-    //     }, function(error) {
-    //         console.log('FAILED...', error);
-    //     });
 
 }
 
 
 router.get( '/send', function(req, res){
-
-
-
-    sendEmail ();
-
+    notify_users_about_match(20, 19, "12:00");
+    res.redirect("/");
 });
 
 module.exports = router;
