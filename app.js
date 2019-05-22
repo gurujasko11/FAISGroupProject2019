@@ -13,6 +13,7 @@ var BetterMemoryStore = require('session-memory-store')(sess);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
 var barsRouter = require('./routes/bars');
 var matchesRouter = require('./routes/match');
 var myAccountRouter = require('./routes/my_account');
