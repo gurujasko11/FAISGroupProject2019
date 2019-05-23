@@ -151,11 +151,12 @@ router.get('/delete/:id', function (req, res, next) {
 });
 
 router.get('/add/:id/:bar', function (req, res, next) {
-    let query = "INSERT INTO bary_z_meczami(id_meczu, id_baru) VALUES(" + req.params.id + ", " + req.params.bar + ");";
+    let query = "INSERT INTO Bary_Z_Meczami(id_meczu, id_baru) VALUES(" + req.params.id + ", " + req.params.bar + ");";
     dbconn.query(query, function (err, result) {
         res.redirect("/bars/show_matches/" + req.params.bar);
     });
 });
+
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
