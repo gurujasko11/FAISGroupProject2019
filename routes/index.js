@@ -50,7 +50,7 @@ router.get('/sentReset/:isBar/:email', function (req, res) {
 			  html: 'Witaj! <br>'
 			  + 'Aby ustawić nowe hasło kliknij poniższy link:<br>'
 			  + '<a href=' + link + '>' + link + '</a>'
-			  + '<br>Bests, <br>Project team'
+			  + '<br>Pozdrawiam, <br>Wlasciciel strony'
 			};
 			
 			transporter.sendMail(mailOptions, function (error, info) {
