@@ -184,6 +184,8 @@ CREATE TABLE `Uzytkownicy` (
 
 LOCK TABLES `Uzytkownicy` WRITE;
 /*!40000 ALTER TABLE `Uzytkownicy` DISABLE KEYS */;
+INSERT INTO `Uzytkownicy` VALUES (1234, "Admin", "Admin", "admin@admin.com", 123456789, 1234, NULL);
+/*INSERT INTO `Uzytkownicy` VALUES (1235, "Admin", "Admin", "chce.dostac@maila.com", 123456789, 1234, NULL);*/;
 /*!40000 ALTER TABLE `Uzytkownicy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,8 +212,39 @@ CREATE TABLE `Uzytkownik_Z_Druzynami` (
 
 LOCK TABLES `Uzytkownik_Z_Druzynami` WRITE;
 /*!40000 ALTER TABLE `Uzytkownik_Z_Druzynami` DISABLE KEYS */;
+INSERT INTO `Uzytkownik_Z_Druzynami` VALUES (1235, 1);
 /*!40000 ALTER TABLE `Uzytkownik_Z_Druzynami` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+--
+-- Table structure for table `Uzytkownik_Z_Druzynami`
+--
+
+DROP TABLE IF EXISTS `Wlasciciel_Z_Barami`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Wlasciciel_Z_Barami` (
+  `id_uzytkownika` int(11) NOT NULL,
+  `id_baru` int(11) NOT NULL,
+  PRIMARY KEY (`id_uzytkownika`)
+--  CONSTRAINT `Wlasciciel_Z_Barami_ibfk_1` FOREIGN KEY (`id_uzytkownika`) REFERENCES `Uzytkownicy` (`id_uzytkownika`),
+--  CONSTRAINT `Wlasciciel_Z_Barami_ibfk_2` FOREIGN KEY (`id_druzyny`) REFERENCES `Druzyny` (`id_druzyny`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Wlasciciel_Z_Barami`
+--
+
+LOCK TABLES `Wlasciciel_Z_Barami` WRITE;
+/*!40000 ALTER TABLE `Wlasciciel_Z_Barami` DISABLE KEYS */;
+INSERT INTO `Wlasciciel_Z_Barami` VALUES (1234, 1112);
+INSERT INTO `Wlasciciel_Z_Barami` VALUES (1235, 1113);
+/*!40000 ALTER TABLE `Wlasciciel_Z_Barami` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
