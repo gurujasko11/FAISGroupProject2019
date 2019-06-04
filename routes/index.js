@@ -3,7 +3,13 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { page: getPageVariable(req), title: 'MatchBar', flash_messages: req.flash('FLASH_MSG') });
+	dbconn.query('SELECT Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 ' +
+		'FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN ' +
+		'Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE DATE(czas) > CURDATE() ' +
+		'ORDER BY czas LIMIT 10', function (err, result) {
+		res.render('index', { page: getPageVariable(req), title: 'MatchBar', mecze: result, flash_messages: req.flash('FLASH_MSG') });
+
+	});
 });
 
 router.get('/dev', function(req, res, next) {
