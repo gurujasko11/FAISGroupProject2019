@@ -59,6 +59,20 @@
                 <pre id="error" style="color:red"></pre>
                 <input type="submit" tabindex="100" value="Szukaj" if="search_text">
             </form>
+            <br/><br/>
+            <h2>Najbliższe mecze</h2>
+            <table class="table">
+                <th>Gospodarze</th>
+                <th>Goście</th>
+                <th>Data i godzina meczu</th>
+                <%mecze.forEach(function (mecz) { %>
+                <tr>
+                    <td><%=mecz.team1%></td>
+                    <td><%=mecz.team2%></td>
+                    <td><%=mecz.czas%></td>
+                </tr>
+                <%})%>
+            </table>
         </div>
         <% include header.ejs %>      <!--Include header (top menu logo etc)-->
         <% include footer.ejs %>      <!--Include footer-->
