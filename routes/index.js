@@ -195,34 +195,6 @@ router.post('/search_match', function (req, res, next) {
     });
 })
 
-router.post('/register_bar', function (req, res, next) {
-    //TODO: escape '
-    var bar_name = req.body.bar_name;
-    var telephone = req.body.telephone;
-    var city = req.body.city;
-    var street = req.body.street;
-    var building_number = req.body.building_number;
-    var local_number = req.body.local_number;
-    var password = req.body.password;
-    var email = req.body.email;
-    var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-        "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + password + "', '" + email + "');";
-
-    console.log("Wyslano insert do bazy danych: " + query);
-    dbconn.query(query, function (err, rows) {
-        if (err) res.render('register_bar', {page: 'main', title: err, desc: err.msg});
-        else res.render('register_bar', {page: 'main', title: "Pomyślnie utworzono konto"});
-    });
-
-})
-
-router.get('/bar_login', function (req, res, next) {
-
-    app.use(session({
-        secret: '343ji43j4n3jn4jk3n'
-    }));
-    res.redirect('/');
-});
 
 function getPageVariable(req) {
     if (req.isAuthenticated())
@@ -242,7 +214,7 @@ var obj = {};
 router.post('/edit_bar', function (req, res, next) {
 
     var password_changed = false;
-    if (req.body.password.length > 2) {
+    if (req.body.password.length > 0) {
         password_changed = true
     }
 
@@ -259,23 +231,25 @@ router.post('/edit_bar', function (req, res, next) {
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
 
-            var query = "UPDATE Bary " +
-                "SET nazwa_baru = " + bar_name + ", telefon = " + telephone + ", miasto = " + city + ", ulica = " + street
-                + ", numer_budynku = " + building_number + ", numer_lokalu = " + local_number + ", haslo = '" + hash +
-                "', email = " + email +
-                " WHERE id_baru = '" + req.user.barID + "'";
-
-            if (!password_changed) {
+            if (password_changed) {
+                var query = "UPDATE Bary " +
+                    "SET nazwa_baru = " + bar_name + ", telefon = " + telephone + ", miasto = " + city + ", ulica = " + street
+                    + ", numer_budynku = " + building_number + ", numer_lokalu = " + local_number + ", haslo = '" + hash +
+                    "', email = " + email +
+                    " WHERE id_baru = '" + req.user.barID + "'";
+            }
+            else {
                 query = "UPDATE Bary " +
                     "SET nazwa_baru = " + bar_name + ", telefon = " + telephone + ", miasto = " + city + ", ulica = " + street
                     + ", numer_budynku = " + building_number + ", numer_lokalu = " + local_number +
-                    "', email = " + email +
+                    ", email = " + email +
                     " WHERE id_baru = '" + req.user.barID + "'";
             }
             console.log("Wyslano update do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
                 console.log(err);
             });
+            res.redirect('/edit_bar')
         });
     });
 });
@@ -285,8 +259,7 @@ router.get('/teams', function (req, res, next) {
     dbconn.query('SELECT * FROM Druzyny', function (err, result) {
 
         if (err) {
-            throw err;
-        } else {
+            throw err     } else {
             obj = {print: result, page: getPageVariable(req), title: 'teams'};
             res.render('teams', obj);
         }
@@ -365,55 +338,6 @@ function get_bar_data(barID) {
 	})
 }
 
-router.post('/edit_bar', function (req, res, next) {
-	var bar_name = "'" + req.body.bar_name.replace("'", "''") + "'";
-	var telephone = "'" + req.body.telephone.replace("'", "''") + "'";
-	var city = "'" + req.body.city.replace("'", "''") + "'";
-	var street = "'" + req.body.street.replace("'", "''") + "'";
-	var building_number = "'" + req.body.building_number.replace("'", "''") + "'";
-	var local_number = "'" + req.body.local_number.replace("'", "''") + "'";
-	var password = "'" + req.body.password.replace("'", "''") + "'";
-	var email = "'" + req.body.email.replace("'", "''") + "'";
-
-	const saltRounds = 10;
-	bcrypt.genSalt(saltRounds, function (err, salt) {
-			bcrypt.hash(password, salt, function (err, hash) {
-
-					var query = "UPDATE Bary " +
-							"SET nazwa_baru = " + bar_name + ", telefon = " + telephone + ", miasto = " + city + ", ulica = " + street
-							+ ", numer_budynku = " + building_number + ", numer_lokalu = " + local_number + ", haslo = '" + hash +
-							"', email = " + email +
-							" WHERE id_baru = '" + req.user.barID + "'";
-
-
-					console.log("Wyslano update do bazy danych: " + query);
-					dbconn.query(query, function (err, rows) {
-							console.log(err);
-
-							get_bar_data(req.user.barID)
-									.then(function (row) {
-
-											if (err) res.render('edit_bar', {
-													page: getPageVariable(req),
-													title: "Edycja baru",
-													type: 'ERROR',
-													msg: "Ten e-mail już jest zajęty",
-													bar: null
-											});
-											else res.render('edit_bar', {
-													page: getPageVariable(req),
-													title: "Edycja baru",
-													type: 'SUCCESS',
-													msg: "Pomyślnie zmieniono konto.",
-													bar: row
-											});
-									})
-
-					});
-			});
-	});
-});
-
 router.get('/delete_bar', function (req, res, next) {
 	if (! req.isAuthenticated()){
 			res.redirect('/');
@@ -439,20 +363,6 @@ module.exports = {
   getPageVariable: getPageVariable
 };
 
-router.get('/about/match/:id', function (req, res, next) {
-    match_id = req.params.id;
-    console.log(req.body.search_text);
-    query = "SELECT t1.id_baru, t1.id_meczu, t2.nazwa_baru, t2.miasto, t2.ulica, t2.numer_budynku, t2.numer_lokalu\n" +
-        "FROM Zespolowe.Bary_Z_Meczami t1, Zespolowe.Bary t2\n" +
-        "WHERE t1.id_meczu = 1\n" +
-        "AND t1.id_baru = t2.id_baru;";
-    dbconn.query(query, function (err, rows) {
-        if (err) res.render('search_match_result', {page: 'main', title: err, desc: err.msg});
-        else {
-            res.render('about_match', {page: 'main', title: 'Gdzie rozgrywany jest mecz', args: rows});
-        }
-    });
-});
 
 const moment = require('moment');
 
