@@ -224,7 +224,7 @@ router.post('/edit_bar', function (req, res, next) {
     var street = "'" + req.body.street.replace("'", "''") + "'";
     var building_number = "'" + req.body.building_number.replace("'", "''") + "'";
     var local_number = "'" + req.body.local_number.replace("'", "''") + "'";
-    var password = "'" + req.body.password.replace("'", "''") + "'";
+    var password = req.body.password.replace("'", "''");
     var email = "'" + req.body.email.replace("'", "''") + "'";
 
     const saltRounds = 10;
