@@ -5,6 +5,18 @@ const LocalStrategy = require('passport-local');
 const bcrypt = require('bcrypt');
 var indexModule = require('./index');
 var getPageVariable = indexModule.getPageVariable;
+var randtoken = require('rand-token');
+var uid = require('rand-token').uid;
+const nodemailer = require("nodemailer");
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'Nodemailerzespolowe@gmail.com',
+      pass: 'Nodemailer11!!rafal'
+    }
+  });
+
 
 passport.use(new LocalStrategy({
         usernameField: 'email',
@@ -26,7 +38,7 @@ passport.use(new LocalStrategy({
             if (!rows.length) {
                 return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje']));
             }
-
+            if(rows[0].status != 'activated'){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik nie potwierdził konta linkiem aktywacyjnym'])); }
 
             var encPassword = password;
             var dbPassword = rows[0].haslo;
@@ -139,6 +151,37 @@ function notAuthenticatedOnly(req, res, next) {
     }
     next();
 }
+
+
+router.get('/activate/:token', function(req, res, next){
+
+    var query = "select * from Uzytkownicy where status = '"+ req.params.token+ "'";
+    console.log('query: ',query)
+    console.log('token: ', req.params.token)
+    dbconn.query(query, function (err, rows) {
+
+      if (err) {
+        console.log('Mysql error while activation', err);
+        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+      }
+      else if(!rows.length){
+        console.log('No users with this token');
+        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+       }
+      else {
+        dbconn.query("update Uzytkownicy set status='activated' where status = '" +req.params.token+"'", function (err, rows) {
+          if (err) {
+            console.log('Mysql error while setting activated status', err);
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
+          }
+          res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+
+        });
+      }
+
+    });
+
+});
 
 module.exports = {
     router: router,

@@ -5,7 +5,18 @@ var bcrypt = require('bcrypt');
 var getPageVariable = indexModule.getPageVariable;
 var authenticationModule = require('./authentication');
 var notAuthenticatedOnly = authenticationModule.notAuthenticatedOnly;
+var randtoken = require('rand-token');
+var uid = require('rand-token').uid;
+const nodemailer = require("nodemailer");
 
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'Nodemailerzespolowe@gmail.com',
+      pass: 'Nodemailer11!!rafal'
+    }
+  });
+  
 router.get('/register_bar', notAuthenticatedOnly, function (req, res, next) {
     res.render('register_bar', {
         page: getPageVariable(req),
@@ -177,12 +188,36 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
 
 function addUserToDB(password, first_name, last_name, email, telephone, res, req) {
     const saltRounds = 10;
+    var token = uid(60);
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
-            var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo) values " +
-                "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "');";
+            var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo,status) values " +
+                "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "', '"+token+"');";
             console.log("Wyslano insert do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
+                
+                var mailOptions = {
+                    from: 'Nodemailer@gmail.com',
+                    to: email,
+                    subject: 'Registration to our service - Drink and watch',
+                    text: 'Hello \n'
+                      + 'To confirm registration click on the link below:\n' +
+                      'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+                  };
+          
+                  transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                      req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
+                      console.log(error);
+                      
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                      req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+                    }
+                    if (err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message, flash_messages: req.flash("FLASH_MSG") });
+                    else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.', flash_messages: req.flash("FLASH_MSG") });
+                });
+
                 if (err) {
                     console.log("[/register_user] SQL_INSERT_ERROR: " + err);
                     res.render('register_user', {
@@ -196,7 +231,7 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
                         page: getPageVariable(req),
                         title: "Rejestracja użytkownika",
                         type: 'SUCCESS',
-                        msg: 'Pomyślnie utworzono konto.'
+                        msg: 'Pomyślnie utworzono konto. Sprawdź maila aby dokonać aktywacji'
                     });
             });
         });
