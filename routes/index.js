@@ -312,8 +312,6 @@ router.get('/edit_bar', function (req, res, next) {
 					else res.render('edit_bar', {
 							page: getPageVariable(req),
 							title: "Edycja baru",
-							type: 'SUCCESS',
-							msg: "Pomyślnie pobrano dane konta.",
 							bar: rows[0],
                             flash_messages: req.flash("FLASH_MSG")
 					});
