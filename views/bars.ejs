@@ -17,9 +17,9 @@
         <tbody>
         <% for(var i = 0; i < data.length; i++) { %>
             <tr>
-                <td><%= data[i].nazwa_baru %></td>
+                <td><a href=/bar/<%= data[i].id_baru %> class="link"><%= data[i].nazwa_baru %></a></td>
                 <td><%= data[i].miasto %></td>
-                <td><a href="<%= "/bars/show_matches/" + data[i].id_baru %>">Pokaż mecze</a></td>
+                <td><a href="<%= "/bars/show_matches/" + data[i].id_baru %>" class="link">Pokaż mecze</a></td>
             </tr>
         <% } %>
         </tbody>
