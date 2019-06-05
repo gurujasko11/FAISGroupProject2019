@@ -54,6 +54,7 @@ app.use('/', myAccountRouter);
 app.use('/', authenticationRouter.router);
 app.use('/', registrationRouter.router);
 
+
 //require mysql
 var mysql = require('mysql');
 dbconn = mysql.createConnection({
@@ -63,7 +64,7 @@ dbconn = mysql.createConnection({
 });
 dbconn.connect();
 
-// catch 404 and forward to error handler
+//catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });

@@ -22,14 +22,14 @@
                 <% } %> href="/" tabindex="1">Wyszukiwanie
             </a>
             <a class=
-                <% if(title=="Rozgrywki"){ %>
+                <% if(title=="Lista rozgrywek"){ %>
                     menu_s
                 <% } else{ %>
                     menu
                 <% } %> href="/match" tabindex="2">Rozgrywki
             </a>
             <a class=
-               <% if(title=="Bary"){ %>
+               <% if(title=="Lista barów"){ %>
                    menu_s
             <% } else{ %>
                menu
@@ -57,11 +57,18 @@
                 <% } %> href="/register_user" tabindex="6">Rejestracja użytkownika
             </a>
              <a class=
-            <% if(title=="Drużyny"){ %>
+            <% if(title=="teams"){ %>
                 menu_s
             <% } else{ %>
                 menu
             <% } %> href="/teams" tabindex="6">Drużyny
+            </a>
+            <a class=
+               <% if(title=="Terminarz rozrywek"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/match_schedule" tabindex="7">Terminarz rozrywek
             </a>
 
             <!-- Uzytkownik zalogowany:   -->
@@ -74,14 +81,14 @@
                 <% } %> href="/" tabindex="1">Wyszukiwanie
             </a>
             <a class=
-                <% if(title=="Rozgrywki"){ %>
+                <% if(title=="Lista rozgrywek"){ %>
                     menu_s
                 <% } else{ %>
                     menu
                 <% } %> href="/match" tabindex="2">Rozgrywki
             </a>
             <a class=
-               <% if(title=="Bary"){ %>
+               <% if(title=="Lista barów"){ %>
                    menu_s
             <% } else{ %>
                menu
