@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
+var handlebars = require('handlebars');
+var fs = require('fs');
+
 let nested_res;
 
 // SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2;
@@ -26,25 +29,49 @@ router.get('/add', function (req, res) {
         res.render('add_match', {page: 'main', title: 'Dodaj rozgrywkę'});
 });
 
+var readHTMLFile = function(path, callback) {
+    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+        if (err) {
+            throw err;
+            callback(err);
+        }
+        else {
+            callback(null, html);
+        }
+    });
+};
+
 function send_email (target_email, datetime, place, team1_name, team2_name) {
 
     var link = "http://localhost:3000/match"; // todo need correct link like /match/id
 
-    var mailOptions = {
+    var raw_html = 'Witaj!'
+    + '<br> W twojej okolicy gra twoja ulubiona drużyna.'
+    + '<br> Mecz: {{team1_name }} : {{team2_name }} '
+    + '<br> Lokal: {{place }}'
+    + '<br> Data {{datetime}} '
+    + '<br> Kliknij poniższy link, by zobaczyć szczegóły:'
+    + '<a href=' + link + '>' + link + '</a>'
+    + '<br>Pozdrawiamy'
+
+
+    var template = handlebars.compile(raw_html);
+    var replacements = {
+        team1_name: team1_name,
+        team2_name: team2_name,
+        place: place,
+        datetime: datetime
+    };
+    var htmlToSend = template(replacements);
+
+    var ready_html = {
         from: 'zespolowe.fais@gmail.com',
         to: target_email,
         subject: 'Mecz w twojej okolicy',
-        html: 'Witaj!'
-            + '<br> W twojej okolicy gra twoja ulubiona drużyna.'
-            + '<br> <% team1_name %> + " : " + <% team2_name %> '
-            + '<br> Lokal <% place %>'
-            + '<br> Data <% datetime %>'
-            + '<br> Kliknij poniższy link, by zobaczyć szczegóły:'
-            + '<a href=' + link + '>' + link + '</a>'
-            + '<br>Pozdrawiamy'
-    }; //todo https://stackoverflow.com/questions/39489229/pass-variable-to-html-template-in-nodemailer
+        html: htmlToSend
+    };
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(ready_html, function (error, info) {
         if (error) {
             console.log(error);
         } else {
