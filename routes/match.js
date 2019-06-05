@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var indexModule = require('./index');
+var getPageVariable = indexModule.getPageVariable;
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
 var handlebars = require('handlebars');
@@ -17,16 +19,16 @@ router.get('/', function (req, res, next) {
         let emptyArray = [];
 
         if(result === undefined) {
-            res.render('match', {page: 'main', title: 'Lista rozgrywek', data: emptyArray, addPossible: req.isAuthenticated()});
+            res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: emptyArray, addPossible: req.isAuthenticated()});
         }
 
-        res.render('match', {page: 'main', title: 'Lista rozgrywek', data: result, addPossible: req.isAuthenticated()});
+        res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: result, addPossible: req.isAuthenticated()});
 
     });
 });
 
 router.get('/add', function (req, res) {
-        res.render('add_match', {page: 'main', title: 'Dodaj rozgrywkę'});
+        res.render('add_match', {page: getPageVariable(req), title: 'Dodaj rozgrywkę'});
 });
 
 var readHTMLFile = function(path, callback) {
@@ -180,7 +182,7 @@ router.get('/edit', function (req, res, next) {
         + req.params.id, function (err, result) {
         result[0].czas = result[0].czas + "";
         console.log(result[0].czas);
-        res.render('edit_match', {page: 'main', title: 'Edycja rozgrywki', data: result[0]});
+        res.render('edit_match', {page: getPageVariable(req), title: 'Edycja rozgrywki', data: result[0]});
     });
 });
 
@@ -190,14 +192,14 @@ router.get('/edit/:id', function (req, res, next) {
     dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_meczu =" + req.params.id, function (err, result) {
         result[0].czas = result[0].czas + "";
         console.log(result[0].czas);
-        res.render('edit_match', {page: 'main', title: 'Edycja rozgrywki', data: result[0]});
+        res.render('edit_match', {page: getPageVariable(req), title: 'Edycja rozgrywki', data: result[0]});
     });
 });
 
 
 router.post('/edit', function (req, res, next) {
 
-    res.render('edit_match', {page: 'main', title: 'Edycja rozgrywki'});
+    res.render('edit_match', {page: getPageVariable(req), title: 'Edycja rozgrywki'});
 });
 
 
