@@ -247,9 +247,15 @@ router.post('/edit_bar', function (req, res, next) {
             }
             console.log("Wyslano update do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
-                console.log(err);
+                if (err){
+                    console.log(err);
+                    req.flash('FLASH_MSG', ["ERROR", "Nie udało się zapisać zmian"])
+                }
+                else{
+                    req.flash('FLASH_MSG', ["SUCCESS", "Pomyślnie zapisano zmiany"])
+                }
+                res.redirect('/edit_bar')
             });
-            res.redirect('/edit_bar')
         });
     });
 });
@@ -300,14 +306,16 @@ router.get('/edit_bar', function (req, res, next) {
 							title: "Edycja baru",
 							type: 'ERROR',
 							msg: "Cos poszło nie tak z pobraniem danych konta",
-							bar: null
+							bar: null,
+                            flash_messages: req.flash("FLASH_MSG")
 					});
 					else res.render('edit_bar', {
 							page: getPageVariable(req),
 							title: "Edycja baru",
 							type: 'SUCCESS',
 							msg: "Pomyślnie pobrano dane konta.",
-							bar: rows[0]
+							bar: rows[0],
+                            flash_messages: req.flash("FLASH_MSG")
 					});
 			});
 	}
