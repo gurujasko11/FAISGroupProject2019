@@ -13,8 +13,7 @@ var authenticatedUserOnly = authenticationModule.authenticatedUserOnly;
 router.get('/my_account', authenticatedOnly, function (req, res) {
     if (req.user.type == 'user')
         return res.redirect('/my_user_account');
-    req.flash('FLASH_MSG', ['ERROR', 'Konto bara w budowie...']);
-    return res.redirect('/');
+    return res.redirect('/edit_bar');
 });
 
 router.get('/my_user_account', authenticatedUserOnly, function (req, res) {
