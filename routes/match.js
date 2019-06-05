@@ -125,7 +125,40 @@ function nested_add2(req, team1_id, team2_id, team1_name, team2_name, id_baru, i
         });
     });
 }
+function nested_update2(req, team1_id, team2_id, team1_name, team2_name, id_baru, id_meczu, place, datetime){
+    let update_match_query = "UPDATE Mecze SET (id_druzyna1 = " +team1_id + ", id_druzyna2=" + team2_id + ", czas=" + datetime +") WHERE id_meczu=" + id_meczu;
+    dbconn.query(update_match_query, function (err, result) {
+        if(err){
+            console.log(err);
+        }
 
+        id_meczu = result.insertId;
+        dbconn.query("SET FOREIGN_KEY_CHECKS=0;", function (req, res) {
+            let update_to_bary_z_meczami = "UPDATE Bary_Z_Meczami SET czas=" + datetime + "WHERE id_meczu=" + id_meczu " AND id_baru=" + id_baru + ";";
+            dbconn.query(update_to_bary_z_meczami, function (err, res) {
+                dbconn.query("SET FOREIGN_KEY_CHECKS=1;", function (req, res) {
+                    notify_users_about_match(team1_id, team2_id, datetime, place, team1_name, team2_name);
+                    nested_res.redirect("/");
+                });
+            });
+        });
+    });
+}
+function nested_update(req, team1_id, team1_name, team2_name, id_baru, id_meczu, place, datetime){
+    let team2_id;
+
+    dbconn.query("INSERT INTO Druzyny(nazwa_druzyny) VALUES ('" + team2_name + "')",  function (err, result) {
+        if (err) {
+            dbconn.query("SELECT * FROM Druzyny WHERE nazwa_druzyny='" + team2_name + "'",  function (err, res) {
+                team2_id = res[0].id_druzyny;
+                nested_add2(req, team1_id, team2_id, team1_name, team2_name, id_baru, id_meczu, place, datetime)
+            });
+        } else {
+            team2_id = result.insertId;
+            nested_add2(req, team1_id, team2_id, team1_name, team2_name, id_baru, id_meczu, place, datetime)
+        }
+    });
+}
 
 function nested_add(req, team1_id, team1_name, team2_name, id_baru, id_meczu, place, datetime){
     let team2_id;
@@ -198,7 +231,30 @@ router.get('/edit/:id', function (req, res, next) {
 
 
 router.post('/edit', function (req, res, next) {
+    let team1_id, team2_id, id_baru, id_meczu, place;
+    let datetime = req.body.date + " " + req.body.time;
+    let bar_owner_id = "1235";
+    // let bar_owner_id = req.user.userID;
+    let team1_name = req.body.team1;
+    let team2_name = req.body.team2;
+    let bar_name_query = "select Bary.nazwa_baru, Bary.id_baru from Wlasciciel_Z_Barami left join Bary ON Wlasciciel_Z_Barami.id_baru=Bary.id_baru where Wlasciciel_Z_Barami.id_uzytkownika=" + bar_owner_id;
+    dbconn.query(bar_name_query,  function (err, res) {
 
+        place = res[0].nazwa_baru;
+        id_baru = res[0].id_baru;
+        let first_insert = "INSERT INTO Druzyny(nazwa_druzyny) VALUES ('" + team1_name + "')";
+        dbconn.query(first_insert,   function (err, result) {
+            if (err) {
+                dbconn.query("SELECT * FROM Druzyny WHERE nazwa_druzyny='" + team1_name + "'",   function (err, res) {
+                    team1_id = res[0].id_druzyny;
+                    nested_update(req, team1_id, team1_name, team2_name, id_baru, id_meczu, place, datetime);
+                });
+            } else {
+                team1_id = result.insertId;
+                nested_update(req, team1_id, team1_name, team2_name, id_baru, id_meczu, place, datetime);
+            }
+        });
+    });
     res.render('edit_match', {page: getPageVariable(req), title: 'Edycja rozgrywki'});
 });
 
