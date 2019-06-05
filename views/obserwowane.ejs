@@ -1,0 +1,49 @@
+
+
+<!DOCTYPE html>
+<html>
+    <% include head.ejs %>      <!--Include head section (same for all pages)-->
+    <!--Javascripts includes-->
+    <script src='/javascripts/alert.js' type='text/javascript' ></script>
+
+    <body>
+        <div id="alerts"></div>
+        <div id="page" class=page>      <!--Div page with id=page - main container-->
+            <h1><%= title %></h1>
+            <form method="POST" action="/zmien_obserwacje" onsubmit=""> 
+            <table class="table">
+                <th>id drużyny</th>  
+                <th>nazwa drużyny</th>
+                <th>obserwacja</th>  
+                <% print.forEach(function (team) { %>
+                <tr>  
+                    <td><%= team.id_druzyny %></td>  
+                    <td><%= team.nazwa_druzyny %></td>
+                    <% if (team.id_uzytkownika) { %>
+
+                            <td>  <input type="checkbox" tabindex="100" id=obserwacja<%= team.id_druzyny %> name="testcheck" value=<%= team.id_druzyny %> checked> 
+                                <label for=obserwacja<%= team.id_druzyny %>><span></span></label>
+                            </td>
+                            
+    
+                    <% } else{%>
+                        <td>  <input type="checkbox" tabindex="100" id=obserwacja<%= team.id_druzyny %> name="testcheck" value=<%= team.id_druzyny %>> 
+                            <label for=obserwacja<%= team.id_druzyny %>><span></span></label>
+                        </td>
+
+                    <% } %>
+                    
+                </tr>                                   
+         <% }) %>
+            </table>
+            <input type="submit" tabindex="66" value="Wyślij">
+            </form>
+        </div>
+        <% include header.ejs %>      <!--Include header (top menu logo etc)-->
+        <% include footer.ejs %>      <!--Include footer-->
+    </body>
+</html>
+
+
+
+
