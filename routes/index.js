@@ -139,7 +139,7 @@ router.get('/bar/:barId', function(req, res, next) {
 			res.render('error', { page: 'Element is not found is database', title: 'Informacje o barze' });
 		} else {
 			res.render('bar_user', {
-				page: 'main',
+              page: getPageVariable(req),
 			  title: 'Informacje o barze',
 			  barName: result[0].nazwa_baru,
 			  email: result[0].email,
@@ -167,15 +167,15 @@ router.get('/test', function (req, res) {
 });
 
 router.get('/bar_home', function (req, res, next) {
-    res.render('bar_home', {page: 'main', title: 'Moje mecze'});
+    res.render('bar_home', {page: getPageVariable(req), title: 'Moje mecze'});
 });
 
 router.get('/add_match', function (req, res, next) {
-    res.render('add_match', {page: 'main', title: 'Dodaj mecz'});
+    res.render('add_match', {page: getPageVariable(req), title: 'Dodaj mecz'});
 });
 
 router.get('/account', function (req, res, next) {
-    res.render('account', {page: 'main', title: 'Konto'});
+    res.render('account', {page: getPageVariable(req), title: 'Konto'});
 });
 
 router.post('/search_match', function (req, res, next) {
@@ -188,9 +188,9 @@ router.post('/search_match', function (req, res, next) {
         "   AND t1.nazwa_druzyny = \'" + teams[0] +
         "\'   AND t2.nazwa_druzyny = \'" + teams[1] + "\'"
     dbconn.query(query, function (err, rows) {
-        if (err) res.render('search_match_result', {page: 'main', title: err, desc: err.msg});
+        if (err) res.render('search_match_result', {page: getPageVariable(req), title: err, desc: err.msg});
         else {
-            res.render('search_match_result', {page: 'main', title: 'Wyniki wyszukiwania', args: rows});
+            res.render('search_match_result', {page: getPageVariable(req), title: 'Wyniki wyszukiwania', args: rows});
         }
     });
 })
@@ -284,9 +284,9 @@ router.get('/about/match/:id', function(req, res, next)
       "AND t1.id_baru = t2.id_baru;"
   dbconn.query(query, function(err, rows)
   {
-      if(err)  res.render('search_match_result', { page: 'main', title: err, desc: err.msg });
+      if(err)  res.render('search_match_result', { page: getPageVariable(req), title: err, desc: err.msg });
       else {
-          res.render('about_match', { page: 'main', title: 'Gdzie rozgrywany jest mecz', args : rows});
+          res.render('about_match', { page: getPageVariable(req), title: 'Gdzie rozgrywany jest mecz', args : rows});
       }
   });
 });
@@ -348,7 +348,7 @@ router.get('/delete_bar', function (req, res, next) {
 	if (! req.isAuthenticated()){
 			res.redirect('/');
 	}
-	res.render('delete_bar', {page: 'main', title: 'Usuń bar'});
+	res.render('delete_bar', {page: getPageVariable(req), title: 'Usuń bar'});
 });
 
 
@@ -388,7 +388,7 @@ router.get('/match_schedule', function (req, res, next) {
                 const emptyArray = [];
                 if (result === undefined) {
                     res.render('match_schedule', {
-                        page: 'match_schedule',
+                        page: getPageVariable(req),
                         title: 'Terminarz rozrywek',
                         data: emptyArray
                     });
@@ -425,7 +425,7 @@ router.get('/match_schedule', function (req, res, next) {
                             });
 
                             res.render('match_schedule', {
-                                page: 'main',
+                                page: getPageVariable(req),
                                 title: 'Terminarz rozrywek',
                                 data: matches,
                                 moment: moment
@@ -451,7 +451,7 @@ router.get('/match_schedule', function (req, res, next) {
                 const emptyArray = [];
                 if (result === undefined) {
                     res.render('match_schedule', {
-                        page: 'match_schedule',
+                        page: getPageVariable(req),
                         title: 'Terminarz rozrywek',
                         data: emptyArray
                     });
@@ -493,7 +493,7 @@ router.get('/match_schedule', function (req, res, next) {
                             });
 
                             res.render('match_schedule', {
-                                page: 'main',
+                                page: getPageVariable(req),
                                 title: 'Terminarz rozrywek',
                                 data: matches,
                                 moment: moment
@@ -515,7 +515,7 @@ router.get('/match_schedule', function (req, res, next) {
                 const emptyArray = [];
                 if (result === undefined) {
                     res.render('match_schedule', {
-                        page: 'match_schedule',
+                        page: getPageVariable(req),
                         title: 'Terminarz rozrywek',
                         data: emptyArray
                     });
@@ -557,7 +557,7 @@ router.get('/match_schedule', function (req, res, next) {
                             });
 
                             res.render('match_schedule', {
-                                page: 'main',
+                                page: getPageVariable(req),
                                 title: 'Terminarz rozrywek',
                                 data: matches,
                                 moment: moment
@@ -576,7 +576,7 @@ router.get('/match_schedule', function (req, res, next) {
                 const emptyArray = [];
                 if (result === undefined) {
                     res.render('match_schedule', {
-                        page: 'main',
+                        page: getPageVariable(req),
                         title: 'Terminarz rozrywek',
                         data: emptyArray
                     });
@@ -613,7 +613,7 @@ router.get('/match_schedule', function (req, res, next) {
                             });
 
                             res.render('match_schedule', {
-                                page: 'main',
+                                page: getPageVariable(req),
                                 title: 'Terminarz rozrywek',
                                 data: matches,
                                 moment: moment

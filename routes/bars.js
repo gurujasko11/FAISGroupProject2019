@@ -1,13 +1,15 @@
 var express = require('express');
 var router = express.Router();
+var indexModule = require('./index');
+var getPageVariable = indexModule.getPageVariable;
 
 router.get('/', function (req, res, next) {
     dbconn.query("SELECT * from Bary", function (err, result) {
         let emptyArray = [];
         if (result === undefined) {
-            res.render('bars', {page: 'main', title: 'Lista barów', data: emptyArray});
+            res.render('bars', {page: getPageVariable(req), title: 'Lista barów', data: emptyArray});
         }
-        res.render('bars', {page: 'main', title: 'Lista barów', data: result});
+        res.render('bars', {page: getPageVariable(req), title: 'Lista barów', data: result});
     });
 });
 
