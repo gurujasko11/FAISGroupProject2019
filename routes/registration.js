@@ -160,12 +160,37 @@ function isEmailAvailable(email, tableNameInDB) {
 
 function addBarToDB(password, bar_name, telephone, city, street, building_number, local_number, email, res, req) {
     const saltRounds = 10;
+    var token = uid(60);
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
             var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
                 "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "');";
             console.log("Wyslano insert do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
+
+                var mailOptions = {
+                    from: 'Nodemailer@gmail.com',
+                    to: email,
+                    subject: 'Registration to our service - Drink and watch',
+                    text: 'Hello \n'
+                      + 'To confirm registration click on the link below:\n' +
+                      'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+                  };
+          
+                  transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                      req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
+                      console.log(error);
+                      
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                      req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+                    }
+                    if (err) res.render('register_bar', { page: getPageVariable(req), title: 'Rejestracja baru', type: 'ERROR', msg: err.message, flash_messages: req.flash("FLASH_MSG") });
+                    else res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.', flash_messages: req.flash("FLASH_MSG") });
+                });
+
+                
                 if (err) {
                     console.log("[/register_bar] SQL_INSERT_ERROR: " + err);
                     res.render('register_bar', {

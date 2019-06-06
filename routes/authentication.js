@@ -183,6 +183,38 @@ router.get('/activate/:token', function(req, res, next){
 
 });
 
+
+router.get('/activateBar/:token', function(req, res, next){
+
+    var query = "select * from Bary where status = '"+ req.params.token+ "'";
+    console.log('query: ',query)
+    console.log('token: ', req.params.token)
+    dbconn.query(query, function (err, rows) {
+
+      if (err) {
+        console.log('Mysql error while activation', err);
+        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+      }
+      else if(!rows.length){
+        console.log('No bars with this token');
+        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+       }
+      else {
+        dbconn.query("update Bary set status='activated' where status = '" +req.params.token+"'", function (err, rows) {
+          if (err) {
+            console.log('Mysql error while setting activated status', err);
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
+          }
+          res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja bary", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+
+        });
+      }
+
+    });
+
+});
+
+
 module.exports = {
     router: router,
     authenticatedOnly: authenticatedOnly,
