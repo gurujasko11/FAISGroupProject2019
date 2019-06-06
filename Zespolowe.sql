@@ -218,25 +218,6 @@ UNLOCK TABLES;
 -- Table structure for table `Wlasciciel_Z_Barami`
 --
 
-DROP TABLE IF EXISTS `Wlasciciel_Z_Barami`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Wlasciciel_Z_Barami` (
-  `id_uzytkownika` int(11) NOT NULL,
-  `id_baru` int(11) NOT NULL,
-  PRIMARY KEY (`id_uzytkownika`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Wlasciciel_Z_Barami`
---
-
-LOCK TABLES `Wlasciciel_Z_Barami` WRITE;
-/*!40000 ALTER TABLE `Wlasciciel_Z_Barami` DISABLE KEYS */;
-INSERT INTO `Wlasciciel_Z_Barami` VALUES (1234,1112),(1235,1113);
-/*!40000 ALTER TABLE `Wlasciciel_Z_Barami` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
