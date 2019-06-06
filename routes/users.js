@@ -16,13 +16,12 @@ router.get('/obserwowane', AuthenticatedUserOnly,  function(req, res, next) {
     if (err) {
       throw err;
     } else {
-      obj = {print: result, page: getPageVariable(req), title: 'teams'};
+      obj = {print: result, page: getPageVariable(req), title: 'Twoje obserwacje'};
       res.render('obserwowane', obj);
     }
   });
 
 });
-
 
 router.post('/zmien_obserwacje', AuthenticatedUserOnly, function (req, res, next) {
 
