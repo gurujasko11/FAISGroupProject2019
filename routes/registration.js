@@ -163,8 +163,8 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
     var token = uid(60);
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
-            var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email) values " +
-                "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "');";
+            var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email,status) values " +
+                "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "','"+token+"');";
             console.log("Wyslano insert do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
 
@@ -174,7 +174,7 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
                     subject: 'Registration to our service - Drink and watch',
                     text: 'Hello \n'
                       + 'To confirm registration click on the link below:\n' +
-                      'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+                      'http://localhost:3000/activateBar/' + token + '\nBests, \nProject team'
                   };
           
                   transporter.sendMail(mailOptions, function (error, info) {
