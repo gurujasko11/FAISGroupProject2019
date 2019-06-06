@@ -10,6 +10,14 @@ var LocalStrategy     = require('passport-local').Strategy;
 var sess              = require('express-session');
 var Store             = require('express-session').Store;
 var BetterMemoryStore = require('session-memory-store')(sess);
+var mysql = require('mysql');
+//mysql settings
+dbconn = mysql.createConnection({
+	user: 'root',
+	password: 'password',
+	database: 'Zespolowe'
+});
+dbconn.connect();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -53,16 +61,6 @@ app.use('/bars', barsRouter);
 app.use('/', myAccountRouter);
 app.use('/', authenticationRouter.router);
 app.use('/', registrationRouter.router);
-
-
-//require mysql
-var mysql = require('mysql');
-dbconn = mysql.createConnection({
-	user: 'root',
-	password: '12345',
-	database: 'Zespolowe'
-});
-dbconn.connect();
 
 //catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -12,11 +12,11 @@ const nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'Nodemailerzespolowe@gmail.com',
-      pass: 'Nodemailer11!!rafal'
+        user: 'Nodemailerzespolowe@gmail.com',
+        pass: 'Nodemailer11!!rafal'
     }
-  });
-  
+});
+
 router.get('/register_bar', notAuthenticatedOnly, function (req, res, next) {
     res.render('register_bar', {
         page: getPageVariable(req),
@@ -124,6 +124,127 @@ router.post('/register_user', notAuthenticatedOnly, function (req, res, next) {
     });
 });
 
+router.get('/sentReset/:isBar/:email', function (req, res) {
+    let table = "Uzytkownicy";
+    if (req.param("isBar", 0) == 1) {
+        table = "Bary";
+    }
+    console.debug('SELECT `haslo` FROM `' + table + '` WHERE email = "' + req.param("email", 0) + '"');
+    dbconn.query('SELECT `haslo` FROM `' + table + '` WHERE email = "' + req.param("email", 0) + '"', function (err, result) {
+        if (result.length == 0) {
+            req.flash("FLASH_MSG", ['ERROR', 'Wprowadzony adres e-mail jest niepoprawny']);
+            res.render('login', {
+                page: getPageVariable(req),
+                title: 'Logowanie',
+                flash_messages: req.flash('FLASH_MSG')
+            });
+        } else {
+            let ans = result[0].haslo;
+            console.debug(ans);
+            ans = ans.replace(/\//g, "-sl-");
+            let link = 'http://localhost:3000/resetPassw/' + req.param("isBar", 0) + "/" + ans;
+            var mailOptions = {
+                from: 'Nodemailer@gmail.com',
+                to: req.param("email", 0),
+                subject: 'Resetowanie hasła - Drink and watch',
+                html: 'Witaj! <br>' +
+                    'Aby ustawić nowe hasło kliknij poniższy link:<br>' +
+                    '<a href=' + link + '>' + link + '</a>' +
+                    '<br>Pozdrawiam, <br>Wlasciciel strony'
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    req.flash("FLASH_MSG", ['ERROR', 'Błąd serwera, ponów próbę - nie udało się wysłac linku do zresetowania hasła']);
+                    res.render('login', {
+                        page: getPageVariable(req),
+                        title: 'Logowanie',
+                        flash_messages: req.flash('FLASH_MSG')
+                    });
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    req.flash("FLASH_MSG", ['SUCCESS', 'Wysłano link do zresetowania hasła - sprawdź maila']);
+                    res.render('login', {
+                        page: getPageVariable(req),
+                        title: 'Logowanie',
+                        flash_messages: req.flash('FLASH_MSG')
+                    });
+                }
+            });
+        }
+
+    });
+});
+
+router.get('/resetPassw/:isBar/:Token', function (req, res) {
+    let table = "Uzytkownicy";
+    let token = req.param("Token", 0);
+    token = token.replace(/-sl-/g, "/");
+    if (req.param("isBar", 0) == 1) {
+        table = "Bary";
+    }
+
+    dbconn.query('SELECT * FROM `' + table + '` WHERE `haslo` = "' + token + '"', function (err, result) {
+        if (result.length == 0) {
+            res.render('error', {
+                page: 'Element is not found is database',
+                title: 'Informacje o barze'
+            });
+        } else {
+            //console.debug(result);
+            res.render('newPasswd', {
+                page: getPageVariable(req),
+                title: 'Zmiana hasła',
+                isBar: req.param("isBar", 0),
+                token: req.param("Token", 0),
+                flash_messages: req.flash('FLASH_MSG')
+            });
+        }
+    });
+
+});
+
+router.post('/setPassw/:isBar/:Token', function (req, res, next) {
+    var password = req.body.password.replace("'", "''");
+
+    const saltRounds = 10;
+
+    let table = "Uzytkownicy";
+    let token = req.param("Token", 0);
+    token = token.replace(/-sl-/g, "/");
+    if (req.param("isBar", 0) == 1) {
+        table = "Bary";
+    }
+
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+        bcrypt.hash(password, salt, function (err, hash) {
+            dbconn.query('SELECT * FROM `' + table + '` WHERE `haslo` = "' + token + '"', function (err, result) {
+                if (result.length == 0) {
+                    res.render('error', {
+                        page: 'Element is not found is database',
+                        title: 'Informacje o barze'
+                    });
+                } else {
+                    //console.debug(result);
+                    let que = 'UPDATE ' + table + ' SET haslo = \"' + hash + '\" WHERE haslo = \"' + token + '\"';
+                    //console.debug(que);
+                    dbconn.query(que),
+                        function (err, result) {
+                            //console.debug(err);
+                        }
+                    req.flash('FLASH_MSG', ['SUCCESS', 'Hasło zostało zmienione']);
+                    res.render('login', {
+                        page: getPageVariable(req),
+                        title: 'Logowanie',
+                        flash_messages: req.flash('FLASH_MSG')
+                    });
+                }
+            });
+        })
+    });
+});
+
 function validateCityInDB(city) {
     return new Promise(function (resolve, reject) {
         dbconn.query("select * from Miasta where miasto = '" + city + "'", function (err, rows) {
@@ -164,7 +285,7 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
             var query = "insert into Bary (nazwa_baru, telefon, miasto, ulica, numer_budynku, numer_lokalu, haslo, email,status) values " +
-                "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "','"+token+"');";
+                "('" + bar_name + "', '" + telephone + "', '" + city + "', '" + street + "', '" + building_number + "', '" + local_number + "', '" + hash + "', '" + email + "','" + token + "');";
             console.log("Wyslano insert do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
 
@@ -172,25 +293,37 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
                     from: 'Nodemailer@gmail.com',
                     to: email,
                     subject: 'Registration to our service - Drink and watch',
-                    text: 'Hello \n'
-                      + 'To confirm registration click on the link below:\n' +
-                      'http://localhost:3000/activateBar/' + token + '\nBests, \nProject team'
-                  };
-          
-                  transporter.sendMail(mailOptions, function (error, info) {
+                    text: 'Hello \n' +
+                        'To confirm registration click on the link below:\n' +
+                        'http://localhost:3000/activateBar/' + token + '\nBests, \nProject team'
+                };
+
+                transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
-                      req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
-                      console.log(error);
-                      
+                        req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
+                        console.log(error);
+
                     } else {
-                      console.log('Email sent: ' + info.response);
-                      req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+                        console.log('Email sent: ' + info.response);
+                        req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
                     }
-                    if (err) res.render('register_bar', { page: getPageVariable(req), title: 'Rejestracja baru', type: 'ERROR', msg: err.message, flash_messages: req.flash("FLASH_MSG") });
-                    else res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja baru", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.', flash_messages: req.flash("FLASH_MSG") });
+                    if (err) res.render('register_bar', {
+                        page: getPageVariable(req),
+                        title: 'Rejestracja baru',
+                        type: 'ERROR',
+                        msg: err.message,
+                        flash_messages: req.flash("FLASH_MSG")
+                    });
+                    else res.render('register_bar', {
+                        page: getPageVariable(req),
+                        title: "Rejestracja baru",
+                        type: 'SUCCESS',
+                        msg: 'Pomyślnie utworzono konto.',
+                        flash_messages: req.flash("FLASH_MSG")
+                    });
                 });
 
-                
+
                 if (err) {
                     console.log("[/register_bar] SQL_INSERT_ERROR: " + err);
                     res.render('register_bar', {
@@ -217,30 +350,42 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
             var query = "insert into Uzytkownicy (imie, nazwisko, email, telefon, haslo,status) values " +
-                "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "', '"+token+"');";
+                "('" + first_name + "', '" + last_name + "', '" + email + "', '" + telephone + "', '" + hash + "', '" + token + "');";
             console.log("Wyslano insert do bazy danych: " + query);
             dbconn.query(query, function (err, rows) {
-                
+
                 var mailOptions = {
                     from: 'Nodemailer@gmail.com',
                     to: email,
                     subject: 'Registration to our service - Drink and watch',
-                    text: 'Hello \n'
-                      + 'To confirm registration click on the link below:\n' +
-                      'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
-                  };
-          
-                  transporter.sendMail(mailOptions, function (error, info) {
+                    text: 'Hello \n' +
+                        'To confirm registration click on the link below:\n' +
+                        'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+                };
+
+                transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
-                      req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
-                      console.log(error);
-                      
+                        req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
+                        console.log(error);
+
                     } else {
-                      console.log('Email sent: ' + info.response);
-                      req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+                        console.log('Email sent: ' + info.response);
+                        req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
                     }
-                    if (err) res.render('register_user', { page: getPageVariable(req), title: 'Rejestracja użytkownika', type: 'ERROR', msg: err.message, flash_messages: req.flash("FLASH_MSG") });
-                    else res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie utworzono konto.', flash_messages: req.flash("FLASH_MSG") });
+                    if (err) res.render('register_user', {
+                        page: getPageVariable(req),
+                        title: 'Rejestracja użytkownika',
+                        type: 'ERROR',
+                        msg: err.message,
+                        flash_messages: req.flash("FLASH_MSG")
+                    });
+                    else res.render('register_user', {
+                        page: getPageVariable(req),
+                        title: "Rejestracja użytkownika",
+                        type: 'SUCCESS',
+                        msg: 'Pomyślnie utworzono konto.',
+                        flash_messages: req.flash("FLASH_MSG")
+                    });
                 });
 
                 if (err) {

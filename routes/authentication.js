@@ -29,8 +29,8 @@ passport.use(new LocalStrategy({
         tableName = getTableNameFrom(req.body.user.replace("'", "''"));
         if (!username || !password) {
             console.log("username/password not given: ");
-            console.log(username);
-            console.log(password);
+            console.log("Username: '" + username + "'");
+            console.log("Password: '" + password + "'");
             return done(null, false);
         }
         dbconn.query("select * from " + tableName + " where email = '" + username + "'", function (err, rows) {
@@ -178,9 +178,7 @@ router.get('/activate/:token', function(req, res, next){
 
         });
       }
-
     });
-
 });
 
 

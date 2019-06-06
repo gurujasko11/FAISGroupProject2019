@@ -170,9 +170,10 @@
         <input type="submit" tabindex="100" value="Zapisz zmiany">
     </form>
 
-    <input type="button" href="/delete_bar">
-        Usuń bar
-    </input>
+    <form action="/delete_bar" method="get" style='margin-top:100px;'>
+        <input type="submit" value='Usuń bar'></input>
+    </form>
+    
 </div>
 <% include header.ejs %>      <!--Include header (top menu logo etc)-->
 <% include footer.ejs %>      <!--Include footer-->
