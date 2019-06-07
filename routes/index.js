@@ -117,7 +117,10 @@ router.post('/search_match', function (req, res, next) {
 
 function getPageVariable(req) {
     if (req.isAuthenticated())
-        return "authenticated";
+        if(req.user.type != 'user')
+            return "authenticatedBar";
+        else
+            return "authenticatedUser";
     else
         return "main";
 }
@@ -187,13 +190,12 @@ router.get('/teams', function (req, res, next) {
             obj = {
                 print: result,
                 page: getPageVariable(req),
-                title: 'teams'
+                title: 'Drużyny'
             };
             res.render('teams', obj);
         }
     });
 
-    //res.render('teams', { page: getPageVariable(req), title: 'teams' });
 });
 
 router.get('/about/match/:id', function (req, res, next) {

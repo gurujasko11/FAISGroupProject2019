@@ -6,7 +6,7 @@
     <div class=topRight>
         <% if(page=="main"){ %>
             <a class=link href="/login" tabindex="50">Logowanie</a>
-        <% } else if(page=="authenticated"){ %>
+        <% } else if(page=="authenticatedUser" || page=="authenticatedBar"){ %>
             <a class=link href="/my_account" tabindex="49">Moje konto</a>
             <a class=link href="/logout" tabindex="50">Wyloguj</a>
         <% } %>
@@ -15,7 +15,7 @@
     <div class=topBar>      <!--This should configure itself dependent of options and views-->
         <% if(page=="main"){ %>
             <a class=
-                <% if(title=="MatchBar"){ %>
+                <% if(title=="Wyszukiwanie"){ %>
                     menu_s
                 <% } else{ %>
                     menu
@@ -29,18 +29,25 @@
                 <% } %> href="/match" tabindex="2">Rozgrywki
             </a>
             <a class=
+               <% if(title=="Terminarz rozrywek"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/match_schedule" tabindex="7">Terminarz rozrywek
+            </a>
+            <a class=
                <% if(title=="Lista barów"){ %>
                    menu_s
             <% } else{ %>
                menu
                     <% } %> href="/bars" tabindex="3">Bary
             </a>
-            <a class=
-                <% if(title=="O stronie"){ %>
-                   menu_s
-                <% } else{ %>
-                    menu
-                <% } %> href="/about" tabindex="4">O stronie
+             <a class=
+            <% if(title=="Drużyny"){ %>
+                menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/teams" tabindex="6">Drużyny
             </a>
             <a class=
                 <% if(title=="Rejestracja baru"){ %>
@@ -56,25 +63,17 @@
                     menu
                 <% } %> href="/register_user" tabindex="6">Rejestracja użytkownika
             </a>
-             <a class=
-            <% if(title=="teams"){ %>
-                menu_s
+            <a class=
+            <% if(title=="O stronie"){ %>
+               menu_s
             <% } else{ %>
                 menu
-            <% } %> href="/teams" tabindex="6">Drużyny
+            <% } %> href="/about" tabindex="4">O stronie
             </a>
-            <a class=
-               <% if(title=="Terminarz rozrywek"){ %>
-               menu_s
-                    <% } else{ %>
-               menu
-                    <% } %> href="/match_schedule" tabindex="7">Terminarz rozrywek
-            </a>
-
             <!-- Uzytkownik zalogowany:   -->
-        <% } else if(page=="authenticated"){ %>
+        <% } else if(page=="authenticatedUser"){ %>
             <a class=
-                <% if(title=="MatchBar"){ %>
+                <% if(title=="Wyszukiwanie"){ %>
                     menu_s
                 <% } else{ %>
                     menu
@@ -88,6 +87,13 @@
                 <% } %> href="/match" tabindex="2">Rozgrywki
             </a>
             <a class=
+               <% if(title=="Terminarz rozrywek"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/match_schedule" tabindex="7">Terminarz rozrywek
+            </a>
+            <a class=
                <% if(title=="Lista barów"){ %>
                    menu_s
             <% } else{ %>
@@ -95,11 +101,11 @@
                     <% } %> href="/bars" tabindex="3">Bary
             </a>
             <a class=
-                <% if(title=="O stronie"){ %>
-                   menu_s
-                <% } else{ %>
-                    menu
-                <% } %> href="/about" tabindex="4">O stronie
+            <% if(title=="Drużyny"){ %>
+                menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/teams" tabindex="6">Drużyny
             </a>
             <a class=
                <% if(title=="Obserwowane"){ %>
@@ -107,6 +113,57 @@
                     <% } else{ %>
                menu
                     <% } %> href="/obserwowane" tabindex="6">Obserwowane
+            </a>
+            <a class=
+            <% if(title=="O stronie"){ %>
+               menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/about" tabindex="4">O stronie
+        </a>
+            <% } else if(page=="authenticatedBar"){ %>
+                <!-- Bar zalogowany:   -->
+            <a class=
+                <% if(title=="Wyszukiwanie"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/" tabindex="1">Wyszukiwanie
+            </a>
+            <a class=
+                <% if(title=="Lista rozgrywek"){ %>
+                    menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/match" tabindex="2">Rozgrywki
+            </a>
+            <a class=
+               <% if(title=="Terminarz rozrywek"){ %>
+               menu_s
+                    <% } else{ %>
+               menu
+                    <% } %> href="/match_schedule" tabindex="7">Terminarz rozrywek
+            </a>
+            <a class=
+               <% if(title=="Lista barów"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+                    <% } %> href="/bars" tabindex="3">Bary
+            </a>
+            <a class=
+            <% if(title=="Drużyny"){ %>
+                menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/teams" tabindex="6">Drużyny
+            </a>
+            <a class=
+                <% if(title=="O stronie"){ %>
+                   menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/about" tabindex="4">O stronie
             </a>
         <% } %>
     </div>
