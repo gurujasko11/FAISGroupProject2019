@@ -300,45 +300,40 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
 
                 transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
-                        req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
-                        console.log(error);
+                        console.log("[/register_bar] SendMail error: " + error);
 
-                    } else {
-                        console.log('Email sent: ' + info.response);
-                        req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+                        res.render('register_bar', {
+                            page: getPageVariable(req),
+                            title: "Rejestracja baru",
+                            type: 'ERROR',
+                            msg: "Przepraszamy, wystąpił błąd po stronie serwera",
+                            flash_messages: req.flash("FLASH_MSG")
+                        });
+                    } 
+                    else if (err) {
+                        console.log("[/register_bar] SQL_INSERT_ERROR: " + err);
+
+                        res.render('register_bar', {
+                            page: getPageVariable(req),
+                            title: "Rejestracja baru",
+                            type: 'ERROR',
+                            msg: "Przepraszamy, wystąpił błąd po stronie serwera",
+                            flash_messages: req.flash("FLASH_MSG")
+                        });
                     }
-                    if (err) res.render('register_bar', {
-                        page: getPageVariable(req),
-                        title: 'Rejestracja baru',
-                        type: 'ERROR',
-                        msg: err.message,
-                        flash_messages: req.flash("FLASH_MSG")
-                    });
-                    else res.render('register_bar', {
-                        page: getPageVariable(req),
-                        title: "Rejestracja baru",
-                        type: 'SUCCESS',
-                        msg: 'Pomyślnie utworzono konto.',
-                        flash_messages: req.flash("FLASH_MSG")
-                    });
+                    else {
+                        console.log('Email sent: ' + info.response);
+                    
+                        res.render('register_bar', {
+                            page: getPageVariable(req),
+                            title: "Rejestracja baru",
+                            type: 'SUCCESS',
+                            msg: "Pomyślnie utworzono konto. Sprawdź maila aby dokonać aktywacji",
+                            flash_messages: req.flash("FLASH_MSG")
+                        });
+                    }
                 });
 
-
-                if (err) {
-                    console.log("[/register_bar] SQL_INSERT_ERROR: " + err);
-                    res.render('register_bar', {
-                        page: getPageVariable(req),
-                        title: "Rejestracja baru",
-                        type: 'ERROR',
-                        msg: "Przepraszamy, wystąpił błąd po stronie serwera"
-                    });
-                } else
-                    res.render('register_bar', {
-                        page: getPageVariable(req),
-                        title: "Rejestracja baru",
-                        type: 'SUCCESS',
-                        msg: "Pomyślnie utworzono konto."
-                    });
             });
         });
     });
@@ -365,44 +360,39 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
 
                 transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
-                        req.flash("FLASH_MSG", ['INFO', 'Błąd serwera, ponów próbę - nie udało się wysłac linku aktywacyjnego']);
-                        console.log(error);
+                        console.log("[/register_user] SendMail error: " + error);
 
-                    } else {
+                        res.render('register_user', {
+                            page: getPageVariable(req),
+                            title: 'Rejestracja użytkownika',
+                            type: 'ERROR',
+                            msg: "Przepraszamy, wystąpił błąd po stronie serwera",
+                            flash_messages: req.flash("FLASH_MSG")
+                        });
+                    } else if(err){
+                        console.log("[/register_user] SQL_INSERT_ERROR: " + err);
+
+                        res.render('register_user', {
+                            page: getPageVariable(req),
+                            title: 'Rejestracja użytkownika',
+                            type: 'ERROR',
+                            msg: "Przepraszamy, wystąpił błąd po stronie serwera",
+                            flash_messages: req.flash("FLASH_MSG")
+                        });
+                    }
+                    else{
                         console.log('Email sent: ' + info.response);
                         req.flash("FLASH_MSG", ['INFO', 'Wysłano link aktywacyjny - sprawdź maila']);
+                    
+                        res.render('register_user', {
+                            page: getPageVariable(req),
+                            title: "Rejestracja użytkownika",
+                            type: 'SUCCESS',
+                            msg: 'Pomyślnie utworzono konto. Sprawdź maila aby dokonać aktywacji',
+                            flash_messages: req.flash("FLASH_MSG")
+                        });
                     }
-                    if (err) res.render('register_user', {
-                        page: getPageVariable(req),
-                        title: 'Rejestracja użytkownika',
-                        type: 'ERROR',
-                        msg: err.message,
-                        flash_messages: req.flash("FLASH_MSG")
-                    });
-                    else res.render('register_user', {
-                        page: getPageVariable(req),
-                        title: "Rejestracja użytkownika",
-                        type: 'SUCCESS',
-                        msg: 'Pomyślnie utworzono konto.',
-                        flash_messages: req.flash("FLASH_MSG")
-                    });
                 });
-
-                if (err) {
-                    console.log("[/register_user] SQL_INSERT_ERROR: " + err);
-                    res.render('register_user', {
-                        page: getPageVariable(req),
-                        title: 'Rejestracja użytkownika',
-                        type: 'ERROR',
-                        msg: "Przepraszamy, wystąpił błąd po stronie serwera"
-                    });
-                } else
-                    res.render('register_user', {
-                        page: getPageVariable(req),
-                        title: "Rejestracja użytkownika",
-                        type: 'SUCCESS',
-                        msg: 'Pomyślnie utworzono konto. Sprawdź maila aby dokonać aktywacji'
-                    });
             });
         });
     });

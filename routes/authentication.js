@@ -174,7 +174,7 @@ router.get('/activate/:token', function(req, res, next){
             console.log('Mysql error while setting activated status', err);
             req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
           }
-          res.render('register_user', { page: getPageVariable(req), title: "Rejestracja użytkownika", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+          res.render('login', { page: getPageVariable(req), title: "Logowanie", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
 
         });
       }
@@ -203,7 +203,7 @@ router.get('/activateBar/:token', function(req, res, next){
             console.log('Mysql error while setting activated status', err);
             req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
           }
-          res.render('register_bar', { page: getPageVariable(req), title: "Rejestracja bary", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+          res.render('login', { page: getPageVariable(req), title: "Logowanie", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
 
         });
       }

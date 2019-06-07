@@ -14,7 +14,7 @@ var mysql = require('mysql');
 //mysql settings
 dbconn = mysql.createConnection({
 	user: 'root',
-	password: 'password',
+	password: '12345',
 	database: 'Zespolowe'
 });
 dbconn.connect();
