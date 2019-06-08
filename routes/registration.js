@@ -124,6 +124,15 @@ router.post('/register_user', notAuthenticatedOnly, function (req, res, next) {
     });
 });
 
+router.get('/sentReset/:isBar/', function (req, res) {
+    req.flash("FLASH_MSG", ['ERROR', 'Wpisz adres E-mail']);
+    res.render('login', {
+        page: getPageVariable(req),
+        title: 'Logowanie',
+        flash_messages: req.flash('FLASH_MSG')
+    });
+});
+
 router.get('/sentReset/:isBar/:email', function (req, res) {
     let table = "Uzytkownicy";
     if (req.param("isBar", 0) == 1) {
