@@ -124,6 +124,15 @@ router.post('/register_user', notAuthenticatedOnly, function (req, res, next) {
     });
 });
 
+router.get('/sentReset/:isBar/', function (req, res) {
+    req.flash("FLASH_MSG", ['ERROR', 'Wpisz adres E-mail']);
+    res.render('login', {
+        page: getPageVariable(req),
+        title: 'Logowanie',
+        flash_messages: req.flash('FLASH_MSG')
+    });
+});
+
 router.get('/sentReset/:isBar/:email', function (req, res) {
     let table = "Uzytkownicy";
     if (req.param("isBar", 0) == 1) {
@@ -292,10 +301,10 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
                 var mailOptions = {
                     from: 'Nodemailer@gmail.com',
                     to: email,
-                    subject: 'Registration to our service - Drink and watch',
-                    text: 'Hello \n' +
-                        'To confirm registration click on the link below:\n' +
-                        'http://localhost:3000/activateBar/' + token + '\nBests, \nProject team'
+                    subject: 'Rejestracja do serwisu - Bar i Mecz',
+                    text: 'Cześć, \n' +
+                        'Aby potwierdzić rejestrację kliknij w link poniżej:\n' +
+                        'http://localhost:3000/activateBar/' + token + '\nPozdrawiamy, \nZespół projektu'
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {
@@ -352,10 +361,10 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
                 var mailOptions = {
                     from: 'Nodemailer@gmail.com',
                     to: email,
-                    subject: 'Registration to our service - Drink and watch',
-                    text: 'Hello \n' +
-                        'To confirm registration click on the link below:\n' +
-                        'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+                    subject: 'Rejestracja do serwisu - Bar i Mecz',
+                    text: 'Cześć \n' +
+                        'Aby potwierdzić rejestrację kliknij w link poniżej:\n' +
+                        'http://localhost:3000/activate/' + token + '\nPozdrawiamy, \nZespół projektu'
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {
