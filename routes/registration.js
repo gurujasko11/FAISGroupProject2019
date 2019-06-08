@@ -292,10 +292,10 @@ function addBarToDB(password, bar_name, telephone, city, street, building_number
                 var mailOptions = {
                     from: 'Nodemailer@gmail.com',
                     to: email,
-                    subject: 'Registration to our service - Drink and watch',
-                    text: 'Hello \n' +
-                        'To confirm registration click on the link below:\n' +
-                        'http://localhost:3000/activateBar/' + token + '\nBests, \nProject team'
+                    subject: 'Rejestracja do serwisu - Bar i Mecz',
+                    text: 'Cześć, \n' +
+                        'Aby potwierdzić rejestrację kliknij w link poniżej:\n' +
+                        'http://localhost:3000/activateBar/' + token + '\nPozdrawiamy, \nZespół projektu'
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {
@@ -352,10 +352,10 @@ function addUserToDB(password, first_name, last_name, email, telephone, res, req
                 var mailOptions = {
                     from: 'Nodemailer@gmail.com',
                     to: email,
-                    subject: 'Registration to our service - Drink and watch',
-                    text: 'Hello \n' +
-                        'To confirm registration click on the link below:\n' +
-                        'http://localhost:3000/activate/' + token + '\nBests, \nProject team'
+                    subject: 'Rejestracja do serwisu - Bar i Mecz',
+                    text: 'Cześć \n' +
+                        'Aby potwierdzić rejestrację kliknij w link poniżej:\n' +
+                        'http://localhost:3000/activate/' + token + '\nPozdrawiamy, \nZespół projektu'
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {
