@@ -13,18 +13,29 @@ router.get('/', function (req, res) {
         "SELECT Bary_Z_Meczami.id_meczu as id, Bary_Z_Meczami.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Bary_Z_Meczami LEFT JOIN Mecze ON Mecze.id_meczu = Bary_Z_Meczami.id_meczu LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 where id_druzyna1 != '' and id_druzyna2 != '';"
         dbconn.query(query_match_teams_place, function (err, result) {
         let emptyArray = [];
-
-        if(result === undefined) {
-            res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: emptyArray, addPossible: req.isAuthenticated()});
+        let is_bar = false;
+        try {
+            if(req.user.barID !== undefined)
+               is_bar = true;
+        }
+        catch(e ){
+            console.log("No Bar");
         }
 
-        res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: result, addPossible: req.isAuthenticated()});
+        if(result === undefined) {
+            res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: emptyArray, addPossible: req.isAuthenticated(), is_bar: is_bar});
+        }
+
+        res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: result, addPossible: req.isAuthenticated(), is_bar: is_bar});
 
     });
 });
 
 router.get('/add', function (req, res) {
-        res.render('add_match', {page: getPageVariable(req), title: 'Dodaj rozgrywkę'});
+    let select_teams = "SELECT * FROM Druzyny";
+    dbconn.query(select_teams, function (err, result) {
+        res.render('add_match', {page: getPageVariable(req), title: 'Dodaj rozgrywkę', teams:result});
+    });
 });
 
 

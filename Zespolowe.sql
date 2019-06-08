@@ -103,6 +103,7 @@ CREATE TABLE `Druzyny` (
 
 LOCK TABLES `Druzyny` WRITE;
 /*!40000 ALTER TABLE `Druzyny` DISABLE KEYS */;
+INSERT INTO `Druzyny` VALUES (10, "Wisła Kraków"), (11, "Cracovia"), (12, "Legia Warszawa"), (13, "Lech Poznań");
 /*!40000 ALTER TABLE `Druzyny` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -20,7 +20,7 @@
         <thead>
         <th>Nazwa</th>
         <th>Czas</th>
-        <% if(addPossible){ %>
+        <% if(addPossible && is_bar){ %>
             <th>Opcje</th>
         <% } %>
         </thead>
@@ -29,7 +29,7 @@
             <tr>
                 <td><%= data[i].team1 + " - " + data[i].team2 %></td>
                 <td class="data"><%= data[i].czas %></td>
-                <% if(addPossible){ %>
+                <% if(addPossible && is_bar){ %>
                     <td><a href="<%= "/match/edit/" + data[i].id %>">Edycja</a>
                         <a href="<%= "/match/delete/" + data[i].id %>">Usun</a>
                     </td>

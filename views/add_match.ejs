@@ -10,7 +10,22 @@
 <!--Inline Javascript-->
 <script>
     function validateForm() {
-        return true;
+        var err = "";
+        if(document.getElementsByName("team1")[0].value === document.getElementsByName("team2")[0].value)
+            err += "Drużyny nie mogą być te same";
+
+        if(document.getElementsByName("date")[0].value === '')
+            err += "Podaj datę";
+
+        if(document.getElementsByName("time")[0].value === '')
+            err += "Podaj godzinę";
+
+        if(err == "") return true;
+        else
+        {
+            AlertError('Błąd!',err);
+            return false;
+        }
     }
 </script>
 
@@ -22,14 +37,21 @@
     <form method="POST" action="/match/add" onsubmit="return validateForm();">
         <table>
             <tr>
-                <td>Drużyna I</td>
-                <td><input id="title" type="text" name="team1" class="validate" required></td>
+                <td>Drużyna I </td>
+                <td><select id="title" name="team1">
+                        <% for(var i = 0; i < teams.length; i++) { %>
+                            <option ><%= teams[i].nazwa_druzyny%></option>
+                        <% } %>
+                    </select></td>
             </tr>
             <tr>
-                <td>Drużyna II</td>
-                <td><input id="title" type="text" name="team2" class="validate" required></td>
+                <td>Drużyna II </td>
+                <td><select id="title" name="team2">
+                        <% for(var i = 0; i < teams.length; i++) { %>
+                            <option><%= teams[i].nazwa_druzyny%></option>
+                        <% } %>
+                    </select></td>
             </tr>
-
             <tr>
                 <td>Data</td>
                 <td><input id="beginDate" type="date" name="date" required></td>
@@ -37,12 +59,6 @@
             <tr>
                 <td>Czas</td>
                 <td><input id="match_time" type="time" name="time"></td>
-            </tr>
-
-
-            <tr>
-                <td>Liga</td>
-                <td><input id="league" name="league" type="text" class="validate"></td>
             </tr>
 
         </table>
