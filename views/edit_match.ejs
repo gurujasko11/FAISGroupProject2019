@@ -10,7 +10,22 @@
 <!--Inline Javascript-->
 <script>
     function validateForm() {
-        return true;
+        var err = "";
+        if(document.getElementsByName("team1")[0].value === document.getElementsByName("team2")[0].value)
+            err += "Drużyny nie mogą być te same";
+
+        if(document.getElementsByName("date")[0].value === '')
+            err += "Podaj datę";
+
+        if(document.getElementsByName("time")[0].value === '')
+            err += "Podaj godzinę";
+
+        if(err == "") return true;
+        else
+        {
+            AlertError('Błąd!',err);
+            return false;
+        }
     }
 </script>
 
@@ -22,12 +37,20 @@
     <form method="POST" action="/match/edit" onsubmit="return validateForm();">
         <table>
             <tr>
-                <td>Drużyna I</td>
-                <td><input id="title" type="text" name="team1" class="validate" required value="<%= data.team1 %>"></td>
+                <td>Drużyna I </td>
+                <td><select id="title" name="team1" value="<%= data.team1 %>">
+                        <% for(var i = 0; i < teams.length; i++) { %>
+                            <option><%= teams[i].nazwa_druzyny%></option>
+                        <% } %>
+                    </select></td>
             </tr>
             <tr>
-                <td>Drużyna II</td>
-                <td><input id="title" type="text" name="team2" class="validate" required value="<%= data.team2 %>"></td>
+                <td>Drużyna II </td>
+                <td><select id="title" name="team2" value="<%= data.team2 %>">
+                        <% for(var i = 0; i < teams.length; i++) { %>
+                            <option><%= teams[i].nazwa_druzyny%></option>
+                        <% } %>
+                    </select></td>
             </tr>
 
             <tr>
@@ -38,12 +61,7 @@
                 <td>Czas</td>
                 <td><input id="match_time" type="time" name="time" value="<%= data.czas %>"></td>
             </tr>
-
-
-            <tr>
-                <td>Liga</td>
-                <td><input id="league" name="league" type="text" class="validate" value="Ligi nie ma w bazie"></td>
-            </tr>
+            <input id="edited_match_id" type="hidden" name="edited_match_id" value="<%= match_id %>">
             <input id="czas" type="hidden" value="<%= data.czas %>">
             <input id="id" type="hidden" value="<%=data.id%>">
         </table>
