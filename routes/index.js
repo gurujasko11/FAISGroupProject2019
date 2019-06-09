@@ -320,7 +320,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
@@ -383,7 +383,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
@@ -447,7 +447,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
@@ -508,7 +508,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
