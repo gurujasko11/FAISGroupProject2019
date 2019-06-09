@@ -78,7 +78,6 @@ CREATE TABLE `Bary_Z_Meczami` (
 
 LOCK TABLES `Bary_Z_Meczami` WRITE;
 /*!40000 ALTER TABLE `Bary_Z_Meczami` DISABLE KEYS */;
-INSERT INTO `Bary_Z_Meczami` VALUES (1,1113,2,'2019-06-13 11:11:00'),(2,1113,3,'2019-06-06 11:11:00'),(3,1113,4,'2019-06-20 11:11:00');
 /*!40000 ALTER TABLE `Bary_Z_Meczami` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +93,7 @@ CREATE TABLE `Druzyny` (
   `nazwa_druzyny` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id_druzyny`),
   UNIQUE KEY `nazwa_druzyny` (`nazwa_druzyny`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +102,7 @@ CREATE TABLE `Druzyny` (
 
 LOCK TABLES `Druzyny` WRITE;
 /*!40000 ALTER TABLE `Druzyny` DISABLE KEYS */;
-INSERT INTO `Druzyny` VALUES (10, "Wisła Kraków"), (11, "Cracovia"), (12, "Legia Warszawa"), (13, "Lech Poznań");
+INSERT INTO `Druzyny` VALUES (11,'Cracovia'),(13,'Lech Poznań'),(12,'Legia Warszawa'),(10,'Wisła Kraków');
 /*!40000 ALTER TABLE `Druzyny` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,11 +213,6 @@ LOCK TABLES `Uzytkownik_Z_Druzynami` WRITE;
 /*!40000 ALTER TABLE `Uzytkownik_Z_Druzynami` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Uzytkownik_Z_Druzynami` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `Wlasciciel_Z_Barami`
---
-
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -229,4 +223,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-06-06  8:29:26
+-- Dump completed on 2019-06-09 22:52:57
