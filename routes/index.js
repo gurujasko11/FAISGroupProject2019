@@ -90,14 +90,15 @@ router.get('/account', function (req, res, next) {
 });
 
 router.post('/search_match', function (req, res, next) {
-    console.log(req.body.search_text)
-    teams = req.body.search_text.split(',')
-    query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away\n" +
-        "  FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 \n" +
-        " WHERE m.id_druzyna1 = t1.id_druzyny\n" +
-        "   AND m.id_druzyna2 = t2.id_druzyny" +
-        "   AND t1.nazwa_druzyny = \'" + teams[0] +
-        "\'   AND t2.nazwa_druzyny = \'" + teams[1] + "\'";
+    //console.log(req.body.search_text)
+    teams = req.body.search_text.split(' ')
+    query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away "+
+    "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 "+
+    "WHERE ("+
+    "t1.nazwa_druzyny LIKE '%"+teams[0]+"%' OR t2.nazwa_druzyny LIKE '%"+teams[1]+"%' OR "+
+    "t2.nazwa_druzyny LIKE '%"+teams[0]+"%' OR t1.nazwa_druzyny LIKE '%"+teams[1]+"%' "+
+    ")"+    "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny)";
+    //console.log(query)
     dbconn.query(query, function (err, rows) {
         if (err) res.render('search_match_result', {
             page: getPageVariable(req),
@@ -108,6 +109,7 @@ router.post('/search_match', function (req, res, next) {
             res.render('search_match_result', {
                 page: getPageVariable(req),
                 title: 'Wyniki wyszukiwania',
+                query: req.body.search_text,
                 args: rows
             });
         }
@@ -320,7 +322,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
@@ -383,7 +385,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
@@ -447,7 +449,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {
@@ -508,7 +510,7 @@ router.get('/match_schedule', function (req, res, next) {
                             const matches = [];
 
                             function getTeamName(id) {
-                                var name = 'Wisla';
+                                var name = 'Druzyna nie znana';
 
                                 for (var i = 0; i < teams.length; i++) {
                                     if (teams[i].id_druzyny == id) {

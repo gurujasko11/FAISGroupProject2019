@@ -3,6 +3,7 @@
      --ButtonBcgColor: #242624;
      --TextColor: #222222;
      --AccentColor: #15c118;
+     --LinkColor: #129c13;
      --HoverColor: #1adb1d;
 }
 body {
@@ -74,7 +75,7 @@ body {
 /*      A       /////////////////////////////////////////////////////////*/
 a.link {
     text-decoration: none;
-    color: var(--AccentColor);
+    color: var(--LinkColor);
     border-bottom: 1px solid var(--AccentColor);
     
     -webkit-transition: border-bottom 0.5s;

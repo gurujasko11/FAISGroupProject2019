@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+
+<script src='/javascripts/alert.js' type='text/javascript'></script>
+
+<!--Inline Javascript-->
+<script>
+    function validateForm() {
+
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<td id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+    <h1><%= title %></h1>
+
+    <form method="POST" action="/match/add/bar_match" onsubmit="return validateForm();">
+        <table>
+            <tr>
+                <td>Mecze</td>
+                <td><select id="match" name="match">
+                    <% for(var i = 0; i < data.length; i++) { %>
+                    <option value="<%= data[i].id %>"><%=data[i].czas%>   <%= data[i].team1 %> - <%= data[i].team2 %></option>
+                    <% } %>
+                </select></td>
+            </tr>
+            <tr>
+                <td>Data</td>
+                <td><input id="beginDate" type="date" name="date" required></td>
+            </tr>
+            <tr>
+                <td>Czas</td>
+                <td><input id="match_time" type="time" name="time"></td>
+            </tr>
+        </table>
+        <p>* - obowiązkowe</p>
+        <br>
+        <input type="submit" class="btn btn-primary" value="Submit"/>
+    </form>
+    <% include header.ejs %>
+    <% include footer.ejs %>
+</body>
+</html>
