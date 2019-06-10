@@ -8,8 +8,21 @@
 <div id="alerts"></div>
 <div id="page" class=page>      <!--Div page with id=page - main container-->
     <div>
-        <ul>
+        <form method="POST" action="/search_match" onsubmit="return validateForm();">
             <table>
+                <td>
+                    Znajdź mecz:
+                </td>
+                <td>
+                    <input tabindex="100" type="text" name="search_text" value=<%=query%>>
+                </td>
+            </table>
+            <pre id="error" style="color:red"></pre>
+            <input type="submit" tabindex="100" value="Szukaj" if="search_text">
+        </form>
+        <br/><br/>
+        <h2>Znalezione mecze</h2>
+            <table class="table">
                 <tr>
                     <th>gospodarze</th>
                     <th>goscie</th>
@@ -17,13 +30,12 @@
                 </tr>
             <% args.map((element)=>{%>
                 <tr>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>"><%= element.home %></a></td>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>"><%= element.away %></a></td>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>"><%= element.czas %></a></td>
+                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.home %></a></td>
+                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.away %></a></td>
+                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.czas %></a></td>
                 </tr>
             <%}) %>
             </table>
-        </ul>
     </div>
 
 </div>
