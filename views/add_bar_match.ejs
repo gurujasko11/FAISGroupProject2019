@@ -23,11 +23,11 @@
         <table>
             <tr>
                 <td>Mecze</td>
-                <select id="match" name="match">
+                <td><select id="match" name="match">
                     <% for(var i = 0; i < data.length; i++) { %>
                     <option value="<%= data[i].id %>"><%= data[i].team1 %> - <%= data[i].team2 %></option>
                     <% } %>
-                </select>
+                </select></td>
             </tr>
             <tr>
                 <td>Data</td>
