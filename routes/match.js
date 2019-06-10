@@ -99,16 +99,31 @@ function prepare_email(team_id, user_id, datetime, place, team1_name, team2_name
     });
 }
 
-function notify_users_about_match(team1_id, team2_id, datetime, place, team1_name, team2_name) {
-    dbconn.query("SELECT * FROM Uzytkownik_Z_Druzynami", function (err, result) {
-        for (var i = 0, size = result.length; i < size; i++) {
+function notify_users_about_match(bar_id, match_id, datetime){
+    let team1_id, team2_id, place;
+    dbconn.query("select * from Mecze where id_meczu=" + match_id, function (err, result) {
+        team1_id = result[0].id_druzyna1;
+        team2_id = result[0].id_druzyna2;
+        dbconn.query("select * from Druzyny where id_druzyny=" + team1_id, function (err, result) {
+            team1_name = result[0].nazwa_druzyny;
+            dbconn.query("select * from Druzyny where id_druzyny=" + team2_id, function (err, result) {
+                team2_name = result[0].nazwa_druzyny;
+                dbconn.query("select nazwa_baru, id_baru from Bary where id_baru=" + bar_id, function (err, result){
+                    place = result[0].nazwa_baru;
 
-            let user_id = result[i].id_uzytkownika;
-            let team_id = result[i].id_druzyny;
-            if (team_id === team1_id || team_id === team2_id) {
-                prepare_email(team_id, user_id, datetime, place, team1_name, team2_name);
-            }
-        }
+                    dbconn.query("SELECT * FROM Uzytkownik_Z_Druzynami", function (err, result) {
+                        for (var i = 0, size = result.length; i < size; i++) {
+
+                            let user_id = result[i].id_uzytkownika;
+                            let team_id = result[i].id_druzyny;
+                            if (team_id === team1_id || team_id === team2_id) {
+                                prepare_email(team_id, user_id, datetime, place, team1_name, team2_name);
+                            }
+                        }
+                    });
+                });
+            });
+        });
     });
 }
 
@@ -121,11 +136,6 @@ function nested_add2(req, team1_id, team2_id, team1_name, team2_name, id_baru, i
         }
         nested_add_res.redirect('/match')
         id_meczu = result.insertId;
-        //let insert_to_bary_z_meczami = "INSERT INTO Bary_Z_Meczami(id_baru, id_meczu, czas) VALUES(" + id_baru + ", " + id_meczu + ", '" + datetime + "')";
-        // dbconn.query(insert_to_bary_z_meczami, function (err, res) {
-        //         notify_users_about_match(team1_id, team2_id, datetime, place, team1_name, team2_name);
-        //         nested_add_res.redirect('/match');
-        // });
     });
 }
 
@@ -249,7 +259,7 @@ router.post('/add/bar_match', function (req, res, next) {
     let datetime = req.body.date + " " + req.body.time;
     let query = "INSERT INTO Bary_Z_Meczami(id_baru, id_meczu, czas) VALUES(" + bar_id + ", " + match_id + ", '" + datetime + "')";
     dbconn.query(query, function (err, result) {
-        //notify_users_about_match(team1_id, team2_id, datetime, place, team1_name, team2_name);
+        notify_users_about_match(bar_id, match_id, datetime);
         res.redirect('/match');
     });
 });
