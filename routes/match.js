@@ -10,7 +10,7 @@ let nested_edit_res;
 
 router.get('/', function (req, res) {
     let query_match_teams_place = "" +
-        "SELECT Bary_Z_Meczami.id_meczu as id, Bary_Z_Meczami.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Bary_Z_Meczami LEFT JOIN Mecze ON Mecze.id_meczu = Bary_Z_Meczami.id_meczu LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_druzyna1 != '' and id_druzyna2 != '';"
+        "SELECT Bary_Z_Meczami.id_meczu as id, Bary_Z_Meczami.id_wydarzenia as id_wydarzenia, Bary_Z_Meczami.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Bary_Z_Meczami LEFT JOIN Mecze ON Mecze.id_meczu = Bary_Z_Meczami.id_meczu LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_druzyna1 != '' and id_druzyna2 != '';"
     dbconn.query(query_match_teams_place, function (err, result) {
         let emptyArray = [];
         let is_bar = false;
@@ -99,27 +99,31 @@ function prepare_email(team_id, user_id, datetime, place, team1_name, team2_name
     });
 }
 
-function notify_users_about_match(bar_id, match_id, datetime){
-    let team1_id, team2_id, place;
-    dbconn.query("select * from Mecze where id_meczu=" + match_id, function (err, result) {
-        team1_id = result[0].id_druzyna1;
-        team2_id = result[0].id_druzyna2;
-        dbconn.query("select * from Druzyny where id_druzyny=" + team1_id, function (err, result) {
-            team1_name = result[0].nazwa_druzyny;
-            dbconn.query("select * from Druzyny where id_druzyny=" + team2_id, function (err, result) {
-                team2_name = result[0].nazwa_druzyny;
-                dbconn.query("select nazwa_baru, id_baru from Bary where id_baru=" + bar_id, function (err, result){
-                    place = result[0].nazwa_baru;
+function notify_users_about_match(bar_id, event_id, datetime){
+    let team1_id, team2_id, place, match_id;
+    dbconn.query("select id_wydarzenia, id_meczu from Bary_Z_Meczami where id_wydarzenia=" + event_id, function (err, result) {
+        match_id = result[0].id_meczu;
 
-                    dbconn.query("SELECT * FROM Uzytkownik_Z_Druzynami", function (err, result) {
-                        for (var i = 0, size = result.length; i < size; i++) {
+        dbconn.query("select * from Mecze where id_meczu=" + match_id, function (err, result) {
+            team1_id = result[0].id_druzyna1;
+            team2_id = result[0].id_druzyna2;
+            dbconn.query("select * from Druzyny where id_druzyny=" + team1_id, function (err, result) {
+                team1_name = result[0].nazwa_druzyny;
+                dbconn.query("select * from Druzyny where id_druzyny=" + team2_id, function (err, result) {
+                    team2_name = result[0].nazwa_druzyny;
+                    dbconn.query("select nazwa_baru, id_baru from Bary where id_baru=" + bar_id, function (err, result){
+                        place = result[0].nazwa_baru;
 
-                            let user_id = result[i].id_uzytkownika;
-                            let team_id = result[i].id_druzyny;
-                            if (team_id === team1_id || team_id === team2_id) {
-                                prepare_email(team_id, user_id, datetime, place, team1_name, team2_name);
+                        dbconn.query("SELECT * FROM Uzytkownik_Z_Druzynami", function (err, result) {
+                            for (var i = 0, size = result.length; i < size; i++) {
+
+                                let user_id = result[i].id_uzytkownika;
+                                let team_id = result[i].id_druzyny;
+                                if (team_id === team1_id || team_id === team2_id) {
+                                    prepare_email(team_id, user_id, datetime, place, team1_name, team2_name);
+                                }
                             }
-                        }
+                        });
                     });
                 });
             });
@@ -172,54 +176,40 @@ router.post('/add', function (req, res) {
 
 
 router.get('/edit/:id', function (req, res, next) {
-    let match_id = req.params.id;
+    let event_id = req.params.id;
 
-    let select_teams = "SELECT * FROM Druzyny";
+    console.log("id_wydarzenia");
+    console.log(event_id);
+    // dbconn.query("SELECT * from Bary_Z_Meczami WHERE id_wydarzenia=" + id_wydarzenia;
+    // dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_meczu =" + match_id, function (err, result) {
+    dbconn.query("SELECT Mecze.czas as czas, Mecze.id_meczu as id, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE DATE(czas) > CURDATE()", function (err, result) {
+        for(var i = 0; i < result.length; i++){
+            result[i].czas = (result[i].czas+"").split("GMT")[0];
+        }
 
-    dbconn.query("SELECT Mecze.id_meczu as id, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_meczu =" + match_id, function (err, result) {
         result[0].czas = result[0].czas + "";
         console.log(result[0].czas);
-        dbconn.query(select_teams, function (err, team_res) {
-            res.render('edit_match', {
-                page: getPageVariable(req),
-                title: 'Edycja rozgrywki', data: result[0], teams: team_res, match_id: match_id
-            });
+        res.render('edit_match', {
+            page: getPageVariable(req),
+            title: 'Edycja rozgrywki', data: result, event_id: event_id
         });
     });
 });
 
 
-router.post('/edit', function (req, res, next) {
+router.post('/edit', function (req, res) {
     nested_edit_res = res;
-    let new_team1_id, new_team2_id, place;
-    let datetime = req.body.date + " " + req.body.time;
+    let datetime_in_bar = req.body.date + " " + req.body.time;
     let bar_id = req.user.barID;
-    let team1_name = req.body.team1;
-    let team2_name = req.body.team2;
-    let match_id = req.body.edited_match_id;
+    let event_id = req.body.edited_event_id;
 
     let bar_name_query = "select * from Bary where id_baru=" + bar_id;
     dbconn.query(bar_name_query, function (err, res) {
 
-        place = res[0].nazwa_baru;
-
-        let team1_query = "select * from Druzyny where nazwa_druzyny='" + team1_name + "';";
-
-        dbconn.query(team1_query, function (err, result) {
-            new_team1_id = result[0].id_druzyny;
-            let team2_query = "select * from Druzyny where nazwa_druzyny='" + team2_name + "';";
-
-            dbconn.query(team2_query, function (err, result) {
-                new_team2_id = result[0].id_druzyny;
-                let update_to_bary_z_meczami = "UPDATE Bary_Z_Meczami SET czas='" + datetime + "' WHERE id_meczu=" + match_id + ";";
-                dbconn.query(update_to_bary_z_meczami, function (err, res) {
-
-                    let update_match = "UPDATE Mecze SET czas='" + datetime + "', id_druzyna1=" + new_team1_id + ", id_druzyna2=" + new_team2_id + " WHERE id_meczu=" + match_id + ";";
-                    dbconn.query(update_match, function (err, res) {
-                        nested_edit_res.redirect('/match');
-                    });
-                });
-            });
+        let update_to_bary_z_meczami = "UPDATE Bary_Z_Meczami SET czas='" + datetime_in_bar + "' WHERE id_wydarzenia=" + event_id + ";";
+        dbconn.query(update_to_bary_z_meczami, function (err, res) {
+            notify_users_about_match(bar_id, event_id, datetime_in_bar);
+            nested_edit_res.redirect('/match');
         });
     });
 });
@@ -227,18 +217,18 @@ router.post('/edit', function (req, res, next) {
 
 router.get('/delete/:id', function (req, result, next) {
     console.log(req.params.id);
-    dbconn.query("delete from Bary_Z_Meczami where id_meczu="
+    dbconn.query("delete from Bary_Z_Meczami where id_wydarzenia="
         + req.params.id, function (err, res) {
         result.redirect('/match');
     });
 });
 
-router.get('/add/:id/:bar', function (req, res, next) {
-    let query = "INSERT INTO Bary_Z_Meczami(id_meczu, id_baru) VALUES(" + req.params.id + ", " + req.params.bar + ");";
-    dbconn.query(query, function (err, result) {
-        res.redirect("/bars/show_matches/" + req.params.bar);
-    });
-});
+// router.get('/add/:id/:bar', function (req, res, next) { event_id instead of match_id
+//     let query = "INSERT INTO Bary_Z_Meczami(id_meczu, id_baru) VALUES(" + req.params.id + ", " + req.params.bar + ");";
+//     dbconn.query(query, function (err, result) {
+//         res.redirect("/bars/show_matches/" + req.params.bar);
+//     });
+// });
 
 router.get('/add/bar_match', function (req, res, next) {
 
@@ -259,7 +249,8 @@ router.post('/add/bar_match', function (req, res, next) {
     let datetime = req.body.date + " " + req.body.time;
     let query = "INSERT INTO Bary_Z_Meczami(id_baru, id_meczu, czas) VALUES(" + bar_id + ", " + match_id + ", '" + datetime + "')";
     dbconn.query(query, function (err, result) {
-        notify_users_about_match(bar_id, match_id, datetime);
+        let event_id = result.insertId;
+        notify_users_about_match(bar_id, event_id, datetime);
         res.redirect('/match');
     });
 });
