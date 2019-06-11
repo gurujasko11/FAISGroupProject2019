@@ -9,7 +9,8 @@
 <div id="page" class=page>      <!--Div page with id=page - main container-->
     <div>
         <ul>
-            <table>
+            <h2>Miejsca w których jest transmisja</h2>
+            <table class="table">
                 <tr>
                     <th>nazwa baru</th>
                     <th>adres</th>
@@ -17,10 +18,7 @@
                 <% args.map((element)=>{%>
                     <tr>
                         <td><%= element.nazwa_baru %></td>
-                        <td><%= element.miasto %></td>
-                        <td><%= element.ulica %></td>
-                        <td><%= element.numer_budynku %></td>
-                        <td><%= element.numer_lokalu+"\n" %></td>
+                        <td><%= element.miasto %> <%= element.ulica %> <%= element.numer_budynku %> <%= element.numer_lokalu%></td>
                     </tr>
                 <%}) %>
 

@@ -205,7 +205,7 @@ router.get('/about/match/:id', function (req, res, next) {
     console.log(req.body.search_text)
     query = "SELECT t1.id_baru, t1.id_meczu, t2.nazwa_baru, t2.miasto, t2.ulica, t2.numer_budynku, t2.numer_lokalu\n" +
         "FROM Zespolowe.Bary_Z_Meczami t1, Zespolowe.Bary t2\n" +
-        "WHERE t1.id_meczu = 1\n" +
+        "WHERE t1.id_meczu = "+match_id+"\n" +
         "AND t1.id_baru = t2.id_baru;";
     dbconn.query(query, function (err, rows) {
         if (err) res.render('search_match_result', {
