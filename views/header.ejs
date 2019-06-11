@@ -15,7 +15,7 @@
     <div class=topBar>      <!--This should configure itself dependent of options and views-->
         <% if(page=="main"){ %>
             <a class=
-                <% if(title=="Wyszukiwanie"){ %>
+                <% if(title=="MatchBar" || title=="Wyniki wyszukiwania"){ %>
                     menu_s
                 <% } else{ %>
                     menu
@@ -73,7 +73,7 @@
             <!-- Uzytkownik zalogowany:   -->
         <% } else if(page=="authenticatedUser"){ %>
             <a class=
-                <% if(title=="Wyszukiwanie"){ %>
+                <% if(title=="MatchBar" || title=="Wyniki wyszukiwania"){ %>
                     menu_s
                 <% } else{ %>
                     menu
@@ -108,7 +108,7 @@
             <% } %> href="/teams" tabindex="6">Drużyny
             </a>
             <a class=
-               <% if(title=="Obserwowane"){ %>
+               <% if(title=="Twoje obserwacje"){ %>
                menu_s
                     <% } else{ %>
                menu
@@ -124,7 +124,7 @@
             <% } else if(page=="authenticatedBar"){ %>
                 <!-- Bar zalogowany:   -->
             <a class=
-                <% if(title=="Wyszukiwanie"){ %>
+                <% if(title=="MatchBar" || title=="Wyniki wyszukiwania"){ %>
                     menu_s
                 <% } else{ %>
                     menu
