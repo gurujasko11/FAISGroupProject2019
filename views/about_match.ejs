@@ -17,8 +17,8 @@
                 </tr>
                 <% args.map((element)=>{%>
                     <tr>
-                        <td><%= element.nazwa_baru %></td>
-                        <td><%= element.miasto %> <%= element.ulica %> <%= element.numer_budynku %> <%= element.numer_lokalu%></td>
+                        <td><a href=/bar/<%= element.id_baru %> class="link"><%= element.nazwa_baru %></a></td>
+                        <td><a href=/bar/<%= element.id_baru %> class="link"><%= element.miasto %> <%= element.ulica %> <%= element.numer_budynku %> <%= element.numer_lokalu%></a></td>
                     </tr>
                 <%}) %>
 
