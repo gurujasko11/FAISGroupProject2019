@@ -57,7 +57,16 @@
     Array.from(date).forEach(function (element, index, array) {
         console.log(element)
         let datetime = new Date(element.innerHTML);
-        let str = (dni[datetime.getDay()] + ", " + datetime.getDate()) + "." + (datetime.getMonth() + 1) + "." + datetime.getFullYear() + " " + datetime.getHours() + ":" + datetime.getMinutes();
+        var minutes = datetime.getMinutes();
+        var hours = datetime.getHours();
+        var days = datetime.getDate();
+        var months = datetime.getMonth();
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        hours = hours < 10 ? '0'+hours : hours;
+        days = days < 10 ? '0'+days : days;
+        months = months < 10 ? '0'+(months+1) : months +1;
+        let str = (dni[datetime.getDay()] + ", " + days) + "." + months
+            + "." + datetime.getFullYear() + " " + hours + ":" + minutes;
         element.innerHTML = str;
     })
 </script>
