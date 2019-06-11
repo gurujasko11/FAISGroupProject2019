@@ -67,9 +67,9 @@
                 <th>Data i godzina meczu</th>
                 <%mecze.forEach(function (mecz) { %>
                 <tr>
-                    <td><%=mecz.team1%></td>
-                    <td><%=mecz.team2%></td>
-                    <td><%=mecz.czas%></td>
+                    <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.team1%></a></td>
+                    <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.team2%></a></td>
+                    <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.czas%></a></td>
                 </tr>
                 <%})%>
             </table>
