@@ -92,7 +92,7 @@ router.get('/account', function (req, res, next) {
 router.post('/search_match', function (req, res, next) {
     //console.log(req.body.search_text)
     teams = req.body.search_text.split(' ')
-    query = "SELECT czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away "+
+    query = "SELECT DATE_FORMAT(czas, '%m/%d/%Y %H:%i') as czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away "+
     "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 "+
     "WHERE ("+
     "t1.nazwa_druzyny LIKE '%"+teams[0]+"%' OR t2.nazwa_druzyny LIKE '%"+teams[1]+"%' OR "+
