@@ -12,12 +12,10 @@
             <h1><%= title %></h1>
             <form method="POST" action="/zmien_obserwacje" onsubmit=""> 
             <table class="table">
-                <th>id drużyny</th>  
                 <th>nazwa drużyny</th>
                 <th>obserwacja</th>  
                 <% print.forEach(function (team) { %>
                 <tr>  
-                    <td><%= team.id_druzyny %></td>  
                     <td><%= team.nazwa_druzyny %></td>
                     <% if (team.id_uzytkownika) { %>
 
