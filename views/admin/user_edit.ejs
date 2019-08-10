@@ -57,65 +57,88 @@
     
     <body onLoad='getMessages()'>
     <div id="alerts"></div>
+    <% if (flash_messages) { %>
+        <div id='flash_msg' style="display: none;"><%= flash_messages %></div>
+    <% } %>
 
 
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
-            <form method="POST" action="/admin/user/edit/<%= user_data.id_uzytkownika %>" onsubmit="return validateForm();">
+            <form method="POST" action="/admin/user/edit/<%= user_data.id_uzytkownika %>" onsubmit="return validateForm();"></form>
                 <label style="margin-bottom: 20px">Edytuj konto</label>
                 <table>
+                    
+                        <tr>
+                            <td>
+                                E-mail: 
+                            </td>
+                            <td>
+                                <input tabindex="60" type="email" name="email" value=<%= user_data.email %>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Hasło:
+                            </td>
+                            <td>
+                                <input tabindex="61" type="password" name="password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Potwierdz hasło:
+                            </td>
+                            <td>
+                                <input tabindex="62" type="password" id="repeated_password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Imię:
+                            </td>
+                            <td>
+                                <input tabindex="63" type="text" name="first_name" value=<% if(user_data.imie!='NULL') { %><%= user_data.imie %><% } %>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Nazwisko:
+                            </td>
+                            <td>
+                                <input tabindex="64" type="text" name="last_name" value=<% if(user_data.nazwisko!='NULL') { %><%= user_data.nazwisko %><% } %>>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Telefon:
+                            </td>
+                            <td>
+                                <input tabindex="65" type="text" name="telephone" value=<% if(user_data.telefon!='NULL') { %><%= user_data.telefon %><% } %>>
+                            </td>
+                        </tr>
+                    
                     <tr>
                         <td>
-                            E-mail: 
+                            Status aktywacji:
                         </td>
                         <td>
-                            <input tabindex="60" type="email" name="email" value=<%= user_data.email %>>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Hasło:
-                        </td>
-                        <td>
-                            <input tabindex="61" type="password" name="password">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Potwierdz hasło:
-                        </td>
-                        <td>
-                            <input tabindex="62" type="password" id="repeated_password">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Imię:
-                        </td>
-                        <td>
-                            <input tabindex="63" type="text" name="first_name" value=<% if(user_data.imie!='NULL') { %><%= user_data.imie %><% } %>>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Nazwisko:
-                        </td>
-                        <td>
-                            <input tabindex="64" type="text" name="last_name" value=<% if(user_data.nazwisko!='NULL') { %><%= user_data.nazwisko %><% } %>>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Telefon:
-                        </td>
-                        <td>
-                            <input tabindex="65" type="text" name="telephone" value=<% if(user_data.telefon!='NULL') { %><%= user_data.telefon %><% } %>>
+                            <% if(user_data.status=='activated') { %> <div style="text-align:center">Zaktywowany</div> <% } else { %> 
+                                <div style="text-align:center">
+                                    <a href="/admin/user/activate/<%= user_data.id_uzytkownika %>">
+                                        <button style="width: 150px; height: 25px;">Aktywuj</button>
+                                    </a>
+                                </div>
+                            <% } %>
                         </td>
                     </tr>
                 </table>
+                <div style="text-align: center; margin-top: 30px;">
+                    <input type="submit" tabindex="68" value="Zaktualizuj">
+                </div>
+                
                 <br>
-                <input type="submit" tabindex="69" value="Zaktualizuj">
+                    
             </form>
 
             <br><br><br>

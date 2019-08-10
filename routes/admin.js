@@ -327,6 +327,21 @@ router.post('/user/delete/:id', authenticatedAdminOnly, function(req, res)
     });
 });
 
+router.get('/user/activate/:id', authenticatedAdminOnly, function(req, res)
+{
+    dbconn.query("UPDATE Uzytkownicy SET status='activated' WHERE id_uzytkownika=" + req.params.id, function(err, rows)
+    {
+        if(err)
+        {
+            console.log(err);
+            req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+            return res.redirect('/admin/user/edit/' + req.params.id);
+        }
+        req.flash('FLASH_MSG', ['SUCCESS', 'Pomyślnie aktywowano konto użytkownika']);
+        return res.redirect('/admin/user/edit/' + req.params.id);
+    });
+});
+
 
 
 

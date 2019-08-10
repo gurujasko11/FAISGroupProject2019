@@ -37,6 +37,10 @@
     
     <body onload='getMessages()'>
     <div id="alerts"></div>
+    <% if (flash_messages) { %>
+        <div id='flash_msg' style="display: none;"><%= flash_messages %></div>
+    <% } %>
+    
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
