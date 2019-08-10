@@ -35,7 +35,7 @@ if(ENABLE_REGISTER_ADMIN_ROUTE && ENABLE_REGISTER_ADMIN_ROUTE === true)
     router.post('/register', notAuthenticatedOnly, function (req, res, next) {
         var password = req.body.password.replace("'", "''");
         var email = req.body.email.replace("'", "''");
-        dbconn.query('select * from admin where email = \'' + email + '\'', function(err, rows)
+        dbconn.query('SELECT * FROM Admin where email = \'' + email + '\'', function(err, rows)
         {
             if(err)
             {
@@ -58,7 +58,7 @@ if(ENABLE_REGISTER_ADMIN_ROUTE && ENABLE_REGISTER_ADMIN_ROUTE === true)
                         req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
                         return res.redirect('/admin/register');
                     }
-                    dbconn.query('insert into admin(email, haslo) values (\'' + email + "', '" + hash + "')", function(err, rows)
+                    dbconn.query('insert into Admin(email, haslo) values (\'' + email + "', '" + hash + "')", function(err, rows)
                     {
                         if(err)
                         {
