@@ -90,7 +90,7 @@ passport.use('admin', new LocalStrategy({
             console.log("Password: '" + password + "'");
             return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Nie podano hasła lub adresu e-mail']));
         }
-        dbconn.query("select * from admin where email = '" + username + "'", function (err, rows) {
+        dbconn.query("select * from Admin where email = '" + username + "'", function (err, rows) {
             if (err) {
                 console.log(err);
                 return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']));
