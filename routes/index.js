@@ -119,10 +119,16 @@ router.post('/search_match', function (req, res, next) {
 
 function getPageVariable(req) {
     if (req.isAuthenticated())
-        if(req.user.type != 'user')
+    {
+        if(req.user.type == 'bar')
             return "authenticatedBar";
-        else
+        else if(req.user.type == 'admin')
+            return "authenticatedAdmin";
+        else if(req.user.type == 'user')
             return "authenticatedUser";
+        else
+            return 'main';
+    }
     else
         return "main";
 }

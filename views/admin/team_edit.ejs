@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <% include ../head.ejs %>      <!--Include head section (same for all pages)-->
+    <!--Javascripts includes-->
+    <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    
+    <!--Inline Javascript-->
+    <script>
+        function validateForm() 
+        {
+            var err = "";
+            if(document.getElementsByName("name")[0].value === "")
+                err += "Podaj nazwę drużyny. ";
+
+
+            if(err == "") return true;
+            else 
+            {
+                AlertError('Błąd!', err);
+                return false;
+            }
+        }
+        function getMessages()
+        {
+            var msg = "<%= (!!locals.msg)?msg:'' %>";
+            var type = "<%= (!!locals.type)?type:'' %>";
+            showAlert(type, msg);
+        }
+        function showAlert(msg_type, msg)
+        {
+            if(msg_type == 'ERROR') AlertError("Błąd!", msg);
+            else if(msg_type == 'SUCCESS') AlertSuccess("Sukces", msg);
+            else if(msg_type == 'INFO') AlertWarning("Informacja", msg);
+            else if(msg_type != '') console.log("[FAILED ALERT] " + msg_type + ": " + msg);
+        }
+    </script>
+    
+    <body onload='getMessages()'>
+    <div id="alerts"></div>
+        <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+            <h1><%= title %></h1>
+            
+            <form method="POST" action="/admin/teams/edit/<%= details.id_druzyny %>" onsubmit="return validateForm();">
+                <table>
+                    <tr>
+                        <td>
+                            Nazwa drużyny:
+                        </td>
+                        <td>
+                            <input tabindex="60" type="text" name="name" value="<%= details.nazwa_druzyny %>">
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <input type="submit" tabindex="66" value="Wyślij">
+            </form>
+
+        </div>
+        <% include ../header.ejs %>      <!--Include header (top menu logo etc)-->
+        <% include ../footer.ejs %>      <!--Include footer-->
+    </body>
+</html>

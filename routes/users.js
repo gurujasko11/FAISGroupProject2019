@@ -33,7 +33,7 @@ router.post('/zmien_obserwacje', AuthenticatedUserOnly, function (req, res, next
       query = "delete from Uzytkownik_Z_Druzynami where id_uzytkownika =  " + req.user.userID;
       dbconn.query(query, function(err, rows)
       {
-        if(err)  res.render('obserwowane', { page: 'main', title: err, desc: err.msg });
+        if(err)  res.render('obserwowane', { page: getPageVariable(req), title: err, desc: err.msg });
         else {
           //obj = {print: rows, page: getPageVariable(req), title: 'obserwowane'};
           res.redirect('/obserwowane');
@@ -46,7 +46,7 @@ router.post('/zmien_obserwacje', AuthenticatedUserOnly, function (req, res, next
       query = "delete from Uzytkownik_Z_Druzynami where id_uzytkownika =  " + req.user.userID;
       dbconn.query(query, function(err, rows)
       {
-        if(err)  res.render('obserwowane', { page: 'main', title: err, desc: err.msg });
+        if(err)  res.render('obserwowane', { page: getPageVariable(req), title: err, desc: err.msg });
         else {
           checked_elems.forEach(element => {
         
@@ -68,12 +68,12 @@ router.post('/zmien_obserwacje', AuthenticatedUserOnly, function (req, res, next
       query = "delete from Uzytkownik_Z_Druzynami where id_uzytkownika =  " + req.user.userID;
       dbconn.query(query, function(err, rows)
       {
-        if(err)  res.render('obserwowane', { page: 'main', title: err, desc: err.msg });
+        if(err)  res.render('obserwowane', { page: getPageVariable(req), title: err, desc: err.msg });
         else {
           query = "insert into Uzytkownik_Z_Druzynami values(  " + req.user.userID+","+checked_elems+")";
             dbconn.query(query, function(err, rows)
             {
-              if(err)  res.render('obserwowane', { page: 'main', title: err, desc: err.msg });
+              if(err)  res.render('obserwowane', { page: getPageVariable(req), title: err, desc: err.msg });
               else {
                 //obj = {print: rows, page: getPageVariable(req), title: 'obserwowane'};
                 res.redirect('obserwowane');

@@ -19,9 +19,9 @@ router.get('/show_matches/:id', function (req, res, next) {
         let emptyArray = [];
         console.log(result);
         if(result === undefined) {
-            res.render('match', {page: 'main', title: 'Lista rozgrywek', data: emptyArray, addPossible: false});
+            res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: emptyArray, addPossible: false});
         }
-        res.render('match', {page: 'main', title: 'Lista rozgrywek', data: result, addPossible: false});
+        res.render('match', {page: getPageVariable(req), title: 'Lista rozgrywek', data: result, addPossible: false});
     });
 });
 module.exports = router;

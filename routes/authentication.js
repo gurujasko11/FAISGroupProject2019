@@ -12,10 +12,10 @@ const nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'Nodemailerzespolowe@gmail.com',
-      pass: 'Nodemailer11!!rafal'
+        user: 'Nodemailerzespolowe@gmail.com',
+        pass: 'Nodemailer11!!rafal'
     }
-  });
+});
 
 
 passport.use(new LocalStrategy({
@@ -38,7 +38,9 @@ passport.use(new LocalStrategy({
             if (!rows.length) {
                 return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik z takim e-mailem nie istnieje']));
             }
-            if(rows[0].status != 'activated'){ return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik nie potwierdził konta linkiem aktywacyjnym'])); }
+            if (rows[0].status != 'activated') {
+                return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Użytkownik nie potwierdził konta linkiem aktywacyjnym']));
+            }
 
             var encPassword = password;
             var dbPassword = rows[0].haslo;
@@ -51,7 +53,7 @@ passport.use(new LocalStrategy({
                             last_name: rows[0].nazwisko,
                             email: rows[0].email,
                             telephone: rows[0].telefon,
-                            type: req.body.user
+                            type: 'user'
                         });
                     else if (tableName == 'Bary')
                         return done(null, {
@@ -62,7 +64,7 @@ passport.use(new LocalStrategy({
                             street: rows[0].ulica,
                             building_number: rows[0].numer_budynku,
                             local_number: rows[0].numer_lokalu,
-                            type: req.body.user
+                            type: 'bar'
                         });
                     else
                         return done(null, rows[0]);
@@ -73,6 +75,48 @@ passport.use(new LocalStrategy({
         });
     }
 ));
+
+passport.use('admin', new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
+    },
+    function (req, username, password, done) {
+        username = req.body.email.replace("'", "''");
+        password = req.body.password.replace("'", "''");
+        if (!username || !password) {
+            console.log("username/password not given: ");
+            console.log("Username: '" + username + "'");
+            console.log("Password: '" + password + "'");
+            return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Nie podano hasła lub adresu e-mail']));
+        }
+        dbconn.query("select * from admin where email = '" + username + "'", function (err, rows) {
+            if (err) {
+                console.log(err);
+                return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']));
+            }
+            if (!rows.length) {
+                return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawny adres e-mail']));
+            }
+            var encPassword = password;
+            var dbPassword = rows[0].haslo;
+            bcrypt.compare(encPassword, dbPassword, function (err, res) {
+                if (res) {
+                    return done(null, {
+                        email: rows[0].email,
+                        type: 'admin'
+                    });
+                } else
+                {
+                    if (password != rows[0].haslo) {
+                        return done(null, false, req.flash('FLASH_MSG', ['ERROR', 'Niepoprawne hasło']));
+                    }
+                }
+            });
+        });
+    }
+));
+
 
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -137,10 +181,22 @@ function authenticatedUserOnly(req, res, next) {
         req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
         return res.redirect('/login');
     }
-	if(req.user.type != 'user') {
-		req.flash('FLASH_MSG', ['ERROR', 'Przepaszamy, tylko użytkownik ma dostęp do tego panelu']);
+    if (req.user.type != 'user') {
+        req.flash('FLASH_MSG', ['ERROR', 'Przepaszamy, tylko użytkownik ma dostęp do tego panelu']);
         return res.redirect('/');
-	}
+    }
+    next();
+}
+
+function authenticatedAdminOnly(req, res, next) {
+    if (!req.isAuthenticated()) {
+        req.flash('FLASH_MSG', ['ERROR', 'Dostęp do tego panelu jest możliwy tylko po zalogowaniu']);
+        return res.redirect('/admin/login');
+    }
+    if (req.user.type != 'admin') {
+        req.flash('FLASH_MSG', ['ERROR', 'Przepaszamy, tylko admin ma dostęp do tego panelu']);
+        return res.redirect('/');
+    }
     next();
 }
 
@@ -153,60 +209,68 @@ function notAuthenticatedOnly(req, res, next) {
 }
 
 
-router.get('/activate/:token', function(req, res, next){
+router.get('/activate/:token', function (req, res, next) {
 
-    var query = "select * from Uzytkownicy where status = '"+ req.params.token+ "'";
-    console.log('query: ',query)
+    var query = "select * from Uzytkownicy where status = '" + req.params.token + "'";
+    console.log('query: ', query)
     console.log('token: ', req.params.token)
     dbconn.query(query, function (err, rows) {
 
-      if (err) {
-        console.log('Mysql error while activation', err);
-        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
-      }
-      else if(!rows.length){
-        console.log('No users with this token');
-        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
-       }
-      else {
-        dbconn.query("update Uzytkownicy set status='activated' where status = '" +req.params.token+"'", function (err, rows) {
-          if (err) {
-            console.log('Mysql error while setting activated status', err);
-            req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
-          }
-          res.render('login', { page: getPageVariable(req), title: "Logowanie", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+        if (err) {
+            console.log('Mysql error while activation', err);
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+        } else if (!rows.length) {
+            console.log('No users with this token');
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+        } else {
+            dbconn.query("update Uzytkownicy set status='activated' where status = '" + req.params.token + "'", function (err, rows) {
+                if (err) {
+                    console.log('Mysql error while setting activated status', err);
+                    req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
+                }
+                res.render('login', {
+                    page: getPageVariable(req),
+                    title: "Logowanie",
+                    type: 'SUCCESS',
+                    msg: 'Pomyślnie zaktywowano konto.',
+                    flash_messages: req.flash("FLASH_MSG")
+                });
 
-        });
-      }
+            });
+        }
     });
 });
 
 
-router.get('/activateBar/:token', function(req, res, next){
+router.get('/activateBar/:token', function (req, res, next) {
 
-    var query = "select * from Bary where status = '"+ req.params.token+ "'";
-    console.log('query: ',query)
+    var query = "select * from Bary where status = '" + req.params.token + "'";
+    console.log('query: ', query)
     console.log('token: ', req.params.token)
     dbconn.query(query, function (err, rows) {
 
-      if (err) {
-        console.log('Mysql error while activation', err);
-        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
-      }
-      else if(!rows.length){
-        console.log('No bars with this token');
-        req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
-       }
-      else {
-        dbconn.query("update Bary set status='activated' where status = '" +req.params.token+"'", function (err, rows) {
-          if (err) {
-            console.log('Mysql error while setting activated status', err);
-            req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
-          }
-          res.render('login', { page: getPageVariable(req), title: "Logowanie", type: 'SUCCESS', msg: 'Pomyślnie zaktywowano konto.', flash_messages: req.flash("FLASH_MSG") });
+        if (err) {
+            console.log('Mysql error while activation', err);
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+        } else if (!rows.length) {
+            console.log('No bars with this token');
+            req.flash("FLASH_MSG", ['ERROR', 'Mysql error']);
+        } else {
+            dbconn.query("update Bary set status='activated' where status = '" + req.params.token + "'", function (err, rows) {
+                if (err) {
+                    console.log('Mysql error while setting activated status', err);
+                    req.flash("FLASH_MSG", ['ERROR', 'Mysql activation user error']);
+                }
+                res.render('login', {
+                    page: getPageVariable(req),
+                    title: "Logowanie",
+                    type: 'SUCCESS',
+                    msg: 'Pomyślnie zaktywowano konto.',
+                    flash_messages: req.flash("FLASH_MSG")
+                });
 
-        });
-      }
+            });
+        }
 
     });
 
@@ -216,6 +280,7 @@ router.get('/activateBar/:token', function(req, res, next){
 module.exports = {
     router: router,
     authenticatedOnly: authenticatedOnly,
-	authenticatedUserOnly: authenticatedUserOnly,
-    notAuthenticatedOnly: notAuthenticatedOnly
+    authenticatedUserOnly: authenticatedUserOnly,
+    notAuthenticatedOnly: notAuthenticatedOnly,
+    authenticatedAdminOnly: authenticatedAdminOnly
 };

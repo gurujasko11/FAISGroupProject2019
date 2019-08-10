@@ -10,17 +10,13 @@ var LocalStrategy     = require('passport-local').Strategy;
 var sess              = require('express-session');
 var Store             = require('express-session').Store;
 var BetterMemoryStore = require('session-memory-store')(sess);
-var mysql = require('mysql');
 //mysql settings
-dbconn = mysql.createConnection({
-	user: 'root',
-	password: '12345',
-	database: 'Zespolowe'
-});
-dbconn.connect();
+require('./CONFIGURATION');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var adminRouter = require('./routes/admin');
 
 var barsRouter = require('./routes/bars');
 var matchesRouter = require('./routes/match');
@@ -56,6 +52,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter.router);
 app.use('/', usersRouter);
+app.use('/admin', adminRouter);
 app.use('/match', matchesRouter);
 app.use('/bars', barsRouter);
 app.use('/', myAccountRouter);

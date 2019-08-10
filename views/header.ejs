@@ -9,6 +9,8 @@
         <% } else if(page=="authenticatedUser" || page=="authenticatedBar"){ %>
             <a class=link href="/my_account" tabindex="49">Moje konto</a>
             <a class=link href="/logout" tabindex="50">Wyloguj</a>
+        <% } else if(page=="authenticatedAdmin"){ %>
+            <a class=link href="/logout" tabindex="50">Wyloguj</a>
         <% } %>
         <!--guziki logowanie/wylogowanie/ustawienia konta-->
     </div>
@@ -164,6 +166,28 @@
                 <% } else{ %>
                     menu
                 <% } %> href="/about" tabindex="4">O stronie
+            </a>
+        <% } else if(page=="authenticatedAdmin"){ %>
+            <a class=
+                <% if(title=="Drużyny"){ %>
+                menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/admin/teams" tabindex="4">Drużyny
+            </a>
+            <a class=
+                <% if(title=="Użytkownicy"){ %>
+                menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/admin/users" tabindex="4">Użytkownicy
+            </a>
+            <a class=
+                <% if(title=="O stronie"){ %>
+                menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/about" tabindex="9">O stronie
             </a>
         <% } %>
     </div>

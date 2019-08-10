@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <% include ../head.ejs %>      <!--Include head section (same for all pages)-->
+    <!--Javascripts includes-->
+    <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    <script src='/javascripts/resetPassw.js' type='text/javascript' ></script>
+    
+    <!--Inline Javascript-->
+    <script>
+        function validateForm() 
+        {
+            var err = "";
+            if(document.getElementsByName("email")[0].value === "")
+                err += "Podaj email. ";
+
+            if(document.getElementsByName("password")[0].value === "")
+                err += "Podaj hasło. ";
+
+            if(err == "") return true;
+            else 
+            {
+                AlertError('Błąd!',err);
+                return false;
+            }
+        }
+        function getMessages()
+        {
+            var msg = "<%= (!!locals.msg)?msg:'' %>";
+            var type = "<%= (!!locals.type)?type:'' %>";
+            var flash_messages = document.getElementById('flash_msg');
+            
+            
+            showAlert(type, msg);
+            if(flash_messages != null) {
+                flash_messages = flash_messages.innerHTML.split(',');
+                if(flash_messages.length > 1)
+                    showAlert(flash_messages[0], flash_messages.slice(1, flash_messages.length).join(', '));
+            }
+        }
+        function showAlert(msg_type, msg)
+        {
+            if(msg_type == 'ERROR') AlertError("Błąd!", msg);
+            else if(msg_type == 'SUCCESS') AlertSuccess("Sukces", msg);
+            else if(msg_type == 'INFO') AlertWarning("Informacja", msg);
+            else if(msg_type != '') console.log("[FAILED ALERT] " + msg_type + ": " + msg);
+        }
+    </script>
+    
+    <body onLoad='getMessages()'>
+    <div id="alerts"></div>
+    <% if (flash_messages) { %>
+        <div id='flash_msg' style="display: none;"><%= flash_messages %></div>
+    <% } %>
+
+
+        <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+            <h1><%= title %></h1>
+            
+            <form method="POST" action="/admin/login" onsubmit="return validateForm();">
+                <table class='tableStyle'>
+                    <tr><td><br></td></tr>
+                    <tr>
+                        <td>
+                            E-mail: 
+                        </td>
+                        <td>
+                            <input tabindex="62" type="email" name="email">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Hasło: 
+                        </td>
+                        <td>
+                            <input tabindex="63" type="password" name="password">
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <input type="submit" tabindex="64" value="Wyślij">
+            </form>
+
+        </div>
+        <% include ../header.ejs %>      <!--Include header (top menu logo etc)-->
+        <% include ../footer.ejs %>      <!--Include footer-->
+    </body>
+</html>
