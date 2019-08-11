@@ -183,6 +183,13 @@
                 <% } %> href="/admin/users" tabindex="4">Użytkownicy
             </a>
             <a class=
+                <% if(title=="Bary"){ %>
+                menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/admin/bars" tabindex="4">Bary
+            </a>
+            <a class=
                 <% if(title=="O stronie"){ %>
                 menu_s
                 <% } else{ %>

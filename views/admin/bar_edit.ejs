@@ -9,21 +9,42 @@
         function validateForm() 
         {
             var err = "";
-            if(document.getElementsByName("first_name")[0].value.length > 30)
-                err += "Imię jest za długie. "
-            
-            if(document.getElementsByName("last_name")[0].value.length > 30)
-                err += "Nazwisko jest za długie. "
+            if(document.getElementsByName("bar_name")[0].value === "")
+                err += "Podaj nazwę baru. ";
+            else if(document.getElementsByName("bar_name")[0].value.length > 255)
+                err += "Nazwa baru jest za długa. "
             
             if(document.getElementsByName("email")[0].value === "")
                 err += "Podaj email. ";
+
 
             if(document.getElementById("repeated_password") != undefined &&
                 document.getElementsByName("password")[0].value != document.getElementById("repeated_password").value)
                 err += "Wprowadzone hasła nie są identyczne. ";
 
-            if(document.getElementsByName("telephone")[0].value.length > 11)
+            if(document.getElementsByName("telephone")[0].value === "")
+                err += "Podaj numer telefonu. ";
+            else if(document.getElementsByName("telephone")[0].value.length > 11)
                 err += "Numer telefonu jest za długi. "
+
+            if(document.getElementsByName("city")[0].value === "")
+                err += "Podaj miasto. ";
+            else if(document.getElementsByName("city")[0].value.length > 80)
+                err += "Nazwa miasta jest za długa. "
+                
+            if(document.getElementsByName("street")[0].value === "")
+                err += "Podaj ulicę. ";
+            else if(document.getElementsByName("street")[0].value.length > 80)
+                err += "Nazwa ulicy jest za długa. "
+
+            if(document.getElementsByName("building_number")[0].value === "")
+                err += "Podaj numer budynku. ";
+            else if(document.getElementsByName("building_number")[0].value.length > 4)
+                err += "Numer budynku jest za duży. ";
+            
+            if(document.getElementsByName("local_number")[0].value.length > 4)
+                err += "Numer lokalu jest za duży. ";
+
 
             if(err == "") return true;
             else 
@@ -65,16 +86,23 @@
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
-            <form method="POST" action="/admin/user/edit/<%= user_data.id_uzytkownika %>" onsubmit="return validateForm();"></form>
-                <label style="margin-bottom: 20px">Edytuj konto</label>
+            <form method="POST" action="/admin/bar/edit/<%= bar_data.id_baru %>" onsubmit="return validateForm();">
+                <label style="margin-bottom: 20px">Edytuj bar</label>
                 <table>
-                    
                         <tr>
                             <td>
-                                E-mail: 
+                                Nazwa baru*:
                             </td>
                             <td>
-                                <input tabindex="60" type="email" name="email" value=<%= user_data.email %>>
+                                <input tabindex="60" type="text" name="bar_name" value="<%= bar_data.nazwa_baru %>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                E-mail*:
+                            </td>
+                            <td>
+                                <input tabindex="61" type="email" name="email" value="<%= bar_data.email %>">
                             </td>
                         </tr>
                         <tr>
@@ -82,7 +110,7 @@
                                 Hasło:
                             </td>
                             <td>
-                                <input tabindex="61" type="password" name="password">
+                                <input tabindex="62" type="password" name="password">
                             </td>
                         </tr>
                         <tr>
@@ -90,49 +118,66 @@
                                 Potwierdz hasło:
                             </td>
                             <td>
-                                <input tabindex="62" type="password" id="repeated_password">
+                                <input tabindex="63" type="password" id="repeated_password">
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                Imię:
+                                Telefon*:
                             </td>
                             <td>
-                                <input tabindex="63" type="text" name="first_name" value=<% if(user_data.imie!='NULL') { %><%= user_data.imie %><% } %>>
+                                <input tabindex="64" type="text" name="telephone" value="<%= bar_data.telefon %>">
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                Nazwisko:
+                                Miasto*:
                             </td>
                             <td>
-                                <input tabindex="64" type="text" name="last_name" value=<% if(user_data.nazwisko!='NULL') { %><%= user_data.nazwisko %><% } %>>
+                                <input tabindex="65" type="text" name="city" value="<%= bar_data.miasto %>">
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                Telefon:
+                                Ulica*:
                             </td>
                             <td>
-                                <input tabindex="65" type="text" name="telephone" value=<% if(user_data.telefon!='NULL') { %><%= user_data.telefon %><% } %>>
+                                <input tabindex="66" type="text" name="street" value="<%= bar_data.ulica %>">
                             </td>
                         </tr>
-                    
+                        <tr>
+                            <td>
+                                Numer budynku*:
+                            </td>
+                            <td>
+                                <input tabindex="67" type="text" name="building_number" value="<%= bar_data.numer_budynku %>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Numer lokalu:
+                            </td>
+                            <td>
+                                <input tabindex="68" type="text" name="local_number" value="<%= bar_data.numer_lokalu %>">
+                            </td>
+                        </tr>
                     <tr>
                         <td>
                             Status aktywacji:
                         </td>
                         <td>
-                            <% if(user_data.status=='activated') { %> <div style="text-align:center">Zaktywowany</div> <% } else { %> 
+                            <% if(bar_data.status=='activated') { %> <div style="text-align:center">Zaktywowany</div> <% } else { %> 
                                 <div style="text-align:center">
-                                    <a href="/admin/user/activate/<%= user_data.id_uzytkownika %>">
+                                    <a href="/admin/bar/activate/<%= bar_data.id_baru %>">
                                         <button type='button' style="width: 150px; height: 25px;">Aktywuj</button>
                                     </a>
+                                    
                                 </div>
                             <% } %>
                         </td>
                     </tr>
                 </table>
+                <p>* - obowiązkowe</p>
                 <div style="text-align: center; margin-top: 30px;">
                     <input type="submit" tabindex="68" value="Zaktualizuj">
                 </div>
@@ -142,7 +187,7 @@
             </form>
 
             <br><br><br>
-            <form method="POST" action="/admin/user/delete/<%= user_data.id_uzytkownika %>" onsubmit="return confirm('Czy napewno chcesz to konto?');">
+            <form method="POST" action="/admin/bar/delete/<%= bar_data.id_baru %>" onsubmit="return confirm('Czy napewno chcesz to konto?');">
                 <input type="submit" tabindex="70" value="Usuń konto">
             </form>
         </div>
