@@ -65,7 +65,7 @@
         <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
             
-            <form method="POST" action="/admin/user/edit/<%= user_data.id_uzytkownika %>" onsubmit="return validateForm();"></form>
+            <form method="POST" action="/admin/user/edit/<%= user_data.id_uzytkownika %>" onsubmit="return validateForm();">
                 <label style="margin-bottom: 20px">Edytuj konto</label>
                 <table>
                     

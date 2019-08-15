@@ -52,7 +52,7 @@
                             </form>
                         </td>
                         <td>
-                                <form method="GET" action="/admin/teams/delete/<%= team.id_druzyny %>" onsubmit="return confirm('Czy napewno chcesz usunąć drużynę? Połączone mecze oraz mecze z barami zostaną usunięte kaskadowo');">
+                                <form method="GET" action="/admin/teams/delete/<%= team.id_druzyny %>" onsubmit="return confirm('Czy napewno chcesz usunąć drużynę? Usunięcie się nie powiedzie, jeżeli istnieją mecze z tą drużyną');">
                                 <input type="submit" value="Usuń" />
                             </form>
                         </td>

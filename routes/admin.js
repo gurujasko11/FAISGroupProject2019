@@ -33,6 +33,28 @@ function handleEmptySet(req, res, rows, errMessage, redirectTo)
     return undefined;
 }
 
+function handleDupEntry(req, res, err, errMsg, redirectTo)
+{
+    if(err && err.errno == 1062)
+    {
+        req.flash('FLASH_MSG', ['ERROR', errMsg]);
+        res.redirect(redirectTo);
+        return 1;
+    }
+    return undefined;
+}
+
+function handleReferenceError(req, res, err, errMsg, redirectTo)
+{
+    if(err && err.errno == 1451)
+    {
+        req.flash('FLASH_MSG', ['ERROR', errMsg]);
+        res.redirect(redirectTo);
+        return 1;
+    }
+    return undefined;
+}
+
 router.get('/login', notAuthenticatedOnly, function(req,res)
 {
     res.render('admin/login', { page: getPageVariable(req), title: 'Zaloguj jako admin', flash_messages: req.flash("FLASH_MSG") });
@@ -132,7 +154,7 @@ router.get('/teams/edit/:id', authenticatedAdminOnly, function(req, res)
             req.flash('FLASH_MSG', ['ERROR', 'Nie znaleziono podanej drużyny']);
             return res.redirect('/admin/teams');
         }
-        return res.render('admin/team_edit', { page: getPageVariable(req), title: 'Drużyny', flash_messages: req.flash("FLASH_MSG"), details: rows[0] });
+        return res.render('admin/team_edit', { page: getPageVariable(req), title: 'Drużyna', flash_messages: req.flash("FLASH_MSG"), details: rows[0] });
     });
 });
 
@@ -146,6 +168,7 @@ router.post('/teams/edit/:id', authenticatedAdminOnly, function(req, res)
     }
     dbconn.query('UPDATE Druzyny set nazwa_druzyny=\'' + req.body.name.replace("'", "''") + "' where id_druzyny=" + req.params.id, function(err, rows)
     {
+        if(handleDupEntry(req, res, err, 'Przepraszamy, ta drużyna już istnieje, nazwy drużyn muszą być unikalne', '/admin/teams/edit/' + req.params.id)) return;
         if(err)
         {
             console.log(err);
@@ -174,6 +197,7 @@ router.get('/teams/delete/:id', authenticatedAdminOnly, function(req, res)
         }
         dbconn.query('DELETE FROM Druzyny where id_druzyny=' + req.params.id, function(err, rows)
         {
+            if(handleReferenceError(req, res, err, 'Ta drużyna jest używana w meczach, usuń najpierw wszystkie mecze wykorzystujące tą drużynę', '/admin/teams')) return;
             if(err)
             {
                 console.log(err);
@@ -188,7 +212,7 @@ router.get('/teams/delete/:id', authenticatedAdminOnly, function(req, res)
 
 router.get('/teams/add', authenticatedAdminOnly, function(req, res)
 {
-    return res.render('admin/team_add', { page: getPageVariable(req), title: 'Drużyny', flash_messages: req.flash("FLASH_MSG"), teams: undefined });
+    return res.render('admin/team_add', { page: getPageVariable(req), title: 'Drużyny', flash_messages: req.flash("FLASH_MSG") });
 });
 
 router.post('/teams/add', authenticatedAdminOnly, function(req, res)
@@ -201,11 +225,12 @@ router.post('/teams/add', authenticatedAdminOnly, function(req, res)
     }
     dbconn.query('INSERT INTO Druzyny(nazwa_druzyny) VALUES (\'' + req.body.name.replace("'", "''") + "');", function(err, rows)
     {
+        if(handleDupEntry(req, res, err, 'Przepraszamy, ta drużyna z tą nazwą już istnieje, nazwy drużyn muszą być unikalne', '/admin/teams')) return;
         if(err)
         {
             console.log(err);
             req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
-            return res.render('admin/teams', { page: getPageVariable(req), title: 'Drużyny', flash_messages: req.flash("FLASH_MSG"), teams: undefined });
+            return res.redirect('/admin/teams');
         }
         req.flash('FLASH_MSG', ['SUCCESS', 'Dodano drużynę pomyślnie']);
         return res.redirect('/admin/teams');
@@ -241,7 +266,7 @@ router.get('/user/edit/:id', authenticatedAdminOnly, function(req, res)
             req.flash('FLASH_MSG', ['ERROR', 'Nie znaleziono podanego użytkownika w bazie']);
             return res.redirect('/admin/users');
         }
-        return res.render('admin/user_edit', { page: getPageVariable(req), title: 'Użytkownicy', flash_messages: req.flash("FLASH_MSG"), user_data: rows[0] });
+        return res.render('admin/user_edit', { page: getPageVariable(req), title: 'Użytkownik', flash_messages: req.flash("FLASH_MSG"), user_data: rows[0] });
     });
 });
 
@@ -274,6 +299,7 @@ router.post('/user/edit/:id', authenticatedAdminOnly, function(req, res)
             bcrypt.genSalt(saltRounds, function (err, salt) {
                 bcrypt.hash(password, salt, function (err, hash) {
                 {
+                    if(handleDupEntry(req, res, err, 'Przepraszamy, ten adres e-mail jest już zajęty', '/admin/user/edit/' + req.params.id)) return;
                     if(err)
                     {
                         console.log(err);
@@ -308,6 +334,7 @@ router.post('/user/edit/:id', authenticatedAdminOnly, function(req, res)
             var query = "update Uzytkownicy set " + updatedString + " where id_uzytkownika=" + req.params.id;
             dbconn.query(query, function(err, rows)
             {
+                if(handleDupEntry(req, res, err, 'Przepraszamy, ten adres e-mail jest już zajęty', '/admin/user/edit/' + req.params.id)) return;
                 if(err)
                 {
                     console.log(err);
@@ -385,7 +412,7 @@ router.get('/bar/edit/:id', authenticatedAdminOnly, function(req, res)
     {
         if(handleError(req, res, err, 'admin/bars')) return;
         if(handleEmptySet(req, res, rows, 'Nie znaleziono podanego bara w bazie', '/admin/bars')) return;
-        return res.render('admin/bar_edit', { page: getPageVariable(req), title: 'Bary', flash_messages: req.flash("FLASH_MSG"), bar_data: rows[0] });
+        return res.render('admin/bar_edit', { page: getPageVariable(req), title: 'Bar', flash_messages: req.flash("FLASH_MSG"), bar_data: rows[0] });
     });
 });
 
@@ -442,6 +469,7 @@ function updateBarInDB(bar_id, password, bar_name, telephone, city, street, buil
             bcrypt.hash(password, salt, function (err, hash) {
                 dbconn.query('SELECT * FROM Bary WHERE id_baru = ' + bar_id, function(err, rows)
                 {
+                    if(handleDupEntry(req, res, err, 'Przepraszamy, ten adres e-mail jest już zajęty', '/admin/bar/edit/' + bar_id)) return;
                     if(handleError(req, res, err, '/admin/bars')) return;
                     if(handleEmptySet(req, res, rows, 'Nie znaleziono podanego baru', '/admin/bars')) return;
                     var generatedSQLString = generateSQLStringUpdateBary(
@@ -467,6 +495,7 @@ function updateBarInDB(bar_id, password, bar_name, telephone, city, street, buil
             bcrypt.hash(password, salt, function (err, hash) {
                 dbconn.query('SELECT * FROM Bary WHERE id_baru = ' + bar_id, function(err, rows)
                 {
+                    if(handleDupEntry(req, res, err, 'Przepraszamy, ten adres e-mail jest już zajęty', '/admin/bar/edit/' + bar_id)) return;
                     if(handleError(req, res, err, '/admin/bars')) return;
                     if(handleEmptySet(req, res, rows, 'Nie znaleziono podanego baru', '/admin/bars')) return;
                     var generatedSQLString = generateSQLStringUpdateBary(
@@ -487,6 +516,36 @@ function updateBarInDB(bar_id, password, bar_name, telephone, city, street, buil
         });
     }
 }
+
+router.post('/bar/delete/:id', authenticatedAdminOnly, function(req, res)
+{
+    dbconn.query('SELECT * FROM Bary where id_baru=' + req.params.id, function(err, rows)
+    {
+        if(err)
+        {
+            console.log(err);
+            req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+            return res.redirect('/admin/bars');
+        }
+        if(!rows.length)
+        {
+            req.flash('FLASH_MSG', ['ERROR', 'Podany bar nie istnieje']);
+            return res.redirect('/admin/bars');
+        }
+        dbconn.query('DELETE FROM Bary where id_baru=' + req.params.id, function(err, rows)
+        {
+            if(handleReferenceError(req, res, err, 'Usunięcie się nie powiodło, ponieważ bar rozgrywa mecze, wpierw usuń wszystkie mecze z baru', '/admin/bars')) return;
+            if(err)
+            {
+                console.log(err);
+                req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+                return res.redirect('/admin/users');
+            }
+            req.flash('FLASH_MSG', ['SUCCESS', 'Usunięto użytkownika pomyślnie']);
+            return res.redirect('/admin/users');
+        });
+    });
+});
 
 router.get('/bar/activate/:id', authenticatedAdminOnly, function(req, res)
 {
