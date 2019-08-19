@@ -92,13 +92,20 @@ router.get('/account', function (req, res, next) {
 router.post('/search_match', function (req, res, next) {
     //console.log(req.body.search_text)
     teams = req.body.search_text.split(' ')
-    query = "SELECT DATE_FORMAT(czas, '%m/%d/%Y %H:%i') as czas, id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away "+
+    var i;
+    querry_teams = "("
+    for (i = 0; i < teams.length; i++) {
+        querry_teams += "t1.nazwa_druzyny LIKE '%"+teams[i]+"%' OR t2.nazwa_druzyny LIKE '%"+teams[i]+"%'"
+        if( i < teams.length-1) {
+            querry_teams += " OR "
+        } else {
+            querry_teams += ")"
+        }
+    }
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away "+
     "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 "+
-    "WHERE ("+
-    "t1.nazwa_druzyny LIKE '%"+teams[0]+"%' OR t2.nazwa_druzyny LIKE '%"+teams[1]+"%' OR "+
-    "t2.nazwa_druzyny LIKE '%"+teams[0]+"%' OR t1.nazwa_druzyny LIKE '%"+teams[1]+"%' "+
-    ")"+    "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny)";
-    //console.log(query)
+    "WHERE (" + querry_teams +
+    "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny ) AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
     dbconn.query(query, function (err, rows) {
         if (err) res.render('search_match_result', {
             page: getPageVariable(req),
