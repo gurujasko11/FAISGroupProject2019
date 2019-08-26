@@ -612,7 +612,7 @@ router.post('/bar_match/edit/:id', authenticatedAdminOnly, function(req, res)
         {
             if(handleError(req, res, err, '/admin/bars_matches')) return;
             req.flash('FLASH_MSG', ['SUCCESS', 'Zmieniono dane pomyślnie']);
-            res.redirect('/admin/bar_match/edit/' + id_wyd);
+            res.redirect('/admin/bars_matches');
         });
     });
 });
