@@ -558,6 +558,66 @@ router.get('/bar/activate/:id', authenticatedAdminOnly, function(req, res)
 });
 
 
+router.get('/bars_matches', authenticatedAdminOnly, function(req, res)
+{
+    dbconn.query('SELECT bm.id_wydarzenia AS id, bm.id_baru, bm.id_meczu, DATE_FORMAT(bm.czas, \'%Y-%m-%d %H:%i\') AS czas, b.email, b.nazwa_baru, d1.nazwa_druzyny AS druzyna1, d2.nazwa_druzyny AS druzyna2 ' + 
+                'FROM Bary_Z_Meczami AS bm INNER JOIN Bary AS b ON b.id_baru = bm.id_baru ' + 
+                'INNER JOIN Mecze AS m ON m.id_meczu = bm.id_meczu INNER JOIN Druzyny AS d1 ON d1.id_druzyny = m.id_druzyna1 ' + 
+                'INNER JOIN Druzyny AS d2 ON d2.id_druzyny = m.id_druzyna2 ORDER BY id ASC;', function(err, rows)
+    {
+        if(handleError(req, res, err, '/bars_matches')) return;
+        res.render('admin/bars_matches', { page: getPageVariable(req), title: 'Mecze w barach', flash_messages: req.flash("FLASH_MSG"), bars_matches: rows });
+    });
+});
+
+router.get('/bar_match/edit/:id', authenticatedAdminOnly, function(req, res)
+{
+    var id = req.params.id;
+    dbconn.query('SELECT bm.id_wydarzenia AS id, bm.id_baru, bm.id_meczu, DATE_FORMAT(bm.czas, \'%Y-%m-%d %H:%i\') AS czas, b.email, b.nazwa_baru, d1.nazwa_druzyny AS druzyna1, d2.nazwa_druzyny AS druzyna2, d1.id_druzyny as id_druzyny1, d2.id_druzyny as id_druzyny2 ' + 
+                'FROM Bary_Z_Meczami AS bm INNER JOIN Bary AS b ON b.id_baru = bm.id_baru ' + 
+                'INNER JOIN Mecze AS m ON m.id_meczu = bm.id_meczu INNER JOIN Druzyny AS d1 ON d1.id_druzyny = m.id_druzyna1 ' + 
+                'INNER JOIN Druzyny AS d2 ON d2.id_druzyny = m.id_druzyna2 WHERE bm.id_wydarzenia = ' + id + ' ORDER BY id ASC;', function(err, bms)
+    {
+        if(handleError(req, res, err, '/admin/bars_matches')) return;
+        if(handleEmptySet(req, res, bms, 'Nie znaleziono podanego meczu', '/admin/bars_matches')) return;
+        dbconn.query('SELECT * FROM Bary ORDER BY id_baru;', function(err, bars)
+        {
+            if(handleError(req, res, err, '/admin/bars_matches')) return;
+            dbconn.query('SELECT * FROM Druzyny ORDER BY id_druzyny;', function(err, teams)
+            {
+                if(handleError(req, res, err, '/admin/bars_matches')) return;
+                res.render('admin/bar_match_edit', { page: getPageVariable(req), title: 'Edycja meczu', flash_messages: req.flash("FLASH_MSG"), bm: bms[0], bars: bars, teams: teams });
+            });
+        });
+    });
+});
+
+
+router.post('/bar_match/edit/:id', authenticatedAdminOnly, function(req, res)
+{
+    var id_wyd = req.params.id;
+    var id_match = req.body.match_id;
+    var id_baru = req.body.f_bar_id;
+    var id_team1 = req.body.f_team1_id;
+    var id_team2 = req.body.f_team2_id;
+    var time = req.body.match_time;
+    var query = 'UPDATE Bary_Z_Meczami SET id_baru=' + id_baru + ', czas=\'' + time + '\' WHERE id_wydarzenia=' + id_wyd +';';
+    console.log(query);
+    dbconn.query(query, function(err, rows)
+    {
+        if(handleError(req, res, err, '/admin/bars_matches')) return;
+        query = 'UPDATE Mecze SET id_druzyna1 = ' + id_team1 + ', id_druzyna2=' + id_team2 + ' WHERE id_meczu=' + id_match + ';';
+        console.log(query);
+        dbconn.query(query, function(err, rows)
+        {
+            if(handleError(req, res, err, '/admin/bars_matches')) return;
+            req.flash('FLASH_MSG', ['SUCCESS', 'Zmieniono dane pomyślnie']);
+            res.redirect('/admin/bar_match/edit/' + id_wyd);
+        });
+    });
+});
+
+
 
 function generateSQLString(password, first_name, last_name, email, telephone) {
     var query = '';

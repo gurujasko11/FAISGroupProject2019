@@ -148,6 +148,13 @@
                 <% } %> href="/admin/teams" tabindex="4">Drużyny
             </a>
             <a class=
+                <% if(title=="Mecze z Barami"){ %>
+                menu_s
+                <% } else{ %>
+                    menu
+                <% } %> href="/admin/bars_matches" tabindex="4">Mecze z Barami
+            </a>
+            <a class=
                 <% if(title=="Użytkownicy"){ %>
                 menu_s
                 <% } else{ %>

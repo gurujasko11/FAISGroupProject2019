@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+    <% include ../head.ejs %>      <!--Include head section (same for all pages)-->
+
+    <!--Javascripts includes-->
+    <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
+
+    <!--Inline Javascript-->
+    <script>
+        function validateForm() 
+        {
+            var err = "";
+            if(document.getElementById('f_team2_id').value == document.getElementById('f_team1_id').value)
+                err += "Mecz nie może się odbyć pomiędzy tymi samymi drużynami. ";
+
+
+            if(err == "") return true;
+            else 
+            {
+                AlertError('Błąd!', err);
+                return false;
+            }
+            return true;
+        }
+        function checkTeams()
+        {
+            if(document.getElementById('f_team2_id').value == document.getElementById('f_team1_id').value)
+            {
+                AlertError("Błąd!", "Mecz nie może się odbyć pomiędzy tymi samymi drużynami")
+            }
+        }
+        function getMessages()
+        {
+            var msg = "<%= (!!locals.msg)?msg:'' %>";
+            var type = "<%= (!!locals.type)?type:'' %>";
+            var flash_messages = document.getElementById('flash_msg');
+
+            
+            showAlert(type, msg);
+            if(flash_messages) {
+                    flash_messages = flash_messages.innerHTML.split(',');
+                    if(flash_messages.length > 1)
+                        showAlert(flash_messages[0], flash_messages.slice(1, flash_messages.length).join(', '));
+            }
+        }
+        function showAlert(msg_type, msg)
+        {
+            if(msg_type == 'ERROR') AlertError("Błąd!", msg);
+            else if(msg_type == 'SUCCESS') AlertSuccess("Sukces", msg);
+            else if(msg_type == 'INFO') AlertWarning("Informacja", msg);
+            else if(msg_type != '') console.log("[FAILED ALERT] " + msg_type + ": " + msg);
+        }
+        function selectBar()
+        {
+            document.getElementById('form_div').style.display = 'none';
+            document.getElementById('team1_div').style.display = 'none';
+            document.getElementById('team2_div').style.display = 'none';
+            document.getElementById('bar_div').style.display = 'block';
+        }
+        function selectTeam1()
+        {
+            document.getElementById('form_div').style.display = 'none';
+            document.getElementById('bar_div').style.display = 'none';
+            document.getElementById('team2_div').style.display = 'none';
+            document.getElementById('team1_div').style.display = 'block';
+        }
+        function selectTeam2()
+        {
+            document.getElementById('form_div').style.display = 'none';
+            document.getElementById('bar_div').style.display = 'none';
+            document.getElementById('team1_div').style.display = 'none';
+            document.getElementById('team2_div').style.display = 'block';
+        }
+        function chooseBar(email, id)
+        {
+            document.getElementById('f_bar_email').innerHTML = email;
+            document.getElementById('f_bar_id').value = id;
+            document.getElementById('bar_div').style.display = 'none';
+            document.getElementById('team1_div').style.display = 'none';
+            document.getElementById('team2_div').style.display = 'none';
+            document.getElementById('form_div').style.display = 'block';
+        }
+        function chooseTeam1(id, team_name)
+        {
+            document.getElementById('f_team1_name').innerHTML = team_name;
+            document.getElementById('f_team1_id').value = id;
+            document.getElementById('bar_div').style.display = 'none';
+            document.getElementById('team1_div').style.display = 'none';
+            document.getElementById('team2_div').style.display = 'none';
+            document.getElementById('form_div').style.display = 'block';
+            checkTeams();
+        }
+        function chooseTeam2(id, team_name)
+        {
+            document.getElementById('f_team2_name').innerHTML = team_name;
+            document.getElementById('f_team2_id').value = id;
+            document.getElementById('bar_div').style.display = 'none';
+            document.getElementById('team1_div').style.display = 'none';
+            document.getElementById('team2_div').style.display = 'none';
+            document.getElementById('form_div').style.display = 'block';
+            checkTeams();
+        }
+    </script>
+    
+    <body onLoad='getMessages()'>
+        <div id="alerts"></div><br>
+        <% if (flash_messages) { %>
+            <div id='flash_msg' style="display: none;"><%= flash_messages %></div>
+        <% } %>
+    
+        <div id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+            <h1><%= title %></h1>
+            
+            <div id='form_div'>
+                <form method="POST" action="/admin/bar_match/edit/<%= bm.id %>" onsubmit="return validateForm();">
+                    <table>
+                        <tr>
+                            <td>
+                                ID meczu:
+                            </td>
+                            <td>
+                                <label><%= bm.id_meczu %></label>
+                                <input style='display: none' name='match_id' id='match_id' value='<%= bm.id_meczu %>'></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Bar:
+                            </td>
+                            <td>
+                                <div>
+                                    <label style='text-align: left; float:inherit;' name='bar_email' id='f_bar_email'><%= bm.email %></label>
+                                    <button type='button' style="float:right; height: 25px" onclick="selectBar()">></button>
+                                </div>
+                                <input style='display: none' name='f_bar_id' id='f_bar_id' value='<%= bm.id_baru %>'></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Drużyna I:
+                            </td>
+                            <td>
+                                <div>
+                                    <label style='text-align: left; float: inherit;' name="team1" id='f_team1_name'><%= bm.druzyna1 %></label>
+                                    <button type='button' style="float:right; height: 25px" onclick="selectTeam1()">></button>
+                                </div>
+                                <input style='display: none' name='f_team1_id' id='f_team1_id' value='<%= bm.id_druzyny1 %>'></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Drużyna II:
+                            </td>
+                            <td>
+                                <div>
+                                    <label style='text-align: left; float: inherit;' name="team2" id='f_team2_name'><%= bm.druzyna2 %></label>
+                                    <button type='button' style="float:right; height: 25px" onclick="selectTeam2()">></button>
+                                </div>
+                                <input style='display: none' name='f_team2_id' id='f_team2_id' value='<%= bm.id_druzyny2 %>'></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Czas:
+                            </td>
+                            <td>
+                                <input type="text" name="match_time" id='match_time'/>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <input type="submit" tabindex="66" value="Zaktualizuj">
+                </form>        
+            </div>
+            <div id='bar_div' style='display: none'>
+                <table class="table">
+                    <tr>
+                        <th style="width:40px;">ID</th>  
+                        <th>Nazwa baru</th>
+                        <th>Miasto</th>
+                        <th>Ulica</th>
+                        <th>E-mail</th>
+                        <th style="width:70px;">Aktywny</th>
+                        <th style="width:80px;">Wybierz</th>
+                    </tr>
+                    
+                    <% bars.forEach(function (bar) { %>
+                        <tr>  
+                            <td><%= bar.id_baru %></td> 
+                            <td><%= bar.nazwa_baru %></td>  
+                            <% if(bar.miasto=="NULL"){ %>
+                                <td>---</td>
+                            <% } else{ %>
+                                <td><%= bar.miasto %></td>
+                            <% } %> 
+                            <% if((bar.ulica && bar.ulica!="NULL") && (bar.numer_budynku && bar.numer_budynku!="NULL") && (bar.numer_lokalu && bar.numer_lokalu!="NULL")){ %>
+                                <td><%= bar.ulica %> <%= bar.numer_budynku %>/<%= bar.numer_lokalu %></td>
+                            <% } else if((bar.ulica && bar.ulica!="NULL") && (bar.numer_budynku && bar.numer_budynku!="NULL")){ %>
+                                <td><%= bar.ulica %> <%= bar.numer_budynku %></td>
+                            <% } else{ %>
+                                <td>---</td>
+                            <% } %> 
+                            <td><%= bar.email %></td>
+                            <% if(bar.status=="activated"){ %>
+                                <td>Tak</td>
+                            <% } else{ %>
+                                <td>Nie</td>
+                            <% } %> 
+                            <td>
+                                <button type='button' onclick="chooseBar('<%= bar.email %>', '<%= bar.id_baru %>')">Wybierz</button>
+                            </td>
+                        </tr>                                   
+                    <% }) %>
+                </table>
+            </div>
+            <div id='team1_div' style='display: none'>
+                <table class="table">
+                    <tr>
+                        <th style="width:50px;">ID</th>  
+                        <th>Nazwa Drużyny</th>
+                        <th style="width:80px;">Wybierz</th>
+                    </tr>
+                    
+                    <% teams.forEach(function (team) { %>
+                        <tr>  
+                            <td><%= team.id_druzyny %></td>  
+                            <td><%= team.nazwa_druzyny %></td>
+                            <td>
+                                <button type='button' onclick="chooseTeam1('<%= team.id_druzyny %>', '<%= team.nazwa_druzyny %>')">Wybierz</button>
+                            </td>
+                        </tr>                                   
+                    <% }) %>
+                </table>
+            </div>
+            <div id='team2_div' style='display: none'>
+                <table class="table">
+                    <tr>
+                        <th style="width:50px;">ID</th>  
+                        <th>Nazwa Drużyny</th>
+                        <th style="width:80px;">Wybierz</th>
+                    </tr>
+                    
+                    <% teams.forEach(function (team) { %>
+                        <tr>  
+                            <td><%= team.id_druzyny %></td>  
+                            <td><%= team.nazwa_druzyny %></td>
+                            <td>
+                                <button type='button' onclick="chooseTeam2('<%= team.id_druzyny %>', '<%= team.nazwa_druzyny %>')">Wybierz</button>
+                            </td>
+                        </tr>                                   
+                    <% }) %>
+                </table>
+            </div>
+            <script>
+                $('#match_time').datetimepicker({
+                    timepicker:true,
+                    mask:true,
+                    format:'Y-m-d H:i',
+                    formatDate:'Y-m-d H:i'
+                });
+                $('#match_time').val('<%= bm.czas %>');
+            </script>
+        </div>
+        <% include ../header.ejs %>      <!--Include header (top menu logo etc)-->
+        <% include ../footer.ejs %>      <!--Include footer-->
+    </body>
+</html>
