@@ -64,7 +64,7 @@ CREATE TABLE `Bary` (
   PRIMARY KEY (`id_baru`),
   UNIQUE KEY `email` (`email`),
   KEY `miasto` (`miasto`),
-  CONSTRAINT `Bary_ibfk_1` FOREIGN KEY (`miasto`) REFERENCES `miasta` (`miasto`)
+  CONSTRAINT `Bary_ibfk_1` FOREIGN KEY (`miasto`) REFERENCES `Miasta` (`miasto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -93,8 +93,8 @@ CREATE TABLE `Bary_Z_Meczami` (
   PRIMARY KEY (`id_wydarzenia`),
   KEY `id_baru` (`id_baru`),
   KEY `id_meczu` (`id_meczu`),
-  CONSTRAINT `Bary_Z_Meczami_ibfk_1` FOREIGN KEY (`id_baru`) REFERENCES `bary` (`id_baru`),
-  CONSTRAINT `Bary_Z_Meczami_ibfk_2` FOREIGN KEY (`id_meczu`) REFERENCES `mecze` (`id_meczu`)
+  CONSTRAINT `Bary_Z_Meczami_ibfk_1` FOREIGN KEY (`id_baru`) REFERENCES `Bary` (`id_baru`),
+  CONSTRAINT `Bary_Z_Meczami_ibfk_2` FOREIGN KEY (`id_meczu`) REFERENCES `Mecze` (`id_meczu`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -148,8 +148,8 @@ CREATE TABLE `Mecze` (
   PRIMARY KEY (`id_meczu`),
   KEY `id_druzyna1` (`id_druzyna1`),
   KEY `id_druzyna2` (`id_druzyna2`),
-  CONSTRAINT `Mecze_ibfk_1` FOREIGN KEY (`id_druzyna1`) REFERENCES `druzyny` (`id_druzyny`),
-  CONSTRAINT `Mecze_ibfk_2` FOREIGN KEY (`id_druzyna2`) REFERENCES `druzyny` (`id_druzyny`)
+  CONSTRAINT `Mecze_ibfk_1` FOREIGN KEY (`id_druzyna1`) REFERENCES `Druzyny` (`id_druzyny`),
+  CONSTRAINT `Mecze_ibfk_2` FOREIGN KEY (`id_druzyna2`) REFERENCES `Druzyny` (`id_druzyny`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -228,8 +228,8 @@ CREATE TABLE `Uzytkownik_Z_Druzynami` (
   `id_druzyny` int(11) NOT NULL,
   PRIMARY KEY (`id_uzytkownika`,`id_druzyny`),
   KEY `id_druzyny` (`id_druzyny`),
-  CONSTRAINT `Uzytkownik_Z_Druzynami_ibfk_1` FOREIGN KEY (`id_uzytkownika`) REFERENCES `uzytkownicy` (`id_uzytkownika`),
-  CONSTRAINT `Uzytkownik_Z_Druzynami_ibfk_2` FOREIGN KEY (`id_druzyny`) REFERENCES `druzyny` (`id_druzyny`)
+  CONSTRAINT `Uzytkownik_Z_Druzynami_ibfk_1` FOREIGN KEY (`id_uzytkownika`) REFERENCES `Uzytkownicy` (`id_uzytkownika`),
+  CONSTRAINT `Uzytkownik_Z_Druzynami_ibfk_2` FOREIGN KEY (`id_druzyny`) REFERENCES `Druzyny` (`id_druzyny`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
