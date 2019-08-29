@@ -27,6 +27,11 @@
             return false;
         }
     }
+
+        $( function() {
+            $('#time').bootstrapMaterialDatePicker({ date: false, format: 'HH:mm', });
+            $('#date').bootstrapMaterialDatePicker({ weekStart : 0, time: false }); 
+        } );
 </script>
 
 <body>
@@ -38,27 +43,27 @@
         <table>
             <tr>
                 <td>Drużyna I </td>
-                <td><select id="title" name="team1">
+                <td><select id="team1" name="team1">
                         <% for(var i = 0; i < teams.length; i++) { %>
-                            <option ><%= teams[i].nazwa_druzyny%></option>
+                            <option ><%= teams[i].name%></option>
                         <% } %>
                     </select></td>
             </tr>
             <tr>
                 <td>Drużyna II </td>
-                <td><select id="title" name="team2">
+                <td><select  id = "team2" name="team2">
                         <% for(var i = 0; i < teams.length; i++) { %>
-                            <option><%= teams[i].nazwa_druzyny%></option>
+                            <option><%= teams[i].name%></option>
                         <% } %>
                     </select></td>
             </tr>
             <tr>
                 <td>Data</td>
-                <td><input id="beginDate" type="date" name="date" required></td>
+                <td><input type="text" id="date" name="date"></td>
             </tr>
             <tr>
                 <td>Czas</td>
-                <td><input id="match_time" type="time" name="time"></td>
+                <td><input type="text" id="time" name="time"/> </td>
             </tr>
 
         </table>

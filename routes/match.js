@@ -132,49 +132,66 @@ function notify_users_about_match(bar_id, event_id, datetime){
 }
 
 
-function nested_add2(req, team1_id, team2_id, team1_name, team2_name, id_baru, id_meczu, place, datetime) {
-    let add_match_query = "INSERT INTO Mecze(id_druzyna1, id_druzyna2, czas) VALUES(" + team1_id + "," + team2_id + ",'" + datetime + "')";
-    dbconn.query(add_match_query, function (err, result) {
-        if (err) {
-            console.log(err);
-        }
-        nested_add_res.redirect('/match')
-        id_meczu = result.insertId;
-    });
-}
-
-function nested_add(req, team1_id, team1_name, team2_name, id_baru, id_meczu, place, datetime) {
-    let team2_id;
-    dbconn.query("SELECT * FROM Druzyny WHERE nazwa_druzyny='" + team2_name + "'", function (err, res) {
-        team2_id = res[0].id_druzyny;
-        nested_add2(req, team1_id, team2_id, team1_name, team2_name, id_baru, id_meczu, place, datetime)
-    });
-}
 
 
 router.post('/add', function (req, res) {
-    nested_add_res = res;
-    let team1_id, id_baru, id_meczu, place;
-    let datetime = req.body.date + " " + req.body.time;
-    let bar_owner_id = req.user.barID;
-    let team1_name = req.body.team1;
-    let team2_name = req.body.team2;
+    var team1 = req.body.team1;
+    var team2 = req.body.team2;
+    var date = req.body.date;
+    var time = req.body.time;
+    var datetime = date + " " + time;
+    console.log(team1);
+    console.log(team2);
+    console.log(datetime);
 
-    let bar_name_query = "select nazwa_baru, id_baru from Bary where id_baru=" + bar_owner_id;
-    dbconn.query(bar_name_query, function (err, res) {
+    db_query = "SELECT id_druzyny FROM Druzyny WHERE nazwa_druzyny='" + team1 + "'";
+    dbconn.query(db_query, function (err, res) {
+        team1_id = res[0].id_druzyny;
+        
+        if(err)
+        {
+            console.log(err);
+            req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+            return res.redirect('/match/add');
+        }
 
-        place = res[0].nazwa_baru;
-        id_baru = res[0].id_baru;
+        db_query = "SELECT id_druzyny FROM Druzyny WHERE nazwa_druzyny='" + team2 + "'";
 
-        dbconn.query("SELECT * FROM Druzyny WHERE nazwa_druzyny='" + team1_name + "'", function (err, res) {
-            team1_id = res[0].id_druzyny;
-            nested_add(req, team1_id, team1_name, team2_name, id_baru, id_meczu, place, datetime);
+        dbconn.query(db_query, function (err, res) {
+            team2_id = res[0].id_druzyny;
+
+            if(err)
+            {
+                console.log(err);
+                req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+                return res.redirect('/match/add');
+            }
+
+            db_query = "INSERT into Mecze (id_druzyna1, id_druzyna2, czas ) values ('"+
+                        team1_id +"','"+team2_id+"','"+datetime+"')";
+
+            dbconn.query(db_query, function (err, res) {
+                if(err)
+                {
+                    console.log(err);
+                    req.flash('FLASH_MSG', ['ERROR', 'Przepraszamy, wystąpił błąd po stronie serwera']);
+                    return res.redirect('/match/add');
+                }
+                else
+                {
+                    req.flash('FLASH_MSG', ['SUCCESS', 'Pomyślnie dodano mecz']);
+                }
+            });
         });
+    });
+    //return res.render('add_match', { page: getPageVariable(req), title: 'Mecz', flash_messages: req.flash("FLASH_MSG") });
+    //return res.redirect('/match/add');
 
+    let select_teams = "SELECT id_druzyny as id, nazwa_druzyny as name FROM Druzyny";
+    dbconn.query(select_teams, function (err, result) {
+        return res.render('add_match', { page: getPageVariable(req), title: 'Mecz', teams: result, flash_messages: req.flash("FLASH_MSG") });
     });
 });
-
-
 router.get('/edit/:id', function (req, res, next) {
     let event_id = req.params.id;
 
