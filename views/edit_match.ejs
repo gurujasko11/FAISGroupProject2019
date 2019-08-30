@@ -11,19 +11,18 @@
 <script>
     function validateForm() {
         var err = "";
-        if(document.getElementsByName("team1")[0].value === document.getElementsByName("team2")[0].value)
+        if (document.getElementsByName("team1")[0].value === document.getElementsByName("team2")[0].value)
             err += "Drużyny nie mogą być te same";
 
-        if(document.getElementsByName("date")[0].value === '')
+        if (document.getElementsByName("date")[0].value === '')
             err += "Podaj datę";
 
-        if(document.getElementsByName("time")[0].value === '')
+        if (document.getElementsByName("time")[0].value === '')
             err += "Podaj godzinę";
 
-        if(err == "") return true;
-        else
-        {
-            AlertError('Błąd!',err);
+        if (err == "") return true;
+        else {
+            AlertError('Błąd!', err);
             return false;
         }
     }
@@ -34,52 +33,21 @@
 <td id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
     <h1><%= title %></h1>
 
+    <h2>Mecz <%= data.team1 %>
+        - <%= data.team2 %></h2>
+    <h2>Czas rozpoczącia meczu: <%= moment(new Date(data.czas)).format('YY-MM-DD HH:mm') %></h2>
     <form method="POST" action="/match/edit" onsubmit="return validateForm();">
-        <table>
-            <tr>
-                <td>Mecze </td>
-                <td><select id="match" name="match">
-                        <% for(var i = 0; i < data.length; i++) { %>
-                            <option value="<%= data[i].id %>"><%=data[i].czas%>   <%= data[i].team1 %> - <%= data[i].team2 %></option>
-                        <% } %>
-                </select></td>
-            </tr>
-
-            <tr>
-                <td>Data</td>
-                <td><input id="beginDate" type="date" name="date" required value="<%= data.czas %>"></td>
-            </tr>
-            <tr>
-                <td>Czas</td>
-                <td><input id="match_time" type="time" name="time" value="<%= data.czas %>"></td>
-            </tr>
-            <input id="edited_event_id" type="hidden" name="edited_event_id" value="<%= event_id %>">
-            <input id="czas" type="hidden" value="<%= data.czas %>">
-            <input id="id" type="hidden" value="<%=data.id%>">
-        </table>
-        <p>* - obowiązkowe</p>
+        <label for="beginDate">Data</label>
+        <input id="beginDate" type="date" name="date" value="<%= moment(new Date(event_data.czas)).format('YYYY-MM-DD') %>"
+               required>
+        <label for="match_time">Czas</label>
+        <input id="match_time" type="time" name="time" value="<%= moment(new Date(event_data.czas)).format('HH:mm') %>"
+               required>
+        <input id="event" name="event" type="hidden" value="<%= event_data.id_wydarzenia %>">
         <br>
-        <input type="submit" class="btn btn-primary" value="Submit"/>
+        <input type="submit" class="btn btn-primary" value="Edytuj"/>
     </form>
     <% include header.ejs %>
     <% include footer.ejs %>
 </body>
 </html>
-
-<script>
-    let date = document.getElementById("czas");
-    let datetime = new Date(date.value);
-
-    let MM = datetime.getMonth();
-    let dd = datetime.getDate();
-
-    strDate = datetime.getFullYear() + '-' +
-        (MM > 9 ? '' : '0') + (MM + 1) + "-" +
-        (dd > 9 ? '' : '0') + dd;
-    document.getElementById("beginDate").value = strDate;
-
-    let hh = datetime.getHours();
-    let mm = datetime.getMinutes();
-    strTime = (hh > 9 ? '' : '0') + hh + ":" + (mm > 9 ? '' : '0') + mm + ":00"
-    document.getElementById("match_time").value=strTime;
-</script>

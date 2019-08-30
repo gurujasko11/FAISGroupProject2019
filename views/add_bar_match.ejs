@@ -18,30 +18,38 @@
 <div id="alerts"></div>
 <td id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
     <h1><%= title %></h1>
-
-    <form method="POST" action="/match/add/bar_match" onsubmit="return validateForm();">
-        <table>
+    <table class="table">
+        <th>Termin</th>
+        <th>Mecz</th>
+        <th>Opcje</th>
+        <% data.forEach(function (match) { %>
             <tr>
-                <td>Mecze</td>
-                <td><select id="match" name="match">
-                    <% for(var i = 0; i < data.length; i++) { %>
-                    <option value="<%= data[i].id %>"><%=data[i].czas%>   <%= data[i].team1 %> - <%= data[i].team2 %></option>
-                    <% } %>
-                </select></td>
+                <td class="data"><%= moment(new Date(match.czas)).format('YYYY-MM-DD HH:mm') %></td>
+                <td><%= match.team1 %> - <%= match.team2 %></td>
+                <td><a class="btn btn-primary" href="selected_match/<%= match.id %>">Dodaj</a></td>
             </tr>
-            <tr>
-                <td>Data</td>
-                <td><input id="beginDate" type="date" name="date" required></td>
-            </tr>
-            <tr>
-                <td>Czas</td>
-                <td><input id="match_time" type="time" name="time"></td>
-            </tr>
-        </table>
-        <br>
-        <input type="submit" class="btn btn-primary" value="Submit"/>
-    </form>
+        <% }) %>
+    </table>
     <% include header.ejs %>
     <% include footer.ejs %>
 </body>
 </html>
+
+<script>
+    let date = document.getElementsByClassName("data");
+    dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
+    Array.from(date).forEach(function (element, index, array) {
+        let datetime = new Date(element.innerHTML);
+        var minutes = datetime.getMinutes();
+        var hours = datetime.getHours();
+        var days = datetime.getDate();
+        var months = datetime.getMonth();
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        hours = hours < 10 ? '0' + hours : hours;
+        days = days < 10 ? '0' + days : days;
+        months = months < 10 ? '0' + (months + 1) : months + 1;
+        let str = (dni[datetime.getDay()] + ", " + days) + "." + months
+            + "." + datetime.getFullYear() + " " + hours + ":" + minutes;
+        element.innerHTML = str;
+    })
+</script>

@@ -99,16 +99,16 @@ function updateUserInDB(password, first_name, last_name, email, telephone, res, 
         const saltRounds = 10;
         bcrypt.genSalt(saltRounds, function (err, salt) {
             bcrypt.hash(password, salt, function (err, hash) {
-				var updatedString = generateSQLString(hash, first_name, last_name, email, telephone);
-				if(updatedString == '') {
-					return res.render('my_user_account', {
-						page: getPageVariable(req),
-						title: "Moje konto",
-						user_data: req.user,
-						type: 'INFO',
-						msg: 'Brak zmian'
-					});
-				}
+                var updatedString = generateSQLString(hash, first_name, last_name, email, telephone);
+                if (updatedString == '') {
+                    return res.render('my_user_account', {
+                        page: getPageVariable(req),
+                        title: "Moje konto",
+                        user_data: req.user,
+                        type: 'INFO',
+                        msg: 'Brak zmian'
+                    });
+                }
                 var query = "update Uzytkownicy set" + updatedString + " where id_uzytkownika=" + req.user.userID;
                 console.log("Wyslano update do bazy danych: " + query);
                 dbconn.query(query, function (err, rows) {
@@ -134,16 +134,16 @@ function updateUserInDB(password, first_name, last_name, email, telephone, res, 
             });
         });
     } else {
-		var updatedString = generateSQLString(password, first_name, last_name, email, telephone);
-		if(updatedString == '') {
-			return res.render('my_user_account', {
+        var updatedString = generateSQLString(password, first_name, last_name, email, telephone);
+        if (updatedString == '') {
+            return res.render('my_user_account', {
                 page: getPageVariable(req),
                 title: "Moje konto",
                 user_data: req.user,
                 type: 'INFO',
                 msg: 'Brak zmian'
             });
-		}
+        }
         var query = "update Uzytkownicy set" + updatedString + " where id_uzytkownika=" + req.user.userID;
         console.log("Wyslano update do bazy danych: " + query);
         dbconn.query(query, function (err, rows) {

@@ -16,7 +16,7 @@ router.get('/obserwowane', AuthenticatedUserOnly,  function(req, res, next) {
     if (err) {
       throw err;
     } else {
-      obj = {print: result, page: getPageVariable(req), title: 'Twoje obserwacje'};
+      obj = {print: result, page: getPageVariable(req), title: 'Obserwowane przez ciebie'};
       res.render('obserwowane', obj);
     }
   });

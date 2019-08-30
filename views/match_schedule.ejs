@@ -3,8 +3,8 @@
 <% include head.ejs %>
 <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
-
 <script src='/javascripts/alert.js' type='text/javascript'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
 <script>
     function validateForm() {
@@ -22,21 +22,18 @@
         <thead>
         <th><a href="?orderBy=czas" class="link">Data</a></th>
         <th><a href="?orderBy=nazwa_baru" class="link">Bar</a></th>
-        <th><a href="?orderBy=id_druzyna1" class="link">Druzyna 1</a></th>
-        <th><a href="?orderBy=id_druzyna2" class="link">Druzyna 2</a></th>
+        <th><a href="?orderBy=id_druzyna1" class="link">Mecz</a></th>
         <th><a href="?orderBy=miasto" class="link">Miasto</a></th>
         </thead>
         <tbody>
         <%
         for(var i = 0; i < data.length; i++) { %>
-        <tr>
-            <td><%= moment(data[i].czas).format('YYYY-MM-DD HH:mm') %></td>
-            <td><%=data[i].nazwa_baru%></td>
-            <td><%=data[i].druzyna1%></td>
-            <td><%=data[i].druzyna2%></td>
-            <td><%=data[i].miasto%></td>
-
-        </tr>
+            <tr>
+                <td><%= moment(data[i].czas).format('YYYY-MM-DD HH:mm') %></td>
+                <td><%= data[i].nazwa_baru %></td>
+                <td><%= data[i].druzyna1 %> - <%= data[i].druzyna2 %></td>
+                <td><%= data[i].miasto %></td>
+            </tr>
         <% } %>
         </tbody>
     </table>

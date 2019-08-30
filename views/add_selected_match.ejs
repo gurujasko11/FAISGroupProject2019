@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+
+<script src='/javascripts/alert.js' type='text/javascript'></script>
+
+<!--Inline Javascript-->
+<script>
+    function validateForm() {
+
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<td id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+    <h1><%= title %></h1>
+    <h2>Mecz <%= data.team1 %>
+        - <%= data.team2 %></h2>
+    <h2>Czas rozpoczącia meczu: <%= moment(new Date(data.czas)).format('YY-MM-DD HH:mm') %></h2>
+    <form method="POST" action="/match/add/bar_match" onsubmit="return validateForm();">
+        <label for="beginDate">Data</label>
+        <input id="beginDate" type="date" name="date" value="<%= moment(new Date(data.czas)).format('YYYY-MM-DD') %>" required>
+        <label for="match_time">Czas</label>
+        <input id="match_time" type="time" name="time" value="<%= moment(new Date(data.czas)).format('HH:mm') %>" required>
+        <input id="match" name="match" type="hidden" value="<%= data.id %>">
+        <br>
+        <input type="submit" class="btn btn-primary" value="Dodaj"/>
+    </form>
+    <% include header.ejs %>
+    <% include footer.ejs %>
+</body>
+</html>

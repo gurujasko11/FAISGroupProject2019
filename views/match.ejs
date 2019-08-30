@@ -40,8 +40,8 @@
     </table>
     <div style="text-align:center">
         <% if(addPossible && is_bar){ %>
-            <input type="button" value="Dodaj" onclick="location.href='/match/add/bar_match'">
-            <% } %>
+            <input type="button" value="Dodaj wydarzenie do baru" onclick="location.href='/match/add/bar_match'">
+        <% } %>
         <!--<a href="/match/add" class="btn btn-primary float-right">Dodaj</a>-->
     </div>
 
@@ -55,16 +55,15 @@
     let date = document.getElementsByClassName("data");
     dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
     Array.from(date).forEach(function (element, index, array) {
-        console.log(element)
         let datetime = new Date(element.innerHTML);
         var minutes = datetime.getMinutes();
         var hours = datetime.getHours();
         var days = datetime.getDate();
         var months = datetime.getMonth();
-        minutes = minutes < 10 ? '0'+minutes : minutes;
-        hours = hours < 10 ? '0'+hours : hours;
-        days = days < 10 ? '0'+days : days;
-        months = months < 10 ? '0'+(months+1) : months +1;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        hours = hours < 10 ? '0' + hours : hours;
+        days = days < 10 ? '0' + days : days;
+        months = months < 10 ? '0' + (months + 1) : months + 1;
         let str = (dni[datetime.getDay()] + ", " + days) + "." + months
             + "." + datetime.getFullYear() + " " + hours + ":" + minutes;
         element.innerHTML = str;

@@ -95,17 +95,17 @@ router.post('/search_match', function (req, res, next) {
     var i;
     querry_teams = "("
     for (i = 0; i < teams.length; i++) {
-        querry_teams += "t1.nazwa_druzyny LIKE '%"+teams[i]+"%' OR t2.nazwa_druzyny LIKE '%"+teams[i]+"%'"
-        if( i < teams.length-1) {
+        querry_teams += "t1.nazwa_druzyny LIKE '%" + teams[i] + "%' OR t2.nazwa_druzyny LIKE '%" + teams[i] + "%'"
+        if (i < teams.length - 1) {
             querry_teams += " OR "
         } else {
             querry_teams += ")"
         }
     }
-    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away "+
-    "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 "+
-    "WHERE (" + querry_teams +
-    "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny ) AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away " +
+        "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
+        "WHERE (" + querry_teams +
+        "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny ) AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
     dbconn.query(query, function (err, rows) {
         if (err) res.render('search_match_result', {
             page: getPageVariable(req),
@@ -125,18 +125,16 @@ router.post('/search_match', function (req, res, next) {
 
 
 function getPageVariable(req) {
-    if (req.isAuthenticated())
-    {
-        if(req.user.type == 'bar')
+    if (req.isAuthenticated()) {
+        if (req.user.type == 'bar')
             return "authenticatedBar";
-        else if(req.user.type == 'admin')
+        else if (req.user.type == 'admin')
             return "authenticatedAdmin";
-        else if(req.user.type == 'user')
+        else if (req.user.type == 'user')
             return "authenticatedUser";
         else
             return 'main';
-    }
-    else
+    } else
         return "main";
 }
 
@@ -218,7 +216,7 @@ router.get('/about/match/:id', function (req, res, next) {
     console.log(req.body.search_text)
     query = "SELECT t1.id_baru, t1.id_meczu, t2.nazwa_baru, t2.miasto, t2.ulica, t2.numer_budynku, t2.numer_lokalu\n" +
         "FROM Zespolowe.Bary_Z_Meczami t1, Zespolowe.Bary t2\n" +
-        "WHERE t1.id_meczu = "+match_id+"\n" +
+        "WHERE t1.id_meczu = " + match_id + "\n" +
         "AND t1.id_baru = t2.id_baru;";
     dbconn.query(query, function (err, rows) {
         if (err) res.render('search_match_result', {
@@ -313,7 +311,6 @@ router.get('/match_schedule', function (req, res, next) {
     if (orderBy == 'nazwa_baru' || orderBy == 'miasto') {
 
 
-
         dbconn.query(
             "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY b." + orderBy,
             function (err, result) {
@@ -321,7 +318,7 @@ router.get('/match_schedule', function (req, res, next) {
                 if (result === undefined) {
                     res.render('match_schedule', {
                         page: getPageVariable(req),
-                        title: 'Terminarz rozrywek',
+                        title: 'Terminarz meczów',
                         data: emptyArray
                     });
                 }
@@ -358,7 +355,7 @@ router.get('/match_schedule', function (req, res, next) {
 
                             res.render('match_schedule', {
                                 page: getPageVariable(req),
-                                title: 'Terminarz rozrywek',
+                                title: 'Terminarz meczów',
                                 data: matches,
                                 moment: moment
                             });
@@ -368,10 +365,6 @@ router.get('/match_schedule', function (req, res, next) {
                 );
             }
         );
-
-
-
-
 
 
     } else if (orderBy == 'id_druzyna1') {
@@ -384,7 +377,7 @@ router.get('/match_schedule', function (req, res, next) {
                 if (result === undefined) {
                     res.render('match_schedule', {
                         page: getPageVariable(req),
-                        title: 'Terminarz rozrywek',
+                        title: 'Terminarz meczów',
                         data: emptyArray
                     });
                 }
@@ -426,7 +419,7 @@ router.get('/match_schedule', function (req, res, next) {
 
                             res.render('match_schedule', {
                                 page: getPageVariable(req),
-                                title: 'Terminarz rozrywek',
+                                title: 'Terminarz meczów',
                                 data: matches,
                                 moment: moment
                             });
@@ -448,7 +441,7 @@ router.get('/match_schedule', function (req, res, next) {
                 if (result === undefined) {
                     res.render('match_schedule', {
                         page: getPageVariable(req),
-                        title: 'Terminarz rozrywek',
+                        title: 'Terminarz meczów',
                         data: emptyArray
                     });
                 }
@@ -490,7 +483,7 @@ router.get('/match_schedule', function (req, res, next) {
 
                             res.render('match_schedule', {
                                 page: getPageVariable(req),
-                                title: 'Terminarz rozrywek',
+                                title: 'Terminarz meczów',
                                 data: matches,
                                 moment: moment
                             });
@@ -509,7 +502,7 @@ router.get('/match_schedule', function (req, res, next) {
                 if (result === undefined) {
                     res.render('match_schedule', {
                         page: getPageVariable(req),
-                        title: 'Terminarz rozrywek',
+                        title: 'Terminarz meczów',
                         data: emptyArray
                     });
                 }
@@ -546,7 +539,7 @@ router.get('/match_schedule', function (req, res, next) {
 
                             res.render('match_schedule', {
                                 page: getPageVariable(req),
-                                title: 'Terminarz rozrywek',
+                                title: 'Terminarz meczów',
                                 data: matches,
                                 moment: moment
                             });
