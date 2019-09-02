@@ -12,7 +12,10 @@ body {
     padding-right: 50px;
     background: var(--BcgColor);
     font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
-    color: var(--TextColor)
+    color: var(--TextColor);
+    opacity: 1;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
 }
 
 .header{
@@ -21,7 +24,9 @@ body {
     left: 0px;
     right: 0px;
     padding-top: 60px;
-    background: var(--BcgColor);;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
 }
 
 .page {
@@ -46,11 +51,15 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
 }
 .topRight {                     /* Prawy górny róg - guziki logowania*/
     position: absolute;
     top: 10px;
     right: 10px;
+
 }
 .topBar {                       /* Pasek menu*/
     position: absolute;
@@ -69,7 +78,9 @@ body {
     left: 0px;
     right: 0px;
     text-align: center;
-    background: var(--BcgColor);
+    opacity: 1;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
 }
 
 /*      A       /////////////////////////////////////////////////////////*/
@@ -177,9 +188,9 @@ input[type=text], input[type=email], input[type=password], input[type=date], inp
     display: inline-block;
     box-sizing: border-box;
     outline: none;
-    background: #eee;
+    background: #C0C0C0;
     border-bottom: 2px solid #333333;
-    
+    opacity: 0.8;
     -webkit-transition: border-bottom 0.5s;
     transition: border 0.5s;
 }
@@ -267,6 +278,9 @@ table {
 table.table{
     border-collapse: collapse;
     width: 100%;
+    opacity: 0.8;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
 }
 table.table th {
     background-color: var(--ButtonBcgColor);
@@ -277,10 +291,12 @@ table.table td, table.table th {
     padding: 8px;
 }
 table.table td {
-    border: 1px solid #dddddd;
+    border: 1px solid #000000;
 }
 table.table tr:nth-child(even) {
-    background-color: #dddddd;
+    opacity: 0.8;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
 }
 /*      Alerts         ////////////////////////////////////////////////*/
 .alert {
@@ -341,4 +357,21 @@ table.table tr:nth-child(even) {
 
 .tableStyle th, .tableStyle td {
     width: 50%;
+}
+
+container { width: 100px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    -moz-box-shadow: 0 0 20px black;
+    -webkit-box-shadow: 0 0 20px black;
+    box-shadow: 0 0 20px black; }
+
+
+html {
+    background: url(/images/stadium.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
