@@ -10,14 +10,16 @@
         <div id="alerts"></div>
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
+            <h3> Kliknij na nazwę drużyny aby zobaczyć rozgrywane przez daną mecze</h3>
             <table class="table">
-                <th>id drużyny</th>  
-                <th>nazwa drużyny</th>  
+                <th>nazwa drużyny</th>
+                <th>opcje</th>
+
                 <% print.forEach(function (team) { %>
-            <tr>  
-                <td><%= team.id_druzyny %></td>  
+            <tr>
                 <td><%= team.nazwa_druzyny %></td>
-            </tr>                                   
+                <td><a href="<%= "/team_matches/" + team.id_druzyny %>" class="link"> Pokaż mecze </a></td>
+            </tr>
          <% }) %>
             </table>
         </div>
