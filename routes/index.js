@@ -367,13 +367,15 @@ router.get('/match_schedule', function (req, res, next) {
                             } else if(orderBy == 'czas') {
                             matches.sort(function (a, b) {
                                 return a.czas < b.czas;
-                            });
-                        }
+                                });
+                            }
+                            // do not show ones from the past
+                            const _matches = matches.filter(future_match);
 
                             res.render('match_schedule', {
                                 page: getPageVariable(req),
                                 title: 'Terminarz meczów',
-                                data: matches,
+                                data: _matches,
                                 moment: moment
                             });
 
@@ -452,10 +454,15 @@ router.get('/team_matches/:id', function (req, res, next) {
                                 return a.czas < b.czas;
                             });
                         }
+                        console.log("1");
+                        // do not show ones from the past
+                        const _matches = matches.filter(future_match);
+
+                        console.log("2");
                         res.render('team_matches', {
                             page: getPageVariable(req),
                             title: 'Mecze drużyny',
-                            data: matches,
+                            data: _matches,
                             moment: moment
                         });
 
@@ -471,3 +478,7 @@ module.exports = {
     printUserData: printUserData,
     getPageVariable: getPageVariable
 };
+
+function future_match(a) {
+return moment(a.czas) > moment.now()
+}
