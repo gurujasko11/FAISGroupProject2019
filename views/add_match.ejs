@@ -20,6 +20,8 @@
         if(document.getElementsByName("time")[0].value === '')
             err += "Podaj godzinę, np 12:00:AM";
 
+        if(document.getElementsByName("league")[0].value === '')
+            err += "Podaj nazwę rozgrywek, np Ekstraklasa";
         if(err == "") return true;
         else
         {
@@ -64,6 +66,10 @@
             <tr>
                 <td>Czas</td>
                 <td><input type="text" id="time" name="time"/> </td>
+            </tr>
+            <tr>
+                <td>Liga</td>
+                <td><input type="text" id="league" name="league"/> </td>
             </tr>
 
         </table>

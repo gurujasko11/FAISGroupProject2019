@@ -89,9 +89,9 @@ router.get('/account', function (req, res, next) {
     });
 });
 
-router.post('/search_match', function (req, res, next) {
+router.post('/search_match_by_team', function (req, res, next) {
     //console.log(req.body.search_text)
-    teams = req.body.search_text.split(' ')
+    teams = req.body.search_text_team.split(' ')
     var i;
     querry_teams = "("
     for (i = 0; i < teams.length; i++) {
@@ -116,13 +116,47 @@ router.post('/search_match', function (req, res, next) {
             res.render('search_match_result', {
                 page: getPageVariable(req),
                 title: 'Wyniki wyszukiwania',
-                query: req.body.search_text,
+                query: req.body.search_text_team,
                 args: rows
             });
         }
     });
 });
 
+router.post('/search_match_by_league', function (req, res, next) {
+    //console.log(req.body.search_text)
+    leagues = req.body.search_text_league.split(' ')
+    var i;
+    querry_leagues = "("
+    for (i = 0; i < leagues.length; i++) {
+        querry_leagues += "m.liga LIKE '%" + leagues[i] +"%'"
+        if (i < leagues.length - 1) {
+            querry_leagues += " OR "
+        } else {
+            querry_leagues += ")"
+        }
+    }
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away, m.liga " +
+        "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
+        "WHERE ( (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny)"+
+        "AND "+ querry_leagues +
+        "AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
+    dbconn.query(query, function (err, rows) {
+        if (err) res.render('search_match_result', {
+            page: getPageVariable(req),
+            title: err,
+            desc: err.msg
+        });
+        else {
+            res.render('search_match_result', {
+                page: getPageVariable(req),
+                title: 'Wyniki wyszukiwania',
+                query: req.body.search_text_league,
+                args: rows
+            });
+        }
+    });
+});
 
 function getPageVariable(req) {
     if (req.isAuthenticated()) {
