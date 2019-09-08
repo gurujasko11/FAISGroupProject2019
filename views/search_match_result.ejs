@@ -2,8 +2,9 @@
 <html>
 <% include head.ejs %>      <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
-<script src='/javascripts/alert.js' type='text/javascript' >
-</script>
+<script src='/javascripts/alert.js' type='text/javascript' ></script>
+<script src='/javascripts/sorttable.js' type='text/javascript'></script>
+
 <body>
 <div id="alerts"></div>
 <div id="page" class=page>      <!--Div page with id=page - main container-->
@@ -22,7 +23,7 @@
         </form>
         <br/><br/>
         <h2>Znalezione mecze</h2>
-        <table class="table">
+        <table class="sortable table">
                 <tr>
                     <th>gospodarze</th>
                     <th>goscie</th>

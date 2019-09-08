@@ -3,6 +3,8 @@
 <% include head.ejs %>      <!--Include head section (same for all pages)-->
 <!--Javascripts includes-->
 <script src='/javascripts/alert.js' type='text/javascript' ></script>
+<script src='/javascripts/sorttable.js' type='text/javascript'></script>
+
 
 <!--Inline Javascript-->
 <script>
@@ -90,7 +92,7 @@
     <h1><%= title %></h1>
 
     <form method="POST" action="/edit_bar" onsubmit="return validateForm();">
-        <table>
+        <table class="sortable">
             <tr>
                 <td>
                     Nazwa baru:

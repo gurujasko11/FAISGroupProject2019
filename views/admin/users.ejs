@@ -3,6 +3,7 @@
     <% include ../head.ejs %>      <!--Include head section (same for all pages)-->
     <!--Javascripts includes-->
     <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    <script src='/javascripts/sorttable.js' type='text/javascript'></script>
 
     <script>
             function getMessages()
@@ -34,7 +35,7 @@
         <% } %>
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <h1><%= title %></h1>
-            <table class="table">
+            <table class="sortable table">
                 <tr>
                     <th style="width:40px;">ID</th>  
                     <th>Imię</th>
