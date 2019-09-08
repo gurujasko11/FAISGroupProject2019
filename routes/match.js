@@ -141,10 +141,12 @@ router.post('/add', function (req, res) {
     var team2 = req.body.team2;
     var date = req.body.date;
     var time = req.body.time;
+    var league = req.body.league;
     var datetime = date + " " + time;
     console.log(team1);
     console.log(team2);
     console.log(datetime);
+    console.log(league);
 
     db_query = "SELECT id_druzyny FROM Druzyny WHERE nazwa_druzyny='" + team1 + "'";
     dbconn.query(db_query, function (err, res) {
@@ -167,8 +169,8 @@ router.post('/add', function (req, res) {
                 return res.redirect('/match/add');
             }
 
-            db_query = "INSERT into Mecze (id_druzyna1, id_druzyna2, czas ) values ('" +
-                team1_id + "','" + team2_id + "','" + datetime + "')";
+            db_query = "INSERT into Mecze (id_druzyna1, id_druzyna2, czas, liga ) values ('" +
+                team1_id + "','" + team2_id + "','" + datetime + "','" + league + "')";
 
             dbconn.query(db_query, function (err, res) {
                 if (err) {

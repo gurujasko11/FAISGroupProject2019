@@ -145,6 +145,7 @@ CREATE TABLE `Mecze` (
   `id_druzyna1` int(11) DEFAULT NULL,
   `id_druzyna2` int(11) DEFAULT NULL,
   `czas` datetime DEFAULT NULL,
+  `liga` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_meczu`),
   KEY `id_druzyna1` (`id_druzyna1`),
   KEY `id_druzyna2` (`id_druzyna2`),
@@ -159,7 +160,7 @@ CREATE TABLE `Mecze` (
 
 LOCK TABLES `Mecze` WRITE;
 /*!40000 ALTER TABLE `Mecze` DISABLE KEYS */;
-INSERT INTO `Mecze` VALUES (1,11,12,'2019-06-14 00:00:00'),(2,11,12,'2019-06-18 00:00:00'),(3,11,12,'2019-06-24 00:00:00'),(4,13,12,'2019-06-24 14:00:00'),(5,13,11,'2019-06-26 14:00:00'),(6,11,13,'2019-08-08 12:12:00');
+INSERT INTO `Mecze` VALUES (1,11,12,'2019-09-14 00:00:00', 'Ekstraklasa'),(2,11,12,'2019-09-18 00:00:00', 'Ekstraklasa'),(3,11,12,'2019-09-24 00:00:00', 'Ekstraklasa'),(4,13,12,'2019-09-24 14:00:00', 'Ekstraklasa'),(5,13,11,'2019-09-26 14:00:00', 'Ekstraklasa'),(6,11,13,'2019-09-08 12:12:00', 'Ekstraklasa');
 /*!40000 ALTER TABLE `Mecze` ENABLE KEYS */;
 UNLOCK TABLES;
 

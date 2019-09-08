@@ -89,9 +89,9 @@ router.get('/account', function (req, res, next) {
     });
 });
 
-router.post('/search_match', function (req, res, next) {
+router.post('/search_match_by_team', function (req, res, next) {
     //console.log(req.body.search_text)
-    teams = req.body.search_text.split(' ')
+    teams = req.body.search_text_team.split(' ')
     var i;
     querry_teams = "("
     for (i = 0; i < teams.length; i++) {
@@ -116,13 +116,47 @@ router.post('/search_match', function (req, res, next) {
             res.render('search_match_result', {
                 page: getPageVariable(req),
                 title: 'Wyniki wyszukiwania',
-                query: req.body.search_text,
+                query: req.body.search_text_team,
                 args: rows
             });
         }
     });
 });
 
+router.post('/search_match_by_league', function (req, res, next) {
+    //console.log(req.body.search_text)
+    leagues = req.body.search_text_league.split(' ')
+    var i;
+    querry_leagues = "("
+    for (i = 0; i < leagues.length; i++) {
+        querry_leagues += "m.liga LIKE '%" + leagues[i] +"%'"
+        if (i < leagues.length - 1) {
+            querry_leagues += " OR "
+        } else {
+            querry_leagues += ")"
+        }
+    }
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away, m.liga " +
+        "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
+        "WHERE ( (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny)"+
+        "AND "+ querry_leagues +
+        "AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
+    dbconn.query(query, function (err, rows) {
+        if (err) res.render('search_match_result', {
+            page: getPageVariable(req),
+            title: err,
+            desc: err.msg
+        });
+        else {
+            res.render('search_match_result', {
+                page: getPageVariable(req),
+                title: 'Wyniki wyszukiwania',
+                query: req.body.search_text_league,
+                args: rows
+            });
+        }
+    });
+});
 
 function getPageVariable(req) {
     if (req.isAuthenticated()) {
@@ -308,195 +342,18 @@ router.get('/match_schedule', function (req, res, next) {
         orderBy = req.query.orderBy;
     }
 
+
     if (orderBy == 'nazwa_baru' || orderBy == 'miasto') {
-
-
-        dbconn.query(
-            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY b." + orderBy,
-            function (err, result) {
-                const emptyArray = [];
-                if (result === undefined) {
-                    res.render('match_schedule', {
-                        page: getPageVariable(req),
-                        title: 'Terminarz meczów',
-                        data: emptyArray
-                    });
-                }
-
-                dbconn.query(
-                    "SELECT * FROM Druzyny",
-                    function (err, teams) {
-                        if (teams) {
-                            // console.log(teams)
-
-                            const matches = [];
-
-                            function getTeamName(id) {
-                                var name = 'Druzyna nie znana';
-
-                                for (var i = 0; i < teams.length; i++) {
-                                    if (teams[i].id_druzyny == id) {
-                                        return teams[i].nazwa_druzyny;
-                                    }
-                                }
-                                return name;
-                            }
-
-                            result.map(function (singleResult) {
-                                const match = {
-                                    nazwa_baru: singleResult.nazwa_baru,
-                                    czas: singleResult.czas,
-                                    druzyna1: getTeamName(singleResult.id_druzyna1),
-                                    druzyna2: getTeamName(singleResult.id_druzyna2),
-                                    miasto: singleResult.miasto
-                                };
-                                matches.push(match);
-                            });
-
-                            res.render('match_schedule', {
-                                page: getPageVariable(req),
-                                title: 'Terminarz meczów',
-                                data: matches,
-                                moment: moment
-                            });
-
-                        }
-                    }
-                );
-            }
-        );
-
-
+        select_statement =   "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY b." + orderBy
     } else if (orderBy == 'id_druzyna1') {
-
-
-        dbconn.query(
-            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy,
-            function (err, result) {
-                const emptyArray = [];
-                if (result === undefined) {
-                    res.render('match_schedule', {
-                        page: getPageVariable(req),
-                        title: 'Terminarz meczów',
-                        data: emptyArray
-                    });
-                }
-
-                dbconn.query(
-                    "SELECT * FROM Druzyny",
-                    function (err, teams) {
-                        if (teams) {
-                            // console.log(teams)
-
-                            const matches = [];
-
-                            function getTeamName(id) {
-                                var name = 'Druzyna nie znana';
-
-                                for (var i = 0; i < teams.length; i++) {
-                                    if (teams[i].id_druzyny == id) {
-                                        return teams[i].nazwa_druzyny;
-                                    }
-                                }
-                                return name;
-                            }
-
-                            result.map(function (singleResult) {
-                                const match = {
-                                    nazwa_baru: singleResult.nazwa_baru,
-                                    czas: singleResult.czas,
-                                    druzyna1: getTeamName(singleResult.id_druzyna1),
-                                    druzyna2: getTeamName(singleResult.id_druzyna2),
-                                    miasto: singleResult.miasto
-                                };
-                                matches.push(match);
-                            });
-
-
-                            matches.sort(function (a, b) {
-                                return a.druzyna1.localeCompare(b.druzyna1);
-                            });
-
-                            res.render('match_schedule', {
-                                page: getPageVariable(req),
-                                title: 'Terminarz meczów',
-                                data: matches,
-                                moment: moment
-                            });
-
-                        }
-                    }
-                );
-            }
-        );
-
-
-    } else if (orderBy == 'id_druzyna2') {
-
-
-        dbconn.query(
-            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy,
-            function (err, result) {
-                const emptyArray = [];
-                if (result === undefined) {
-                    res.render('match_schedule', {
-                        page: getPageVariable(req),
-                        title: 'Terminarz meczów',
-                        data: emptyArray
-                    });
-                }
-
-                dbconn.query(
-                    "SELECT * FROM Druzyny",
-                    function (err, teams) {
-                        if (teams) {
-                            // console.log(teams)
-
-                            const matches = [];
-
-                            function getTeamName(id) {
-                                var name = 'Druzyna nie znana';
-
-                                for (var i = 0; i < teams.length; i++) {
-                                    if (teams[i].id_druzyny == id) {
-                                        return teams[i].nazwa_druzyny;
-                                    }
-                                }
-                                return name;
-                            }
-
-                            result.map(function (singleResult) {
-                                const match = {
-                                    nazwa_baru: singleResult.nazwa_baru,
-                                    czas: singleResult.czas,
-                                    druzyna1: getTeamName(singleResult.id_druzyna1),
-                                    druzyna2: getTeamName(singleResult.id_druzyna2),
-                                    miasto: singleResult.miasto
-                                };
-                                matches.push(match);
-                            });
-
-
-                            matches.sort(function (a, b) {
-                                return a.druzyna2.localeCompare(b.druzyna2);
-                            });
-
-                            res.render('match_schedule', {
-                                page: getPageVariable(req),
-                                title: 'Terminarz meczów',
-                                data: matches,
-                                moment: moment
-                            });
-
-                        }
-                    }
-                );
-            }
-        );
+        select_statement =  "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
 
     } else {
+        select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
+    }
+
         dbconn.query(
-            "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy,
+            select_statement,
             function (err, result) {
                 const emptyArray = [];
                 if (result === undefined) {
@@ -537,10 +394,22 @@ router.get('/match_schedule', function (req, res, next) {
                                 matches.push(match);
                             });
 
+                            if (orderBy == 'id_druzyna1') {
+                                matches.sort(function (a, b) {
+                                    return (a.druzyna1 + a.druzyna2).localeCompare((b.druzyna1 + b.druzyna2));
+                                });
+                            } else if(orderBy == 'czas') {
+                            matches.sort(function (a, b) {
+                                return a.czas < b.czas;
+                                });
+                            }
+                            // do not show ones from the past
+                            const _matches = matches.filter(future_match);
+
                             res.render('match_schedule', {
                                 page: getPageVariable(req),
                                 title: 'Terminarz meczów',
-                                data: matches,
+                                data: _matches,
                                 moment: moment
                             });
 
@@ -549,7 +418,93 @@ router.get('/match_schedule', function (req, res, next) {
                 );
             }
         );
+});
+
+
+router.get('/team_matches/:id', function (req, res, next) {
+    var orderBy = 'czas';
+    var team_id = req.params.id;
+    if (req.query.orderBy) {
+        orderBy = req.query.orderBy;
     }
+
+    if (orderBy == 'nazwa_baru' || orderBy == 'miasto') {
+        select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu )  WHERE (m.id_druzyna1 = " + team_id + " OR  m.id_druzyna2 = " + team_id + ") ORDER BY b." + orderBy
+    } else if (orderBy == 'id_druzyna1') {
+        select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu )WHERE (m.id_druzyna1 = " + team_id + " OR  m.id_druzyna2 = " + team_id + ") ORDER BY m." + orderBy
+    } else {
+        select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) WHERE (m.id_druzyna1 = " + team_id + " OR  m.id_druzyna2 = " + team_id + ")ORDER BY m." + orderBy
+    }
+
+
+    dbconn.query(
+        select_statement,
+        function (err, result) {
+            const emptyArray = [];
+            if (result === undefined) {
+                res.render('team_matches', {
+                    page: getPageVariable(req),
+                    title: 'Mecze druzyny',
+                    data: emptyArray
+                });
+            }
+
+            dbconn.query(
+                "SELECT * FROM Druzyny",
+                function (err, teams) {
+                    if (teams) {
+                        // console.log(teams)
+
+                        const matches = [];
+
+                        function getTeamName(id) {
+                            var name = 'Druzyna nie znana';
+
+                            for (var i = 0; i < teams.length; i++) {
+                                if (teams[i].id_druzyny == id) {
+                                    return teams[i].nazwa_druzyny;
+                                }
+                            }
+                            return name;
+                        }
+
+                        result.map(function (singleResult) {
+                            const match = {
+                                nazwa_baru: singleResult.nazwa_baru,
+                                czas: singleResult.czas,
+                                druzyna1: getTeamName(singleResult.id_druzyna1),
+                                druzyna2: getTeamName(singleResult.id_druzyna2),
+                                miasto: singleResult.miasto
+                            };
+                            matches.push(match);
+                        });
+
+                        if (orderBy == 'id_druzyna1') {
+                            matches.sort(function (a, b) {
+                                return (a.druzyna1 + a.druzyna2).localeCompare((b.druzyna1 + b.druzyna2));
+                            });
+                        } else if(orderBy == 'czas') {
+                            matches.sort(function (a, b) {
+                                return a.czas < b.czas;
+                            });
+                        }
+                        console.log("1");
+                        // do not show ones from the past
+                        const _matches = matches.filter(future_match);
+
+                        console.log("2");
+                        res.render('team_matches', {
+                            page: getPageVariable(req),
+                            title: 'Mecze drużyny',
+                            data: _matches,
+                            moment: moment
+                        });
+
+                    }
+                }
+            );
+        }
+    );
 });
 
 module.exports = {
@@ -557,3 +512,7 @@ module.exports = {
     printUserData: printUserData,
     getPageVariable: getPageVariable
 };
+
+function future_match(a) {
+return moment(a.czas) > moment.now()
+}
