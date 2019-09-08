@@ -23,6 +23,7 @@
         <thead>
         <th><a href="?orderBy=czas" class="link">Data</a></th>
         <th><a href="?orderBy=nazwa_baru" class="link">Bar</a></th>
+        <th><a href="?orderBy=liga" class="link">Liga</a></th>
         <th><a href="?orderBy=id_druzyna1" class="link">Mecz</a></th>
         <th><a href="?orderBy=miasto" class="link">Miasto</a></th>
         </thead>
@@ -32,6 +33,7 @@
             <tr>
                 <td><%= moment(data[i].czas).format('YYYY-MM-DD HH:mm') %></td>
                 <td><%= data[i].nazwa_baru %></td>
+                <td><%= data[i].liga %></td>
                 <td><%= data[i].druzyna1 %> - <%= data[i].druzyna2 %></td>
                 <td><%= data[i].miasto %></td>
             </tr>

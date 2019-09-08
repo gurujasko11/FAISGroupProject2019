@@ -10,7 +10,7 @@ let nested_edit_res;
 
 router.get('/', function (req, res) {
     let query_match_teams_place = "" +
-        "SELECT Bary_Z_Meczami.id_meczu as id, Bary_Z_Meczami.id_wydarzenia as id_wydarzenia, Bary_Z_Meczami.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Bary_Z_Meczami LEFT JOIN Mecze ON Mecze.id_meczu = Bary_Z_Meczami.id_meczu LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_druzyna1 != '' and id_druzyna2 != '';"
+        "SELECT Bary_Z_Meczami.id_meczu as id, Bary_Z_Meczami.id_wydarzenia as id_wydarzenia, Bary_Z_Meczami.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2, Mecze.liga FROM Bary_Z_Meczami LEFT JOIN Mecze ON Mecze.id_meczu = Bary_Z_Meczami.id_meczu LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE id_druzyna1 != '' and id_druzyna2 != '';"
     dbconn.query(query_match_teams_place, function (err, result) {
         let emptyArray = [];
         let is_bar = false;

@@ -19,6 +19,7 @@
     <h1><%= title %></h1>
     <table class="table sortable">
         <thead>
+        <th>Liga</th>
         <th>Nazwa</th>
         <th>Czas</th>
         <% if(addPossible && is_bar){ %>
@@ -28,6 +29,7 @@
         <tbody>
         <% for(var i = 0; i < data.length; i++) { %>
             <tr>
+                <td><%= data[i].liga%></td>
                 <td><%= data[i].team1 + " - " + data[i].team2 %></td>
                 <td class="data"><%= data[i].czas %></td>
                 <% if(addPossible && is_bar){ %>

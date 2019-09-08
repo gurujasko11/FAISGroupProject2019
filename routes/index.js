@@ -15,7 +15,7 @@ var transporter = nodemailer.createTransport({
 
 //routes
 router.get('/', function (req, res, next) {
-    dbconn.query('SELECT Mecze.id_meczu, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 ' +
+    dbconn.query('SELECT Mecze.id_meczu, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2, Mecze.liga ' +
         'FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN ' +
         'Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE DATE(czas) > CURDATE() ' +
         'ORDER BY czas LIMIT 10',
@@ -94,7 +94,7 @@ router.post('/search_match_by_team', function (req, res, next) {
     team = req.body.search_text_team;
     var i;
     querry_teams = "(lower(t1.nazwa_druzyny) LIKE '%" + team.toLowerCase() + "%' OR lower(t2.nazwa_druzyny) LIKE '%" + team.toLowerCase() + "%')"
-    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away " +
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away, m.liga " +
         "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
         "WHERE (" + querry_teams +
         "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny ) AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
@@ -336,12 +336,12 @@ router.get('/match_schedule', function (req, res, next) {
 
 
     if (orderBy == 'nazwa_baru' || orderBy == 'miasto') {
-        select_statement =   "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY b." + orderBy
+        select_statement =   "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto, m.liga FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY b." + orderBy
     } else if (orderBy == 'id_druzyna1') {
-        select_statement =  "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
+        select_statement =  "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto, m.liga FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
 
     } else {
-        select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
+        select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto, m.liga FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
     }
 
     dbconn.query(
@@ -361,9 +361,7 @@ router.get('/match_schedule', function (req, res, next) {
                 function (err, teams) {
                     if (teams) {
                         // console.log(teams)
-
                         const matches = [];
-
                         function getTeamName(id) {
                             var name = 'Druzyna nie znana';
 
@@ -378,6 +376,7 @@ router.get('/match_schedule', function (req, res, next) {
                         result.map(function (singleResult) {
                             const match = {
                                 nazwa_baru: singleResult.nazwa_baru,
+                                liga: singleResult.liga,
                                 czas: singleResult.czas,
                                 druzyna1: getTeamName(singleResult.id_druzyna1),
                                 druzyna2: getTeamName(singleResult.id_druzyna2),
