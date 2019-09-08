@@ -2,29 +2,32 @@
 
 <!DOCTYPE html>
 <html>
-<% include head.ejs %>      <!--Include head section (same for all pages)-->
-<!--Javascripts includes-->
-<script src='/javascripts/alert.js' type='text/javascript' ></script>
-<script src='/javascripts/sorttable.js' type='text/javascript' ></script>
+    <% include head.ejs %>      <!--Include head section (same for all pages)-->
+    <!--Javascripts includes-->
+    <script src='/javascripts/alert.js' type='text/javascript' ></script>
 
-<body>
-<div id="alerts"></div>
-<div id="page" class=page>      <!--Div page with id=page - main container-->
-    <h1><%= title %></h1>
-    <h3> Kliknij na nazwę drużyny aby zobaczyć rozgrywane przez daną mecze</h3>
-    <table class="sortable table">
-        <th>nazwa drużyny</th>
-        <th>opcje</th>
+    <body>
+        <div id="alerts"></div>
+        <div id="page" class=page>      <!--Div page with id=page - main container-->
+            <h1><%= title %></h1>
+            <h3> Kliknij na nazwę drużyny aby zobaczyć rozgrywane przez daną mecze</h3>
+            <table class="table">
+                <th>nazwa drużyny</th>
+                <th>opcje</th>
 
-        <% print.forEach(function (team) { %>
+                <% print.forEach(function (team) { %>
             <tr>
                 <td><%= team.nazwa_druzyny %></td>
                 <td><a href="<%= "/team_matches/" + team.id_druzyny %>" class="link"> Pokaż mecze </a></td>
             </tr>
-        <% }) %>
-    </table>
-</div>
-<% include header.ejs %>      <!--Include header (top menu logo etc)-->
-<% include footer.ejs %>      <!--Include footer-->
-</body>
+         <% }) %>
+            </table>
+        </div>
+        <% include header.ejs %>      <!--Include header (top menu logo etc)-->
+        <% include footer.ejs %>      <!--Include footer-->
+    </body>
 </html>
+
+
+
+
