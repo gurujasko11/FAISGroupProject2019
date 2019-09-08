@@ -2,8 +2,8 @@
      --BcgColor: #ffffff;
      --ButtonBcgColor: #242624;
      --TextColor: #222222;
-     --AccentColor: #15c118;
-     --LinkColor: #129c13;
+     --AccentColor: #ffffff;
+     --LinkColor: #ebffef;
      --HoverColor: #1adb1d;
 }
 body {
@@ -297,6 +297,9 @@ table.table tr:nth-child(even) {
     opacity: 0.8;
     background-color: rgba(0,0,0,0.6);
     color: #fff;
+}
+table tbody tr td a{
+    color: #eeeeee;
 }
 /*      Alerts         ////////////////////////////////////////////////*/
 .alert {
