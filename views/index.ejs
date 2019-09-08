@@ -3,6 +3,7 @@
     <% include head.ejs %>      <!--Include head section (same for all pages)-->
     <!--Javascripts includes-->
     <script src='/javascripts/alert.js' type='text/javascript' ></script>
+    <script src='/javascripts/sorttable.js' type='text/javascript'></script>
 
     <script>
         function validateForm()
@@ -48,7 +49,7 @@
 
         <div id="page" class=page>      <!--Div page with id=page - main container-->
             <form method="POST" action="/search_match" onsubmit="return validateForm();">
-                <table>
+                <table class="sortable">
                     <td>
                         Znajdź mecz:
                     </td>
@@ -61,7 +62,7 @@
             </form>
             <br/><br/>
             <h2>Najbliższe mecze</h2>
-            <table class="table">
+            <table class="sortable table">
                 <th>Gospodarze</th>
                 <th>Goście</th>
                 <th>Data i godzina meczu</th>
