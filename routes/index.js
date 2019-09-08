@@ -91,17 +91,9 @@ router.get('/account', function (req, res, next) {
 
 router.post('/search_match_by_team', function (req, res, next) {
     //console.log(req.body.search_text)
-    teams = req.body.search_text_team.split(' ')
+    team = req.body.search_text_team;
     var i;
-    querry_teams = "("
-    for (i = 0; i < teams.length; i++) {
-        querry_teams += "t1.nazwa_druzyny LIKE '%" + teams[i] + "%' OR t2.nazwa_druzyny LIKE '%" + teams[i] + "%'"
-        if (i < teams.length - 1) {
-            querry_teams += " OR "
-        } else {
-            querry_teams += ")"
-        }
-    }
+    querry_teams = "(lower(t1.nazwa_druzyny) LIKE '%" + team.toLowerCase() + "%' OR lower(t2.nazwa_druzyny) LIKE '%" + team.toLowerCase() + "%')"
     query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away " +
         "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
         "WHERE (" + querry_teams +
@@ -129,7 +121,7 @@ router.post('/search_match_by_league', function (req, res, next) {
     var i;
     querry_leagues = "("
     for (i = 0; i < leagues.length; i++) {
-        querry_leagues += "m.liga LIKE '%" + leagues[i] +"%'"
+        querry_leagues += "lower(m.liga) LIKE '%" + leagues[i].toLowerCase() +"%'"
         if (i < leagues.length - 1) {
             querry_leagues += " OR "
         } else {
@@ -352,72 +344,72 @@ router.get('/match_schedule', function (req, res, next) {
         select_statement = "SELECT b.nazwa_baru, m.id_druzyna1, m.id_druzyna2, bzm.czas, b.miasto FROM (( Bary_Z_Meczami  as bzm LEFT JOIN Bary  as b ON bzm.id_baru = b.id_baru) LEFT JOIN Mecze as m ON bzm.id_meczu = m.id_meczu ) ORDER BY m." + orderBy
     }
 
-        dbconn.query(
-            select_statement,
-            function (err, result) {
-                const emptyArray = [];
-                if (result === undefined) {
-                    res.render('match_schedule', {
-                        page: getPageVariable(req),
-                        title: 'Terminarz meczów',
-                        data: emptyArray
-                    });
-                }
+    dbconn.query(
+        select_statement,
+        function (err, result) {
+            const emptyArray = [];
+            if (result === undefined) {
+                res.render('match_schedule', {
+                    page: getPageVariable(req),
+                    title: 'Terminarz meczów',
+                    data: emptyArray
+                });
+            }
 
-                dbconn.query(
-                    "SELECT * FROM Druzyny",
-                    function (err, teams) {
-                        if (teams) {
-                            // console.log(teams)
+            dbconn.query(
+                "SELECT * FROM Druzyny",
+                function (err, teams) {
+                    if (teams) {
+                        // console.log(teams)
 
-                            const matches = [];
+                        const matches = [];
 
-                            function getTeamName(id) {
-                                var name = 'Druzyna nie znana';
+                        function getTeamName(id) {
+                            var name = 'Druzyna nie znana';
 
-                                for (var i = 0; i < teams.length; i++) {
-                                    if (teams[i].id_druzyny == id) {
-                                        return teams[i].nazwa_druzyny;
-                                    }
+                            for (var i = 0; i < teams.length; i++) {
+                                if (teams[i].id_druzyny == id) {
+                                    return teams[i].nazwa_druzyny;
                                 }
-                                return name;
                             }
+                            return name;
+                        }
 
-                            result.map(function (singleResult) {
-                                const match = {
-                                    nazwa_baru: singleResult.nazwa_baru,
-                                    czas: singleResult.czas,
-                                    druzyna1: getTeamName(singleResult.id_druzyna1),
-                                    druzyna2: getTeamName(singleResult.id_druzyna2),
-                                    miasto: singleResult.miasto
-                                };
-                                matches.push(match);
+                        result.map(function (singleResult) {
+                            const match = {
+                                nazwa_baru: singleResult.nazwa_baru,
+                                czas: singleResult.czas,
+                                druzyna1: getTeamName(singleResult.id_druzyna1),
+                                druzyna2: getTeamName(singleResult.id_druzyna2),
+                                miasto: singleResult.miasto
+                            };
+                            matches.push(match);
+                        });
+
+                        if (orderBy == 'id_druzyna1') {
+                            matches.sort(function (a, b) {
+                                return (a.druzyna1 + a.druzyna2).localeCompare((b.druzyna1 + b.druzyna2));
                             });
-
-                            if (orderBy == 'id_druzyna1') {
-                                matches.sort(function (a, b) {
-                                    return (a.druzyna1 + a.druzyna2).localeCompare((b.druzyna1 + b.druzyna2));
-                                });
-                            } else if(orderBy == 'czas') {
+                        } else if(orderBy == 'czas') {
                             matches.sort(function (a, b) {
                                 return a.czas < b.czas;
-                                });
-                            }
-                            // do not show ones from the past
-                            const _matches = matches.filter(future_match);
-
-                            res.render('match_schedule', {
-                                page: getPageVariable(req),
-                                title: 'Terminarz meczów',
-                                data: _matches,
-                                moment: moment
                             });
-
                         }
+                        // do not show ones from the past
+                        const _matches = matches.filter(future_match);
+
+                        res.render('match_schedule', {
+                            page: getPageVariable(req),
+                            title: 'Terminarz meczów',
+                            data: _matches,
+                            moment: moment
+                        });
+
                     }
-                );
-            }
-        );
+                }
+            );
+        }
+    );
 });
 
 
@@ -514,5 +506,5 @@ module.exports = {
 };
 
 function future_match(a) {
-return moment(a.czas) > moment.now()
+    return moment(a.czas) > moment.now()
 }
