@@ -25,6 +25,7 @@
         <h2>Znalezione mecze</h2>
         <table class="sortable table">
                 <tr>
+                    <th></th>
                     <th>liga</th>
                     <th>gospodarze</th>
                     <th>goscie</th>
@@ -32,9 +33,10 @@
                 </tr>
             <% args.map((element)=>{%>
                 <tr>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.liga %></a></td>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.home %></a></td>
-                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.away %></a></td>
+                    <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link >pokaż mecz</a></td>
+                    <td><a href="<%= "/about/league/" + element.liga %>" class=link ><%= element.liga %></a></td>
+                    <td><a href="<%= "/team_matches/" + element.home_id %>" class=link ><%= element.home %></a></td>
+                    <td><a href="<%= "/team_matches/" + element.away_id %>" class=link ><%= element.away %></a></td>
                     <td><a href="<%= "/about/match/" + element.id_meczu %>" class=link ><%= element.czas %></a></td>
                 </tr>
             <%}) %>

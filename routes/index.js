@@ -15,7 +15,8 @@ var transporter = nodemailer.createTransport({
 
 //routes
 router.get('/', function (req, res, next) {
-    dbconn.query('SELECT Mecze.id_meczu, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2, Mecze.liga ' +
+    dbconn.query('SELECT Mecze.id_meczu, Mecze.czas, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2, Mecze.liga, ' +
+        ' dr1.id_druzyny as team1_id, dr2.id_druzyny as team2_id '+
         'FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN ' +
         'Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE DATE(czas) > CURDATE() ' +
         'ORDER BY czas LIMIT 10',
@@ -94,7 +95,7 @@ router.post('/search_match_by_team', function (req, res, next) {
     team = req.body.search_text_team;
     var i;
     querry_teams = "(lower(t1.nazwa_druzyny) LIKE '%" + team.toLowerCase() + "%' OR lower(t2.nazwa_druzyny) LIKE '%" + team.toLowerCase() + "%')"
-    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away, m.liga " +
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t1.id_druzyny as home_id, t2.nazwa_druzyny as away, t2.id_druzyny as away_id, m.liga " +
         "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
         "WHERE (" + querry_teams +
         "AND (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny ) AND EXISTS (SELECT 1 FROM Zespolowe.Bary_Z_Meczami b where b.id_meczu = m.id_meczu))";
@@ -128,7 +129,7 @@ router.post('/search_match_by_league', function (req, res, next) {
             querry_leagues += ")"
         }
     }
-    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t2.nazwa_druzyny as away, m.liga " +
+    query = "SELECT DATE_FORMAT(m.czas, '%m/%d/%Y %H:%i') as czas, m.id_meczu, t1.nazwa_druzyny as home, t1.id_druzyny as home_id, t2.nazwa_druzyny as away, t2.id_druzyny as away_id, m.liga " +
         "FROM Zespolowe.Mecze m, Zespolowe.Druzyny t1, Zespolowe.Druzyny t2 " +
         "WHERE ( (m.id_druzyna1 = t1.id_druzyny AND m.id_druzyna2 = t2.id_druzyny)"+
         "AND "+ querry_leagues +
@@ -221,7 +222,8 @@ router.post('/edit_bar', function (req, res, next) {
 
 router.get('/teams', function (req, res, next) {
 
-    dbconn.query('SELECT * FROM Druzyny', function (err, result) {
+    dbconn.query('SELECT distinct d.id_druzyny, d.nazwa_druzyny, m.liga FROM Zespolowe.Druzyny d, Zespolowe.Mecze m\n' +
+        'WHERE m.id_druzyna1 = d.id_druzyny OR m.id_druzyna2 = d.id_druzyny', function (err, result) {
 
         if (err) {
             throw err;
@@ -259,6 +261,29 @@ router.get('/about/match/:id', function (req, res, next) {
         }
     });
 });
+
+router.get('/about/league/:id', function (req, res, next) {
+    league_name = req.params.id
+    console.log(league_name)
+    query = "SELECT distinct d.id_druzyny, d.nazwa_druzyny, m.liga FROM Zespolowe.Druzyny d, Zespolowe.Mecze m\n" +
+        "WHERE m.liga = \'" + league_name + "\'\n" +
+        "AND (m.id_druzyna1 = d.id_druzyny OR m.id_druzyna2 = d.id_druzyny)";
+    dbconn.query(query, function (err, rows) {
+        if (err) res.render('search_league_result', {
+            page: getPageVariable(req),
+            title: err,
+            desc: err.msg
+        });
+        else {
+            res.render('about_league', {
+                page: getPageVariable(req),
+                title: league_name,
+                args: rows
+            });
+        }
+    });
+});
+
 
 router.get('/edit_bar', function (req, res, next) {
     if (req.isAuthenticated()) {

@@ -87,15 +87,17 @@
 <div>
     <h2>Najbliższe mecze</h2>
     <table class="table">
+        <th></th>
         <th>Liga</th>
         <th>Gospodarze</th>
         <th>Goście</th>
         <th>Data i godzina meczu</th>
         <%mecze.forEach(function (mecz) { %>
             <tr>
-                <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.liga%></a></td>
-                <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.team1%></a></td>
-                <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.team2%></a></td>
+                <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link >pokaż mecz</a></td>
+                <td><a href="<%= "/about/league/" + mecz.liga %>" class=link ><%=mecz.liga%></a></td>
+                <td><a href="<%= "/team_matches/" + mecz.team1_id %>" class=link ><%=mecz.team1%></a></td>
+                <td><a href="<%= "/team_matches/" + mecz.team2_id %>" class=link ><%=mecz.team2%></a></td>
                 <td><a href="<%= "/about/match/" + mecz.id_meczu %>" class=link ><%=mecz.czas%></a></td>
             </tr>
         <%})%>
