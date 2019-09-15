@@ -185,6 +185,13 @@
                     <% } %> href="/match" tabindex="4">Mecze
             </a>
             <a class=
+            <% if(title=="Dodaj mecz"){ %>
+            menu_s
+            <% } else{ %>
+                menu
+            <% } %> href="/match/add" tabindex="9">Dodaj mecz
+        </a>
+            <a class=
                 <% if(title=="O stronie"){ %>
                 menu_s
                 <% } else{ %>
