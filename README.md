@@ -8,7 +8,7 @@ Nazwę użytkownika, hasło i nazwę bazy danych zmienić tak, aby paswowała do
 
 W celu korzystania z sesji - instalacja modułu express-session
 
-##UPDATE
+## UPDATE
 Panel admina - nzlajduje się pod ukrytą ścieżką /admin
 
 
