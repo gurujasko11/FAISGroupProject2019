@@ -122,7 +122,7 @@ if(ENABLE_REGISTER_ADMIN_ROUTE && ENABLE_REGISTER_ADMIN_ROUTE === true)
 
 router.get('/', authenticatedAdminOnly, function(req,res)
 {
-    res.redirect('/');
+    res.redirect('/admin/teams');
 });
 
 router.get('/teams', authenticatedAdminOnly, function(req, res)
