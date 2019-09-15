@@ -7,7 +7,11 @@ Wymagany jest pakiet mysql dla npm, można zainstalować komendą npm install my
 Nazwę użytkownika, hasło i nazwę bazy danych zmienić tak, aby paswowała do waszej stworzonej bazy mysql.
 
 W celu korzystania z sesji - instalacja modułu express-session
-  
+
+##UPDATE
+Panel admina - nzlajduje się pod ukrytą ścieżką /admin
+
+
 ### Dodawanie stron:
 Dodając nową stronę trzeba zedytować pliki views/eader.ejs oraz routs/index.js. W routs/index.js dodajemy połączenie linku z adresem:  
 ```
@@ -107,3 +111,5 @@ Problemy przy odpalaniu:
 3. Sprawdzenie czy ktoś jest zalogowany odbywa się po stronie serwera poprzez funkcję req.isAuthenticated()
 4. Aby wywietlić w konsoli informacje o zalogowanym użytkowniku/barze wystarczy wpisać mozna uzyc url localhost:3000/test
 5. zmienna page: zalogowany uzytkownik ma zmienna page jako 'authenticated', niezalogowany 'main' -> ustawione w funkcji getPageVariable(req) w index.js
+
+
