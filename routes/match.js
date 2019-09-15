@@ -5,6 +5,8 @@ var getPageVariable = indexModule.getPageVariable;
 const nodemailer = require("nodemailer");
 var handlebars = require('handlebars');
 const moment = require('moment');
+var authenticationModule = require('./authentication');
+var authenticatedAdminOnly = authenticationModule.authenticatedAdminOnly;
 let nested_add_res;
 let nested_edit_res;
 
@@ -41,7 +43,7 @@ router.get('/', function (req, res) {
 
     });
 });
-router.get('/add', function (req, res) {
+router.get('/add',authenticatedAdminOnly, function (req, res) {
     let select_teams = "SELECT id_druzyny as id, nazwa_druzyny as name FROM Druzyny";
     dbconn.query(select_teams, function (err, result) {
         res.render('add_match', {page: getPageVariable(req), title: 'Dodaj rozgrywkę', teams: result});
@@ -131,7 +133,7 @@ function notify_users_about_match(bar_id, event_id, datetime) {
 }
 
 
-router.post('/add', function (req, res) {
+router.post('/add', authenticatedAdminOnly, function (req, res) {
     var team1 = req.body.team1;
     var team2 = req.body.team2;
     var date = req.body.date;
