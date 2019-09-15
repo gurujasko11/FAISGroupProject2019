@@ -9,7 +9,7 @@ Nazwę użytkownika, hasło i nazwę bazy danych zmienić tak, aby paswowała do
 W celu korzystania z sesji - instalacja modułu express-session
 
 ## UPDATE
-Panel admina - znajduje się pod ukrytą ścieżką /admin
+Panel admina - znajduje się pod ukrytą ścieżką /admin  
 
 
 ### Dodawanie stron:
