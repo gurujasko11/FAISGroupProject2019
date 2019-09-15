@@ -41,15 +41,10 @@ router.get('/', function (req, res) {
 
     });
 });
-
 router.get('/add', function (req, res) {
-    let select_teams = "SELECT * FROM Druzyny";
+    let select_teams = "SELECT id_druzyny as id, nazwa_druzyny as name FROM Druzyny";
     dbconn.query(select_teams, function (err, result) {
-        res.render('add_match', {
-            page: getPageVariable(req),
-            title: 'Dodaj rozgrywkę',
-            teams: result
-        });
+        res.render('add_match', {page: getPageVariable(req), title: 'Dodaj rozgrywkę', teams: result});
     });
 });
 
