@@ -257,6 +257,21 @@ router.get('/add/bar_match', function (req, res, next) {
         });
     });
 });
+
+router.get('/list_all_matches', function (req, res, next) {
+    dbconn.query("SELECT Mecze.czas as czas, Mecze.id_meczu as id, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2", function (err, result) {
+        for (var i = 0; i < result.length; i++) {
+            result[i].czas = (result[i].czas + "").split("GMT")[0];
+        }
+        res.render('list_all_matches', {
+            page: getPageVariable(req),
+            title: 'Wszystkie możliwe mecze do transmisji', data: result,
+            moment: moment
+        });
+    });
+});
+
+
 router.get('/add/selected_match/:id', function (req, res, next) {
     let id = req.params.id;
     dbconn.query("SELECT Mecze.czas as czas, Mecze.id_meczu as id, dr1.nazwa_druzyny as team1, dr2.nazwa_druzyny as team2 FROM Mecze LEFT JOIN Druzyny dr1 ON dr1.id_druzyny = Mecze.id_druzyna1 LEFT JOIN Druzyny dr2 ON dr2.id_druzyny = Mecze.id_druzyna2 WHERE Mecze.id_meczu = " + id, function (err, result) {

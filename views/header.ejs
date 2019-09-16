@@ -24,6 +24,13 @@
                 <% } %> href="/" tabindex="1">Wyszukiwanie
             </a>
             <a class=
+               <% if(title=="Mecze"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+                    <% } %> href="/match/list_all_matches" tabindex="4">Mecze
+            </a>
+            <a class=
                <% if(title=="Terminarz meczów"){ %>
                menu_s
                     <% } else{ %>
@@ -75,6 +82,13 @@
                 <% } %> href="/" tabindex="1">Wyszukiwanie
             </a>
             <a class=
+               <% if(title=="Mecze"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+                    <% } %> href="/match/list_all_matches" tabindex="4">Mecze
+            </a>
+            <a class=
                <% if(title=="Terminarz meczów"){ %>
                menu_s
                     <% } else{ %>
@@ -120,11 +134,18 @@
                 <% } %> href="/" tabindex="1">Wyszukiwanie
             </a>
             <a class=
+               <% if(title=="Mecze"){ %>
+                   menu_s
+            <% } else{ %>
+               menu
+                    <% } %> href="/match/list_all_matches" tabindex="4">Mecze
+            </a>
+            <a class=
                 <% if(title=="Wydarzenia"){ %>
                     menu_s
                 <% } else{ %>
                     menu
-                <% } %> href="/match" tabindex="2">Wydarzenia
+                <% } %> href="/match" tabindex="2">Wydarzenia w moim lokalu
             </a>
             <a class=
                <% if(title=="Terminarz meczów"){ %>
@@ -182,7 +203,7 @@
                    menu_s
             <% } else{ %>
                menu
-                    <% } %> href="/match" tabindex="4">Mecze
+                    <% } %> href="/match/list_all_matches" tabindex="4">Mecze
             </a>
             <a class=
             <% if(title=="Dodaj mecz"){ %>

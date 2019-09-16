@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<% include head.ejs %>
+<!--Include head section (same for all pages)-->
+<!--Javascripts includes-->
+
+<script src='/javascripts/alert.js' type='text/javascript'></script>
+
+<!--Inline Javascript-->
+<script>
+    function validateForm() {
+
+    }
+</script>
+
+<body>
+<div id="alerts"></div>
+<td id="page" class=page style="overflow: hidden;">      <!--Div page with id=page - main container-->
+    <h1><%= title %></h1>
+    <table class="table">
+        <th>Termin</th>
+        <th>Mecz</th>
+        <% data.forEach(function (match) { %>
+            <tr>
+                <td class="data"><%= moment(new Date(match.czas)).format('YYYY-MM-DD HH:mm') %></td>
+                <td><%= match.team1 %> - <%= match.team2 %></td>
+            </tr>
+        <% }) %>
+    </table>
+    <br>
+    <br>
+    <br>
+
+    <% include header.ejs %>
+    <% include footer.ejs %>
+</body>
+</html>
+
+<script>
+    let date = document.getElementsByClassName("data");
+    dni = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
+    Array.from(date).forEach(function (element, index, array) {
+        let datetime = new Date(element.innerHTML);
+        var minutes = datetime.getMinutes();
+        var hours = datetime.getHours();
+        var days = datetime.getDate();
+        var months = datetime.getMonth();
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        hours = hours < 10 ? '0' + hours : hours;
+        days = days < 10 ? '0' + days : days;
+        months = months < 10 ? '0' + (months + 1) : months + 1;
+        let str = (dni[datetime.getDay()] + ", " + days) + "." + months
+            + "." + datetime.getFullYear() + " " + hours + ":" + minutes;
+        element.innerHTML = str;
+    })
+</script>
